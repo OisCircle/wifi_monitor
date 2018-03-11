@@ -1,6 +1,6 @@
 package com.qcq.wifi_monitor.entity;
 
-public class seeker {
+public class Seeker {
 	int id;
 	int type;
 	double x;
@@ -33,7 +33,7 @@ public class seeker {
 	public String toString() {
 		return "seeker [id=" + id + ", type=" + type + ", x=" + x + ", y=" + y + "]";
 	}
-	public seeker(int id, int type, double x, double y) {
+	public Seeker(int id, int type, double x, double y) {
 		super();
 		this.id = id;
 		this.type = type;

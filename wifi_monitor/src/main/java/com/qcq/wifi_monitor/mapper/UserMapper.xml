@@ -4,7 +4,7 @@
 
 <mapper namespace="com.qcq.wifi_monitor.mapper.UserMapper" >
 
-	<select id="selectOne" resultType="com.qcq.wifi_monitor.entity.User">
+	<select id="selectOne" resultType="User">
 		select *from user where id=1
 	</select>
 </mapper>

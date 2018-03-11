@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qcq.wifi_monitor.mapper.SeekerMapper" >
+
+	<select id="selectOne" parameterType="Seeker" resultType="Seeker">
+		select *from seeker where id=#{id}
+	</select>
+	<select id="selectAll" resultType="Seeker">
+		select *from seeker
+	</select>
+</mapper>
