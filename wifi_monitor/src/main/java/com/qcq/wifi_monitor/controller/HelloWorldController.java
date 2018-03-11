@@ -31,7 +31,7 @@ public class HelloWorldController {
 	public ModelAndView test(ModelAndView mv){
 		User user=ts.selectOne();
 		mv.getModel().put("user", user);
-		mv.setViewName("MyJsp");
+		mv.setViewName("index");
 		return mv;
 	}
 }
