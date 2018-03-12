@@ -1,8 +1,8 @@
-<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.User" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.Seeker" pageEncoding="UTF-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-User user=(User)request.getAttribute("user");
+List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -19,9 +19,11 @@ User user=(User)request.getAttribute("user");
   </head>
   
   <body>
-    This is my JSP page. <br>
-    user
+    seekers
     <br>
-    <%= user.getName() %>
+    <%for(int i=0;i<seekers.size();++i) {%>
+    <%= seekers.get(i).toString() %>
+    <br>
+    <%} %>
   </body>
 </html>

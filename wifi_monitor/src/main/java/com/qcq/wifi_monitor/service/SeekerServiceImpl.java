@@ -4,9 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
 import com.qcq.wifi_monitor.entity.Seeker;
 import com.qcq.wifi_monitor.mapper.SeekerMapper;
-
+@Service
 public class SeekerServiceImpl implements SeekerService{
 	@Resource
 	SeekerMapper sm;
