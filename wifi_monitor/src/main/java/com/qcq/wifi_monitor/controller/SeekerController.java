@@ -1,6 +1,7 @@
 package com.qcq.wifi_monitor.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -12,6 +13,7 @@ import com.qcq.wifi_monitor.entity.Info;
 import com.qcq.wifi_monitor.entity.Seeker;
 import com.qcq.wifi_monitor.service.InfoService;
 import com.qcq.wifi_monitor.service.SeekerService;
+import com.qcq.wifi_monitor.util.MathUtil;
 
 @RestController
 public class SeekerController {
@@ -30,8 +32,9 @@ public class SeekerController {
 	@RequestMapping(value="/seeker")
 	public ModelAndView seeker(ModelAndView mv,int id){
 		List<Info> infos=infoService.selectLatestInfos(id);
+		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
 		mv.getModelMap().put("infos", infos);
-		
+		mv.getModelMap().put("coordinates",coordinates);
 		mv.setViewName("seeker");
 		return mv;
 	}
