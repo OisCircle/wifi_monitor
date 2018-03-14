@@ -3,6 +3,7 @@ package com.qcq.wifi_monitor;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,15 +13,18 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.qcq.wifi_monitor.entity.Info;
+import com.qcq.wifi_monitor.entity.Path;
 import com.qcq.wifi_monitor.entity.Phone;
 import com.qcq.wifi_monitor.entity.S_P;
 import com.qcq.wifi_monitor.entity.Seeker;
 import com.qcq.wifi_monitor.internalLogic.parser.Parser;
 import com.qcq.wifi_monitor.internalLogic.parser.ParserImpl;
+import com.qcq.wifi_monitor.internalLogic.parser.PathTracer;
+import com.qcq.wifi_monitor.internalLogic.parser.PathTracerImpl;
 import com.qcq.wifi_monitor.mapper.InfoMapper;
 @Component
-public class MyRunner implements CommandLineRunner{
-
+public class Monitor implements CommandLineRunner{
+	
 	int port=8080;
 	DatagramSocket ds;
 	DatagramPacket dp;
@@ -31,15 +35,12 @@ public class MyRunner implements CommandLineRunner{
 	int items;
 	int i=1;
 	Parser parser=new ParserImpl();
-//		ApplicationContext ctx=ApplicationContextProvider.getApplicationContext();
-//		InfoMapper infoMapper=ctx.getBean(InfoMapper.class);
 	@Resource
 	InfoMapper infoMapper;
-	
-//		@Resource
-//		InfoMapper infoMapper;
-//		ApplicationContext ctx=new ClassPathXmlApplicationContext("applicationContext.xml");
-//		InfoMapper infoMapper=ctx.getBean(InfoMapper.class);
+	//路径跟踪
+	PathTracer tracer=new PathTracerImpl();
+	//路径跟踪返回的数据进行存储
+	List<Path> paths=new ArrayList<Path>();
 	@Override
 	public void run(String... args) throws Exception {
 			try {
@@ -107,6 +108,10 @@ public class MyRunner implements CommandLineRunner{
 				List<Phone> phones=(List<Phone>) parseResult.get("phones");
 				List<S_P> s_ps=(List<S_P>) parseResult.get("s_ps");
 				List<Info> infos=(List<Info>) parseResult.get("infos");
+				
+				//路径跟踪并存储
+				paths=tracer.trace(infos,seeker.getId());
+				infoMapper.insertPaths(paths);
 				
 				infoMapper.insertSeeker(seeker);
 				infoMapper.insertPhones(phones);
