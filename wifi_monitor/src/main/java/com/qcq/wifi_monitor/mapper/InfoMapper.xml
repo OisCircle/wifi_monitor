@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qcq.wifi_monitor.mapper.InfoMapper" >
+	<insert id="insertSeeker" parameterType="Seeker">
+		insert ignore into seeker (id,type,x,y) values(#{id},#{type},#{x},#{y})
+	</insert>
+	<insert id="insertPhones" parameterType="java.util.List">
+		insert ignore into phone (mac) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.mac})
+		</foreach>
+	</insert>
+	<insert id="insertS_Ps">
+		insert ignore into s_p(s_id,p_mac) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.s_id},#{item.p_mac})
+		</foreach>
+	</insert>
+	<insert id="insertInfos">
+		insert ignore into info(rssi,mac) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.rssi},#{item.mac})
+		</foreach>
+	</insert>
+	
+	<select id="selectLatestInfos" parameterType="int" resultType="Info">
+		select b.id,a.mac mac,b.rssi rssi,date_format(a.time,'%Y-%m-%d %H:%i:%s')as time
+			from ( select mac,max(time) as time from info group by mac)a
+			left join info b
+			on a.mac=b.mac and a.time=b.time
+			<!-- 筛选出某一个探针拥有的 
+			-->
+			having a.mac in (select p_mac from s_p where s_id=#{id})
+	</select>
+</mapper>

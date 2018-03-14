@@ -7,6 +7,9 @@ public class Path {
 	Double start_y;
 	Double end_x;
 	Double end_y;
+	public Path(){
+		
+	}
 	public int getId() {
 		return id;
 	}

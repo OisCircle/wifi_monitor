@@ -5,6 +5,9 @@ public class Seeker {
 	int type;
 	double x;
 	double y;
+	public Seeker(){
+		
+	}
 	public int getId() {
 		return id;
 	}

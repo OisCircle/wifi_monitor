@@ -7,6 +7,9 @@ public class Info {
 	int rssi;
 	String mac;
 	Date time;
+	public Info(){
+		
+	}
 	public int getId() {
 		return id;
 	}

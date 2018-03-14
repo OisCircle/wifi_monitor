@@ -2,7 +2,9 @@ package com.qcq.wifi_monitor.entity;
 
 public class Phone {
 	String mac;
-
+	public Phone(){
+		
+	}
 	public String getMac() {
 		return mac;
 	}

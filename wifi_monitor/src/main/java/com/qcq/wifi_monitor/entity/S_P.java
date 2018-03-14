@@ -5,6 +5,9 @@ public class S_P {
 	int s_id;
 	//phone mac
 	String p_mac;
+	public S_P(){
+		
+	}
 	public int getS_id() {
 		return s_id;
 	}
