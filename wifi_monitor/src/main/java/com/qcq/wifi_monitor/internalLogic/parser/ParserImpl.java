@@ -2,6 +2,7 @@ package com.qcq.wifi_monitor.internalLogic.parser;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class ParserImpl implements Parser{
 			int seekerId=Integer.valueOf(sub.substring(0, sub.indexOf(",")));
 			int seekerType=Integer.valueOf(sub.substring(sub.indexOf(",")+1,sub.lastIndexOf(",")));
 			
-			//暂时设置成0.1
+			//x,y暂时设置成0.1
 			Seeker seeker=new Seeker(seekerId,seekerType,0.1,0.1);
 			result.put("seeker", seeker);
 			
@@ -57,7 +58,7 @@ public class ParserImpl implements Parser{
 					
 					seeker_devices.add(new S_P(seeker.getId(), mac));
 					phones.add(new Phone(mac));
-					infos.add(new Info(-1,rssi, mac,null));
+					infos.add(new Info(-1,rssi, mac,new Date()));
 					
 					if(str.length()<=1||str.equals("")||str.equals("\r\n"))
 						break;

@@ -17,5 +17,4 @@ public interface InfoMapper {
 	public void insertInfos(List<Info> infos);
 	//筛选出某个探针最新的每个phone的信号
 	public List<Info> selectLatestInfos(int id);
-	public void insertPaths(List<Path> paths);
 }

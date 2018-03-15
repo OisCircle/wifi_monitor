@@ -22,6 +22,8 @@ import com.qcq.wifi_monitor.internalLogic.parser.ParserImpl;
 import com.qcq.wifi_monitor.internalLogic.parser.PathTracer;
 import com.qcq.wifi_monitor.internalLogic.parser.PathTracerImpl;
 import com.qcq.wifi_monitor.mapper.InfoMapper;
+import com.qcq.wifi_monitor.mapper.PathMapper;
+import com.qcq.wifi_monitor.mapper.SeekerMapper;
 @Component
 public class Monitor implements CommandLineRunner{
 	
@@ -37,6 +39,10 @@ public class Monitor implements CommandLineRunner{
 	Parser parser=new ParserImpl();
 	@Resource
 	InfoMapper infoMapper;
+	@Resource
+	PathMapper pathMapper;
+	@Resource
+	SeekerMapper seekerMapper;
 	//路径跟踪
 	PathTracer tracer=new PathTracerImpl();
 	//路径跟踪返回的数据进行存储
@@ -108,11 +114,13 @@ public class Monitor implements CommandLineRunner{
 				List<Phone> phones=(List<Phone>) parseResult.get("phones");
 				List<S_P> s_ps=(List<S_P>) parseResult.get("s_ps");
 				List<Info> infos=(List<Info>) parseResult.get("infos");
+				//获取seeker的实际地址
+				Seeker realSeeker=seekerMapper.selectOne(seeker.getId());
 				
 				//路径跟踪并存储
-				paths=tracer.trace(infos,seeker.getId());
-				infoMapper.insertPaths(paths);
-				
+				paths=tracer.trace(infos,realSeeker);
+				if(paths!=null)
+					pathMapper.insertPaths(paths);
 				infoMapper.insertSeeker(seeker);
 				infoMapper.insertPhones(phones);
 				infoMapper.insertS_Ps(s_ps);

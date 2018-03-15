@@ -1,5 +1,7 @@
 package com.qcq.wifi_monitor.entity;
 
+import java.util.Date;
+
 public class Path {
 	int id;
 	String mac;
@@ -7,8 +9,27 @@ public class Path {
 	Double start_y;
 	Double end_x;
 	Double end_y;
+	Date start_time;
+	Date end_time;
 	public Path(){
 		
+	}
+	public Path(int id, String mac, Double start_x, Double start_y, Double end_x, Double end_y, Date start_time,
+			Date end_time) {
+		super();
+		this.id = id;
+		this.mac = mac;
+		this.start_x = start_x;
+		this.start_y = start_y;
+		this.end_x = end_x;
+		this.end_y = end_y;
+		this.start_time = start_time;
+		this.end_time = end_time;
+	}
+	@Override
+	public String toString() {
+		return "Path [id=" + id + ", mac=" + mac + ", start_x=" + start_x + ", start_y=" + start_y + ", end_x=" + end_x
+				+ ", end_y=" + end_y + ", start_time=" + start_time + ", end_time=" + end_time + "]";
 	}
 	public int getId() {
 		return id;
@@ -46,18 +67,16 @@ public class Path {
 	public void setEnd_y(Double end_y) {
 		this.end_y = end_y;
 	}
-	@Override
-	public String toString() {
-		return "Path [id=" + id + ", mac=" + mac + ", start_x=" + start_x + ", start_y=" + start_y + ", end_x=" + end_x
-				+ ", end_y=" + end_y + "]";
+	public Date getStart_time() {
+		return start_time;
 	}
-	public Path(int id, String mac, Double start_x, Double start_y, Double end_x, Double end_y) {
-		super();
-		this.id = id;
-		this.mac = mac;
-		this.start_x = start_x;
-		this.start_y = start_y;
-		this.end_x = end_x;
-		this.end_y = end_y;
+	public void setStart_time(Date start_time) {
+		this.start_time = start_time;
+	}
+	public Date getEnd_time() {
+		return end_time;
+	}
+	public void setEnd_time(Date end_time) {
+		this.end_time = end_time;
 	}
 }
