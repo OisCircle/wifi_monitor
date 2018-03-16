@@ -94,7 +94,22 @@ public class PathTracerImpl implements PathTracer{
 			//计算时间差
 			long timeGap=(time2.getTime()-time1.getTime())/1000;
 			//判断时间差是否在最小和最大判断时间之内
-			if(timeGap>=minimumSecond&&timeGap<=maximumSecond){
+			
+			
+			/*
+			 * 
+			 * 
+			 *这句话是测试用的，取消时间限制 
+			 * 
+			 * 
+			 */
+			if(true){
+				
+				
+				
+				
+				
+//			if(timeGap>=minimumSecond&&timeGap<=maximumSecond){
 				Path path=new Path(-1, route.getMac(), seeker1.getX(), seeker1.getY(), seeker2.getX(), seeker2.getY(), time1, time2);
 				System.out.println("path:\n\n\n\n\n"+path);
 				return path;
