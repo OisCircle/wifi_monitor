@@ -21,7 +21,7 @@ int pr=2;
 			document.getElementById("time").textContent=time;
 		}
 		function searchMac(mac){
-			window.location="/ssm_test/search"+"?mac="+mac
+			window.location="/path"+"?mac="+mac
 		
 		
 		
@@ -31,25 +31,7 @@ int pr=2;
 	<head>
 	<title>main page</title>
 		<style type="text/css">
-			table tbody {
-				display: block;
-				height: 195px;
-				overflow-y: scroll;
-			}
 			
-			table thead, tbody tr {
-				display: table;
-				width: 100%;
-				table-layout: fixed;
-			}
-			
-			table thead {
-				width: calc(100% - 1em)
-			}
-			
-			table thead th {
-				background: #ccc;
-			}
 			
 			#circle{
 				width:800px;
@@ -64,29 +46,6 @@ int pr=2;
 		</style>
 	</head>
 	<body>
-		<h2 align="center">Latest Signals</h2>
-		<table width="100%" border="1">
-			<thead>
-				<tr>
-					<th>MAC</th>
-					<th>RSSI</th>
-					<th>TIME</th>
-				</tr>
-			</thead>
-			<tbody>
-				<% for(int i=0;i<infos.size();++i) {%>
-					<tr>
-						<td id=<%= "mac"+i %>><%= infos.get(i).getMac()%></td>
-						<td id=<%= "rssi"+i %>><%= infos.get(i).getRssi()%></td>
-						<td id=<%= "time"+i %>><%= infos.get(i).getTime().toLocaleString()%></td>
-					</tr>
-				<%}%>
-			</tbody>
-		</table>
-		<br>
-		<form action="/ssm_test/search">
-			<h3>mac:&nbsp&nbsp<input type="text" name="mac">&nbsp&nbsp<input type="submit" value="search"></h3>
-		</form>
 		<div id="circle">
 		<svg width=800 height=800 xmlns="http://www.w3.org/2000/svg" version="1.1">
 			<%for(int i=90;i>=0;i-=10,r-=39){ %>
@@ -109,9 +68,9 @@ int pr=2;
 		</div>
 		
 		<div id="info">
-			<br>
-			<br>
-			<br>
+			<form action="/ssm_test/search">
+				<h3>mac:&nbsp&nbsp<input type="text" name="mac">&nbsp&nbsp<input type="submit" value="search"></h3>
+		    </form>
 			<br>
 			<br>
 			<br>

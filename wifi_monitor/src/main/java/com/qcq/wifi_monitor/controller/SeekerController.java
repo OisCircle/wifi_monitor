@@ -1,5 +1,7 @@
 package com.qcq.wifi_monitor.controller;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +24,21 @@ public class SeekerController {
 	SeekerService seekerService;
 	@Resource
 	InfoService infoService;
+	@RequestMapping(value="/left")
+	public ModelAndView left(ModelAndView mv){
+		mv.setViewName("left");
+		return mv;
+	}
+	@RequestMapping("/main")
+	public ModelAndView main(ModelAndView mv){
+		mv.setViewName("main");
+		return mv;
+	}
+	@RequestMapping("/top")
+	public ModelAndView top(ModelAndView mv){
+		mv.setViewName("top");
+		return mv;
+	}
 	@RequestMapping(value="/index")
 	public ModelAndView index(ModelAndView mv){
 		List<Seeker> seekers=seekerService.selectAll();
