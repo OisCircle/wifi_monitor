@@ -58,6 +58,9 @@ List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
     	background-color : transparent;  
     	float:left;
     }
+    a{
+	  text-decoration:none;
+	}
 </style>
     
     <title>index</title>
@@ -71,7 +74,7 @@ List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
   <body>
   <div id="box">
   <div id="other"><font color="blue" size="5" >视频</font></div>
-  <div id="now"><font color="gray" size="5" >WIFI</font></div>
+  <div id="now"><a href="index" target="right"><font color="gray" size="5" >WIFI</font></a></div>
   <div id="other"><font color="blue" size="5" >融合</font></div>
   <div id="other"><font color="blue" size="5" >地图列表</font></div>
   <div style="width:1570px;height:700px;border:gray solid 0px;" id="dituContent"></div>
@@ -103,7 +106,6 @@ List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
         var start = new BMap.Marker(new BMap.Point(<%=X%>,<%=Y%>));
         map.addOverlay(start);
         start.addEventListener("click", function(){
-             alert("http://localhost:8080/seeker?id="+<%= seekers.get(i).getId()%>);
               window.location.href("http://localhost:8080/seeker?id="+<%= seekers.get(i).getId()%>);
         })
         window.map = map;//将map变量存储在全局
