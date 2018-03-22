@@ -1,6 +1,6 @@
 <%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.Seeker" pageEncoding="UTF-8"%>
 <%
-String path = request.getContextPath();
+	String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
 %>
@@ -106,7 +106,7 @@ List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
         var start = new BMap.Marker(new BMap.Point(<%=X%>,<%=Y%>));
         map.addOverlay(start);
         start.addEventListener("click", function(){
-              window.location.href("http://localhost:8080/seeker?id="+<%= seekers.get(i).getId()%>);
+              window.location.href("http://localhost:8060/seeker?id="+<%= seekers.get(i).getId()%>);
         })
         window.map = map;//将map变量存储在全局
          <%} %>

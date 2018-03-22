@@ -6,7 +6,7 @@
 	<groupId>com.qcq</groupId>
 	<artifactId>wifi_monitor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>wifi_monitor</name>
 	<description>Demo project for Spring Boot</description>
@@ -60,7 +60,9 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
+			<!-- 
 			<scope>provided</scope>
+			 -->
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -70,28 +72,60 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+			<!-- 
+			 -->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope>
+			<!-- 
+			 -->
 		</dependency>
 		</dependencies>
 
 	<build>
+		  <!-- 如果不添加此节点mybatis mapper.xml会被漏掉 
+		  -->
+	 <resources>
+	  	<resource>
+			<directory>src/main/java</directory>
+			<includes>
+				<include>**/*.properties</include>
+				<include>**/*.xml</include>
+			</includes>
+			<filtering>false</filtering>
+	  	</resource>
+	  	<resource>
+			<directory>src/main/resources</directory>
+			<includes>
+				<include>**/*.properties</include>
+				<include>**/*.xml</include>
+			</includes>
+			<filtering>false</filtering>
+	  	</resource>
+     
+	  </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- 
+				 -->
+			
 			</plugin>
+			<!-- 部署时指定名称 
 			<plugin>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<configuration>
-				<source>1.8</source>
-				<target>1.8</target>
-			</configuration>
-			</plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-war-plugin</artifactId>
+	            <configuration>
+	                <warName>wifi_monitor</warName>
+	            </configuration>
+	        </plugin>
+			-->
 		</plugins>
+			<finalName>wifi_monitor</finalName>
 	</build>
 
 

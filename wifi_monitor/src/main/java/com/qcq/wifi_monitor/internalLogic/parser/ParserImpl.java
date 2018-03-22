@@ -1,4 +1,4 @@
-package com.qcq.wifi_monitor.internalLogic.parser;
+  package com.qcq.wifi_monitor.internalLogic.parser;
 
 
 import java.util.ArrayList;
@@ -16,15 +16,14 @@ import com.qcq.wifi_monitor.entity.Seeker;
 
 @Component
 public class ParserImpl implements Parser{
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String,Object> parse(String strParsed,String separator) {
 		try{
 			String sep;
 			String str;
-			int index;
 			String sub;
 			Map<String,Object> result=null;
-			index=0;
 			sub=null;
 			str=strParsed;
 			sep=separator;
@@ -91,8 +90,8 @@ public class ParserImpl implements Parser{
 			return null;
 		}
 	}
-	public static void main(String[] args) {
-		Parser p=new ParserImpl();
-		p.parse("8733613,13,10;60:0b:03:09:55:30,13,-88,8733613;24:1f:a0:f5:97:26,13,-60,8733613;a0:89:e4:5a:71:8c,13,-41,8733613;5c:cf:7f:f0:37:94,13,-72,8733613;5c:cf:7f:3d:77:de,13,-47,8733613;68:c6:3a:85:41:f8,13,-48,8733613;a0:89:e4:95:cd:65,13,-59,8733613;20:8b:37:25:63:ac,13,-80,8733613;68:c6:3a:85:3d:95,13,-13,8733613;34:e2:fd:a2:8e:d9,13,-85,8733613;", ",");
-	}
+//	public static void main(String[] args) {
+//		Parser p=new ParserImpl();
+//		p.parse("8733613,13,10;60:0b:03:09:55:30,13,-88,8733613;24:1f:a0:f5:97:26,13,-60,8733613;a0:89:e4:5a:71:8c,13,-41,8733613;5c:cf:7f:f0:37:94,13,-72,8733613;5c:cf:7f:3d:77:de,13,-47,8733613;68:c6:3a:85:41:f8,13,-48,8733613;a0:89:e4:95:cd:65,13,-59,8733613;20:8b:37:25:63:ac,13,-80,8733613;68:c6:3a:85:3d:95,13,-13,8733613;34:e2:fd:a2:8e:d9,13,-85,8733613;", ",");
+//	}
 }
