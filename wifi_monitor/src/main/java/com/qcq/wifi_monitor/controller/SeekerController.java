@@ -1,5 +1,6 @@
 package com.qcq.wifi_monitor.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +39,17 @@ public class SeekerController {
 	}
 	@RequestMapping(value="/index")
 	public ModelAndView index(ModelAndView mv){
-		List<Seeker> seekers=seekerService.selectAll();
 		
+		List<Seeker> seekers=seekerService.selectAll();
 		mv.getModelMap().put("seekers", seekers);
+		
+		//将每一个seeker最新探测到的所有信号们放入List数组
+		List<List<Info>> listInfos=new ArrayList<List<Info>>();
+		for(int i=0;i<seekers.size();++i){
+			listInfos.add(infoService.selectLatestInfos(seekers.get(i).getId()));
+		}
+		mv.getModelMap().put("listInfos", listInfos);
+		
 		mv.setViewName("index");
 		return mv;
 	}

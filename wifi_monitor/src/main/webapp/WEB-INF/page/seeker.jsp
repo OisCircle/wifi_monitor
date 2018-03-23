@@ -2,10 +2,12 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-
+//
 List<Info>infos=(List<Info>)request.getAttribute("infos");
+//每个info应该处在的坐标
 List<Map<String,Double>>coordinates=(List<Map<String,Double>>)request.getAttribute("coordinates");
 //svg config
+//相对坐标中心点
 double x0=(double)350;
 double y0=(double)400;
 int r=350;
@@ -22,17 +24,33 @@ int pr=2;
 		}
 		function searchMac(mac){
 			window.location="/path"+"?mac="+mac
-		
-		
-		
 		}
-
+		function highLightRow(row){
+			alert("into highLightRow()");
+			
+			
+			
+		}
 	</script>
 	<head>
 	<title>main page</title>
 		<style type="text/css">
-			
-			
+			table tbody {
+				display: block;
+				height: 195px;
+				overflow-y: scroll;
+			}
+			table thead, tbody tr {
+				display: table;
+				width: 100%;
+				table-layout: fixed;
+			}
+			table thead {
+				width: calc(100% - 1em)
+			}
+			table thead th {
+				background: #ccc;
+			}
 			#circle{
 				width:800px;
 				height:800px;
@@ -56,11 +74,25 @@ int pr=2;
 				
 				<%} %>
 			<%} %>
-			<%for(int i=0;i<coordinates.size();++i){ %>
+			<%for(int i=0;i<coordinates.size();++i){ 
+				//每个time进行时间判断，分配颜色
+				Date now =new Date();
+				String fillColor;
+				//秒数
+				long timeGap=now.getTime()-infos.get(i).getTime().getTime()/1000;
+				if(timeGap<=3600)
+					fillColor="white";
+				else if(timeGap<=7200)
+					fillColor="blue";
+				else if(timeGap<=10800)
+					fillColor="red";
+				else
+					fillColor="black";
+			%>
 				<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-				  <rect onmouseover="showInfo('<%=infos.get(i).getMac() %>',<%=infos.get(i).getRssi() %>,'<%=infos.get(i).getTime().toLocaleString() %>')"
+				  <rect onmouseover="highLightRow('<%= i %>')"
 				  onclick="searchMac('<%=infos.get(i).getMac() %>')"
-				  id=<%="rect"+i %> x=<%=x0+(Double)coordinates.get(i).get("x") %> y=<%=y0+(Double)coordinates.get(i).get("y") %> width="10" height="10" style="fill:blue;stroke:pink;stroke-width:0;opacity:0.5" />
+				  id=<%="rect"+i %> x=<%=x0+(Double)coordinates.get(i).get("x") %> y=<%=y0+(Double)coordinates.get(i).get("y") %> width="10" height="10" style="fill:<%=fillColor %>;stroke:pink;stroke-width:0;opacity:0.5" />
 				</svg>
 			<%} %>
 			<circle cx=<%=x0%> cy=<%=y0%> r=<%=pr%> stroke="#8A2BE2" stroke-width="0" fill="#8A2BE2" />
@@ -68,9 +100,20 @@ int pr=2;
 		</div>
 		
 		<div id="info">
-			<form action="/ssm_test/search">
-				<h3>mac:&nbsp&nbsp<input type="text" name="mac">&nbsp&nbsp<input type="submit" value="search"></h3>
-		    </form>
+			<table id="macTable" width="100%" border="1">
+			<thead>
+				<tr>
+					<th>MAC</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% for(int i=0;i<infos.size();++i) {%>
+					<tr>
+						<td id=<%= "mac"+i %> align="center" onclick="searchMac('<%=infos.get(i).getMac() %>')"><%=infos.get(i).getMac()%></td>
+					</tr>
+				<%}%>
+			</tbody>
+		</table>
 			<br>
 			<br>
 			<br>

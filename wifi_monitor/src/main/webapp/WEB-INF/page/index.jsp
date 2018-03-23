@@ -1,8 +1,10 @@
-<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.Seeker" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.*" pageEncoding="UTF-8"%>
 <%
 	String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
+//每个seeker对应的信息，下标与 seekers 一一对应
+List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
