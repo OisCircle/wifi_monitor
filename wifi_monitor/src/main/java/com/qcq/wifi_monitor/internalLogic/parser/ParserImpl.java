@@ -57,7 +57,7 @@ public class ParserImpl implements Parser{
 					
 					seeker_devices.add(new S_P(seeker.getId(), mac));
 					phones.add(new Phone(mac));
-					infos.add(new Info(-1,rssi, mac,new Date()));
+					infos.add(new Info(-1, rssi, mac, new Date(), seeker.getId()));
 					
 					if(str.length()<=1||str.equals("")||str.equals("\r\n"))
 						break;

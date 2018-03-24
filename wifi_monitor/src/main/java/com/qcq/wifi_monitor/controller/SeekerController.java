@@ -56,6 +56,7 @@ public class SeekerController {
 	}
 	@RequestMapping(value="/seeker")
 	public ModelAndView seeker(ModelAndView mv,int id){
+		System.out.println("seeker id :"+id);
 		List<Info> infos=infoService.selectLatestInfos(id);
 		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
 		mv.getModelMap().put("seeker_id", id);
