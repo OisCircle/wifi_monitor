@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.qcq.wifi_monitor.dto.SeekerTimeSearchingDTO;
 import com.qcq.wifi_monitor.entity.Info;
 import com.qcq.wifi_monitor.entity.Phone;
 import com.qcq.wifi_monitor.entity.S_P;
@@ -35,6 +36,14 @@ public class InfoServiceImpl implements InfoService{
 	@Override
 	public void insertInfos(List<Info> infos) {
 		mapper.insertInfos(infos);
+	}
+	@Override
+	public List<Info> selectLatestInfosByHour(SeekerTimeSearchingDTO dto) {
+		return mapper.selectLatestInfosByHour(dto);
+	}
+	@Override
+	public List<Info> selectLatestInfosByMinute(SeekerTimeSearchingDTO dto) {
+		return mapper.selectLatestInfosByMinute(dto);
 	}
 
 }

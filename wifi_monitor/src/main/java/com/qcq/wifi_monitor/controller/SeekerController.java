@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.qcq.wifi_monitor.dto.SeekerTimeSearchingDTO;
 import com.qcq.wifi_monitor.entity.Info;
 import com.qcq.wifi_monitor.entity.Seeker;
 import com.qcq.wifi_monitor.service.InfoService;
@@ -57,6 +58,29 @@ public class SeekerController {
 	public ModelAndView seeker(ModelAndView mv,int id){
 		List<Info> infos=infoService.selectLatestInfos(id);
 		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
+		mv.getModelMap().put("seeker_id", id);
+		mv.getModelMap().put("infos", infos);
+		mv.getModelMap().put("coordinates",coordinates);
+		mv.setViewName("seeker");
+		return mv;
+	}
+	@RequestMapping(value="/latestHour")
+	public ModelAndView latestHour(ModelAndView mv,int id,int hour){
+		SeekerTimeSearchingDTO dto=new SeekerTimeSearchingDTO(id, hour, -1);
+		List<Info> infos=infoService.selectLatestInfosByHour(dto);
+		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
+		mv.getModelMap().put("seeker_id", id);
+		mv.getModelMap().put("infos", infos);
+		mv.getModelMap().put("coordinates",coordinates);
+		mv.setViewName("seeker");
+		return mv;
+	}
+	@RequestMapping(value="/latestMinute")
+	public ModelAndView latestMinute(ModelAndView mv,int id,int minute){
+		SeekerTimeSearchingDTO dto=new SeekerTimeSearchingDTO(id, -1, minute);
+		List<Info> infos=infoService.selectLatestInfosByHour(dto);
+		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
+		mv.getModelMap().put("seeker_id", id);
 		mv.getModelMap().put("infos", infos);
 		mv.getModelMap().put("coordinates",coordinates);
 		mv.setViewName("seeker");

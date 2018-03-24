@@ -1,5 +1,5 @@
 package com.qcq.wifi_monitor.dto;
-
+//DTO匹配页面要求搜索的时间或者分钟
 public class SeekerTimeSearchingDTO {
 	int id;
 	int hour;

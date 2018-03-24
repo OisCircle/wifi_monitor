@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.qcq.wifi_monitor.dto.SeekerTimeSearchingDTO;
 import com.qcq.wifi_monitor.entity.Info;
 import com.qcq.wifi_monitor.entity.Path;
 import com.qcq.wifi_monitor.entity.Phone;
@@ -18,7 +19,7 @@ public interface InfoMapper {
 	//筛选出某个探针最新的每个phone的信号
 	public List<Info> selectLatestInfos(int id);
 	//筛选出某个探针指定最近xxx	小时		内收到的信号
-	public List<Info> selectLatestInfosByHour(int id,int hour);
+	public List<Info> selectLatestInfosByHour(SeekerTimeSearchingDTO dto);
 	//筛选出某个探针指定最近xxx	分钟		内收到的信号
-	public List<Info> selectLatestInfosByMinute(int id,int minute);
+	public List<Info> selectLatestInfosByMinute(SeekerTimeSearchingDTO dto);
 }
