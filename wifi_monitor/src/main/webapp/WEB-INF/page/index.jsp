@@ -42,7 +42,7 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     }
     #other{
     	margin-top: 30px;
-    	width:350px ;
+    	width:23%;
     	height:40px;
     	padding-top:15px;
     	text-align: center;
@@ -51,7 +51,7 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     }
     #now{
     	margin-top: 30px;
-    	width:350px ;
+    	width:23%;
     	height:40px;
     	padding-top:15px; 
     	text-align: center;
@@ -92,25 +92,78 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     
     //创建地图函数：
     function createMap(){
-        var map = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
+        var mp = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
         var point = new BMap.Point(113.543811,22.372213 );//定义一个中心点坐标
-        map.centerAndZoom(point,16);//设定地图的中心点和坐标并将地图显示在地图容器中
-        var walking = new BMap.WalkingRoute(map, { 
-            renderOptions: { 
-                map: map, 
-                autoViewport: true 
-            }
-        });
+        mp.centerAndZoom(point,16);//设定地图的中心点和坐标并将地图显示在地图容器中
+        mp.enableScrollWheelZoom();
+        function ComplexCustomOverlay(point){
+	      this._point = point;
+	      
+	    }
+	　　 // 继承API的BMap.Overlay  
+	    ComplexCustomOverlay.prototype = new BMap.Overlay();
+	    //初始化自定义覆盖物
+	    // 实现初始化方法  
+	    ComplexCustomOverlay.prototype.initialize = function(map){
+	      // 保存map对象实例 
+	      this._map = map;
+	      // 创建div元素，作为自定义覆盖物的容器  
+	      var div = this._div = document.createElement("div");
+	      div.style.position = "absolute";
+	      div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);//聚合功能?
+	      // 可以根据参数设置元素外观
+	      div.style.height = "8px";
+	      div.style.width="8px";
+	
+	      var arrow = this._arrow = document.createElement("img");
+	      arrow.src = "http://www.yantiansf.cn/mapImage/1.gif";
+	      arrow.style.width = "8px";
+	      arrow.style.height = "8px";
+	      arrow.style.top = "5px";
+	      arrow.style.left = "10px";
+	      div.appendChild(arrow);
+	     
+	　    // 将div添加到覆盖物容器中  
+	      mp.getPanes().labelPane.appendChild(div);//getPanes(),返回值:MapPane,返回地图覆盖物容器列表  labelPane呢???
+	      // 需要将div元素作为方法的返回值，当调用该覆盖物的show、  
+	      // hide方法，或者对覆盖物进行移除时，API都将操作此元素。
+	      return div;
+	      
+	    }
+	    
+	    //绘制覆盖物
+	    // 实现绘制方法
+	    ComplexCustomOverlay.prototype.draw = function(){
+	      var map = this._map;
+	      var pixel = map.pointToOverlayPixel(this._point);
+	      this._div.style.left = pixel.x - parseInt(this._arrow.style.left) + "px";
+	      this._div.style.top  = pixel.y - 30 + "px";
+	    }
+	   
+	        
+	   
+	    //自定义覆盖物添加事件方法
+	    ComplexCustomOverlay.prototype.addEventListener = function(event,fun){
+	        this._div['on'+event] = fun;
+	    }
         <%for(int i=0;i<seekers.size();++i) {%>
         <% double X = seekers.get(i).getX(); %>
         <% double Y = seekers.get(i).getY(); %>
         <% int ID = seekers.get(i).getId(); %>
-        var start = new BMap.Marker(new BMap.Point(<%=X%>,<%=Y%>));
-        map.addOverlay(start);
+        var point=new BMap.Point(<%=X%>,<%=Y%>)
+        var start = new BMap.Marker(point);
+        mp.addOverlay(start);
+        var circle = new BMap.Circle(point,250,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+        mp.addOverlay(circle);
+        <%for(int j=0;j<listInfos.get(i).size();j++){%>
+          var angle=Math.random()*360;
+          var myCompOverlay = new ComplexCustomOverlay(new BMap.Point(<%=X%>-0.000017*<%=listInfos.get(i).get(j).getRssi()%>*Math.cos(angle),<%=Y%>-0.000017*<%=listInfos.get(i).get(j).getRssi()%>*Math.sin(angle)));
+	      mp.addOverlay(myCompOverlay);
+        <%}%>
         start.addEventListener("click", function(){
               window.location.href("http://localhost:8060/seeker?id="+<%= seekers.get(i).getId()%>);
         })
-        window.map = map;//将map变量存储在全局
+        window.map = mp;//将map变量存储在全局
          <%} %>
     }
     

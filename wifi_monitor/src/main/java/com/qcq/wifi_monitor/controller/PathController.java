@@ -24,4 +24,13 @@ public class PathController {
 		mv.setViewName("path");
 		return mv;
 	}
+	
+	@RequestMapping(value="/linkPath")
+	public ModelAndView linkPath(ModelAndView mv,String mac){
+		List<Path> paths=service.selectByMac(mac);
+		
+		mv.getModelMap().put("paths", paths);
+		mv.setViewName("linkPath");
+		return mv;
+	}
 }

@@ -14,6 +14,10 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
 		         alert(X);
 		         initMap(X);
 		}
+		function route(mac){
+				window.location="/linkPath?mac="+mac;
+		         alert("ok!");
+		}
 </script>
   <base href="<%=basePath%>">
     <meta charset="UTF-8">
@@ -25,29 +29,41 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
     	margin:0;
     	padding:0;
     }
-    .iw_poi_title {
-    	color:#CC5522;
-    	font-size:14px;
-    	font-weight:bold;
-    	overflow:hidden;
-    	padding-right:13px;
-    	white-space:nowrap;
-    }
-    .iw_poi_content {
-    	font:12px arial,sans-serif;
-    	overflow:visible;
-    	padding-top:4px;
-    	white-space:-moz-pre-wrap;
-    	word-wrap:break-word;
+    a{
+      text-decoration:none;
     }
     #box{
+        width:1100px;
+        height:750px;
     	margin-left:30px;
+    	float:left;
     }
     #dituContent{
-        margin-top:40px;
+        margin-top:30px;
     	float: left;
+    }	 
+    #list{
+        margin-top:30px;
+        width:250px;
+        height:470px;
+        border:1px solid gray;
+        border-radius:3px; 
+        float:left;
     }
-   
+    #title{
+       margin:0;
+       width:250px;
+       height:30px;
+       text-align: center;
+       background-color:#CDCDCD;
+    }  
+    #body{
+       margin-top:5px;
+       width:250px;
+       height:400px;
+       text-align: center;
+       overflow-y:scroll;
+    }
 </style>
     <title>path</title>
     
@@ -59,18 +75,26 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
   
   <body>
   <div id="box">
-  <div style="width:1270px;height:700px;border:gray solid 0px;" id="dituContent"></div>
+  <div style="width:1030px;height:700px;border:0px solid gray;" id="dituContent"></div>
   </div>
-  <div id="list">
-        <%=paths.toString()%>
-        <%for(int n=0;n<paths.size();n++){ %>
-        <input id="<%=n%>" type="button" value="<%=paths.get(n).getStart_time().toString()+paths.get(n).getEnd_y().toString()%>" onclick="pass(this.id)">
-        <%}%>
+  <div style="float:left">
+       <div id="list">
+            <div id="title">
+                 <h2><%= paths.get(0).getMac()%><%=paths.get(0).getStart_time().getYear()%>年</h2>
+            </div>
+           <div id="body">
+				<%for(int n=0;n<paths.size();n++){ %>
+	                <a title="<%=paths.get(n).getEnd_time().getYear()%>年<%=paths.get(n).getEnd_time().getMonth()%>月<%=paths.get(n).getEnd_time().getDay()%>日<%=paths.get(n).getEnd_time().getHours()%>时<%=paths.get(n).getEnd_time().getMinutes()%>分<%=paths.get(n).getEnd_time().getSeconds()%>秒"><span id="<%=n%>" style="cursor:pointer;" onclick="pass(this.id)"><%=paths.get(n).getStart_time().getYear()%>年<%=paths.get(n).getStart_time().getMonth()%>月<%=paths.get(n).getStart_time().getDay()%>日<%=paths.get(n).getStart_time().getHours()%>时<%=paths.get(n).getStart_time().getMinutes()%>分<%=paths.get(n).getStart_time().getSeconds()%>秒</span></a>
+	                <br>
+	             <%}%>
+             </div>
+		</div>	
+		<input type="button"value="折线路径" style="position:absolute; top:650px;left:1230px;width:70px;height:30px;border:1px solid gray;border-radius: 3px" onclick="route('<%= paths.get(0).getMac() %>')" > 
   </div>
   </body>
   <script type="text/javascript">
     //创建和初始化地图函数：
-    function initMap(X){
+   function initMap(X){
         createMap(X);//创建地图
         setMapEvent();//设置地图事件
         addMapControl();//向地图添加控件
@@ -102,7 +126,6 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
         walking.search(start, end);
         window.map = map;//将map变量存储在全局
     }
-    
     //地图事件设置函数：
     function setMapEvent(){
         map.enableDragging();//启用地图拖拽事件，默认启用(可不写)

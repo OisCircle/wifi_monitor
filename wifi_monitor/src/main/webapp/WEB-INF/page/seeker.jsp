@@ -73,6 +73,12 @@ int pr=2;
 				height:800px;
 				float:left;
 			}
+			#box{
+			    width:250px;
+			    height:200px;
+			    border:2px solid #6C6D69;
+			    border-radius:4px; 
+			}
 		</style>
 	</head>
 	<body>
@@ -117,7 +123,7 @@ int pr=2;
 			<table id="macTable" width="100%" border="1">
 			<thead>
 				<tr>
-					<th>MAC</th>
+					<th>Seeker ID:<%= seeker_id%></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -161,9 +167,11 @@ int pr=2;
 			</select>
 			<button onclick="latestMinute()">搜索</button>
 			</h4>
-			<h2 id="mac"></h2>
-			<h2 id="rssi"></h2>
-			<h2 id="time"></h2>
+			<div id="box">
+				<h2 id="mac" style="margin-left:20px"></h2>
+				<h2 id="rssi" style="margin-left:20px"></h2>
+				<h2 id="time" style="margin-left:20px"></h2>
+			</div>
 		</div>
 </body>
 
