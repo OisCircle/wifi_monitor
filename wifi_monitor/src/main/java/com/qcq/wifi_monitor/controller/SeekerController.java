@@ -28,6 +28,11 @@ public class SeekerController {
 		mv.setViewName("left");
 		return mv;
 	}
+	@RequestMapping(value="/MyJsp")
+	public ModelAndView MyJsp(ModelAndView mv){
+		mv.setViewName("MyJsp");
+		return mv;
+	}
 	@RequestMapping("/main")
 	public ModelAndView main(ModelAndView mv){
 		mv.setViewName("main");

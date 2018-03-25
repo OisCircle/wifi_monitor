@@ -24,7 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
    <frameset rows="100px,*"> 
     <frame src="top"  name="top" noresize="noresize"  border-bottom="0.5px"  scrolling="no" bordercolor="gray" border-style="groove"> 
     <frameset cols="16%,*">
-      <frame src="left" name="left"  noresize="noresize"  border-bottom="0.5px"  scrolling="no" bordercolor="gray" border-style="groove">
+      <frame src="left" name="left"  noresize="noresize" style="border-radius:3px" border-bottom="0.5px"  scrolling="no" bordercolor="gray" border-style="groove">
       <frame name="right" noresize="noresize"  border-bottom="0.5px"  scrolling="no" bordercolor="glay" border-style="groove">
      </frameset>
   </frameset>

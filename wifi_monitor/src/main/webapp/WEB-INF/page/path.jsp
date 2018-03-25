@@ -11,12 +11,10 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
   <head>
   <script type="text/javascript">
 		function pass(X){
-		         alert(X);
 		         initMap(X);
 		}
 		function route(mac){
 				window.location="/linkPath?mac="+mac;
-		         alert("ok!");
 		}
 </script>
   <base href="<%=basePath%>">
@@ -33,18 +31,16 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
       text-decoration:none;
     }
     #box{
-        width:1100px;
-        height:750px;
-    	margin-left:30px;
+        width:1330px;
+        height:860px;
     	float:left;
     }
     #dituContent{
-        margin-top:30px;
     	float: left;
     }	 
     #list{
-        margin-top:30px;
-        width:250px;
+        margin-left:2px;
+        width:272px;
         height:470px;
         border:1px solid gray;
         border-radius:3px; 
@@ -52,14 +48,14 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
     }
     #title{
        margin:0;
-       width:250px;
+       width:272px;
        height:30px;
        text-align: center;
        background-color:#CDCDCD;
     }  
     #body{
        margin-top:5px;
-       width:250px;
+       width:272px;
        height:400px;
        text-align: center;
        overflow-y:scroll;
@@ -75,21 +71,21 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
   
   <body>
   <div id="box">
-  <div style="width:1030px;height:700px;border:0px solid gray;" id="dituContent"></div>
+  <div style="width:1330px;height:860px;border:0px solid gray;" id="dituContent"></div>
   </div>
   <div style="float:left">
        <div id="list">
             <div id="title">
-                 <h2><%= paths.get(0).getMac()%><%=paths.get(0).getStart_time().getYear()%>年</h2>
+                 <h2><%= paths.get(0).getMac()%></h2>
             </div>
            <div id="body">
 				<%for(int n=0;n<paths.size();n++){ %>
-	                <a title="<%=paths.get(n).getEnd_time().getYear()%>年<%=paths.get(n).getEnd_time().getMonth()%>月<%=paths.get(n).getEnd_time().getDay()%>日<%=paths.get(n).getEnd_time().getHours()%>时<%=paths.get(n).getEnd_time().getMinutes()%>分<%=paths.get(n).getEnd_time().getSeconds()%>秒"><span id="<%=n%>" style="cursor:pointer;" onclick="pass(this.id)"><%=paths.get(n).getStart_time().getYear()%>年<%=paths.get(n).getStart_time().getMonth()%>月<%=paths.get(n).getStart_time().getDay()%>日<%=paths.get(n).getStart_time().getHours()%>时<%=paths.get(n).getStart_time().getMinutes()%>分<%=paths.get(n).getStart_time().getSeconds()%>秒</span></a>
+	                <a title="<%=paths.get(n).getEnd_time().getYear()+1900%>年<%=paths.get(n).getEnd_time().getMonth()%>月<%=paths.get(n).getEnd_time().getDay()%>日<%=paths.get(n).getEnd_time().getHours()%>时<%=paths.get(n).getEnd_time().getMinutes()%>分<%=paths.get(n).getEnd_time().getSeconds()%>秒"><span id="<%=n%>" style="cursor:pointer;" onclick="pass(this.id)"><%=paths.get(n).getStart_time().getYear()+1900%>年<%=paths.get(n).getStart_time().getMonth()%>月<%=paths.get(n).getStart_time().getDay()%>日<%=paths.get(n).getStart_time().getHours()%>时<%=paths.get(n).getStart_time().getMinutes()%>分<%=paths.get(n).getStart_time().getSeconds()%>秒</span></a>
 	                <br>
 	             <%}%>
              </div>
 		</div>	
-		<input type="button"value="折线路径" style="position:absolute; top:650px;left:1230px;width:70px;height:30px;border:1px solid gray;border-radius: 3px" onclick="route('<%= paths.get(0).getMac() %>')" > 
+		<input type="button"value="折线路径" style="position:absolute; top:750px;left:1419px;width:100px;height:30px;border:1px solid gray;border-radius: 3px;backgrou-color:#A7C0E0;" onclick="route('<%= paths.get(0).getMac() %>')" > 
   </div>
   </body>
   <script type="text/javascript">

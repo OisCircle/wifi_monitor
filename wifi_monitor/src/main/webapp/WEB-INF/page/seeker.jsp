@@ -134,7 +134,20 @@ int pr=2;
 				<%}%>
 			</tbody>
 			</table>
-			<br>
+			<br><h4>
+			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
+			 <rect  width="10" height="10" style="fill:red;stroke:pink;stroke-width:0;opacity:0.5" /></svg>1个小时内
+			</h4><h4>
+			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
+			<rect  width="10" height="10" style="fill:orange;stroke:pink;stroke-width:0;opacity:0.5" /></svg>1-2个小时内
+			</h4><h4>
+			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
+			<rect  width="10" height="10" style="fill:yellow;stroke:pink;stroke-width:0;opacity:0.5" /></svg>2-4个小时内
+			</h4><h4>
+			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
+			<rect  width="10" height="10" style="fill:black;stroke:pink;stroke-width:0;opacity:0.5" /></svg>4小时外
+			</h4>
+			
 			<form action="/path" method="get">
 				<h3>
 				针对MAC搜索:&nbsp&nbsp<input type="text" name="mac"/>
