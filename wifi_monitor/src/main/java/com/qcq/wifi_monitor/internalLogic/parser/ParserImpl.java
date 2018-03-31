@@ -10,8 +10,6 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.qcq.wifi_monitor.entity.Info;
-import com.qcq.wifi_monitor.entity.Phone;
-import com.qcq.wifi_monitor.entity.S_P;
 import com.qcq.wifi_monitor.entity.Seeker;
 
 @Component
@@ -39,13 +37,11 @@ public class ParserImpl implements Parser{
 			int seekerType=Integer.valueOf(sub.substring(sub.indexOf(",")+1,sub.lastIndexOf(",")));
 			
 			//x,y暂时设置成0.1
-			Seeker seeker=new Seeker(seekerId,seekerType,0.1,0.1);
+			Seeker seeker=new Seeker(seekerId,seekerType,0.1,0.1,0,0,null,0,-1);
 			result.put("seeker", seeker);
 			
 			
 			List<Info> infos=new ArrayList<Info>();
-			List<Phone> phones=new ArrayList<Phone>();
-			List<S_P> seeker_devices=new ArrayList<S_P>();
 			while(true){
 				try{
 					sub=str.substring(0, str.indexOf(sep));
@@ -54,10 +50,9 @@ public class ParserImpl implements Parser{
 					sub=sub.substring(sub.indexOf(",")+1);
 					sub=sub.substring(sub.indexOf(",")+1);
 					int rssi=Integer.valueOf(sub.substring(0, sub.indexOf(",")));
-					
-					seeker_devices.add(new S_P(seeker.getId(), mac));
-					phones.add(new Phone(mac));
-					infos.add(new Info(-1, rssi, mac, new Date(), seeker.getId()));
+					//过滤00开头的mac
+					if(!mac.startsWith("00"))
+						infos.add(new Info(-1, rssi, mac, new Date(), seeker.getId()));
 					
 					if(str.length()<=1||str.equals("")||str.equals("\r\n"))
 						break;
@@ -69,8 +64,6 @@ public class ParserImpl implements Parser{
 					return null;
 				}
 			}
-			result.put("phones", phones);
-			result.put("s_ps", seeker_devices);
 			result.put("infos", infos);
 			
 			//控制台输出
@@ -78,10 +71,6 @@ public class ParserImpl implements Parser{
 			
 			Seeker s=(Seeker)result.get("seeker");
 			System.out.println(s);
-			List<Phone> d=(List<Phone>)result.get("phones");
-			System.out.println(d);
-			List<S_P> sd=(List<S_P>)result.get("s_ps");
-			System.out.println(sd);
 			List<Info> sn=(List<Info>)result.get("infos");
 			System.out.println(sn);
 			return result;

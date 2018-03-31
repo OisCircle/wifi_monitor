@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qcq.wifi_monitor.mapper.ZoneMapper" >
+	<insert id="add" parameterType="Zone" useGeneratedKeys="true" keyProperty="id">
+		insert ignore into zone (name,description,x,y) values(#{name},#{description},#{x},#{y})
+	</insert>
+	<delete id="delete" parameterType="int">
+		delete from zone where id=#{id}
+	</delete>
+	<update id="update" parameterType="Zone">
+		update zone set name=#{name},description=#{description},x=#{x},y=#{y} where id=#{id}	
+	</update>
+	<select id="selectOne" parameterType="int" resultType="Zone">
+		select *from zone where id=#{id}
+	</select>
+	<select id="selectAll" resultType="Zone">
+		select *from zone
+	</select>
+</mapper>

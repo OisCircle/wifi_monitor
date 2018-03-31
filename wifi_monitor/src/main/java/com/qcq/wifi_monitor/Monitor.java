@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.qcq.wifi_monitor.entity.Info;
 import com.qcq.wifi_monitor.entity.Path;
-import com.qcq.wifi_monitor.entity.Phone;
-import com.qcq.wifi_monitor.entity.S_P;
 import com.qcq.wifi_monitor.entity.Seeker;
 import com.qcq.wifi_monitor.internalLogic.parser.Parser;
 import com.qcq.wifi_monitor.internalLogic.parser.ParserImpl;
@@ -101,30 +99,28 @@ public class Monitor implements CommandLineRunner{
 		 */
 		public void receive(String strReceive){
 			//parse
+			
+			//过滤数据 问号？ 00开头
 			if(strReceive!=""||strReceive.indexOf("?")!=-1){
 				this.parseResult=parser.parse(strReceive,";");
-			}else{
-				System.out.println("错误信息:"+strReceive);
 			}
 			
 			//save
 			if(parseResult!=null){
 				try{
 				Seeker seeker=(Seeker) parseResult.get("seeker");
-				List<Phone> phones=(List<Phone>) parseResult.get("phones");
-				List<S_P> s_ps=(List<S_P>) parseResult.get("s_ps");
 				List<Info> infos=(List<Info>) parseResult.get("infos");
 				//获取seeker的实际地址
 				Seeker realSeeker=seekerMapper.selectOne(seeker.getId());
 				
-				//路径跟踪并存储
-				paths=tracer.trace(infos,realSeeker);
-				if(paths!=null)
-					pathMapper.insertPaths(paths);
-				infoMapper.insertSeeker(seeker);
-				infoMapper.insertPhones(phones);
-				infoMapper.insertS_Ps(s_ps);
-				infoMapper.insertInfos(infos);
+				if(infos.size()>0){
+					//路径跟踪并存储
+					paths=tracer.trace(infos,realSeeker);
+					if(paths!=null)
+						pathMapper.insertPaths(paths);
+					infoMapper.insertSeeker(seeker);
+					infoMapper.insertInfos(infos);
+				}
 				}catch(Exception e){
 					e.printStackTrace();
 				}

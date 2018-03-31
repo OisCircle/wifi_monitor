@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.Info" pageEncoding="UTF-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -36,7 +36,7 @@ int pr=2;
 		function latestHour(){
 			var id=<%= seeker_id%>
 			var hour=document.getElementById("hourSelect").value;
-			window.location="/latestHour?id="+id+"&hour="+hour
+			window.location="/latestMinute?id="+id+"&minute="+hour*60
 		}
 		function latestMinute(){
 			var id=<%= seeker_id%>

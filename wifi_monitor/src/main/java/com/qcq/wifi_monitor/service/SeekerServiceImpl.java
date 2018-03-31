@@ -19,10 +19,33 @@ public class SeekerServiceImpl implements SeekerService{
 	}
 
 	@Override
-	public Seeker selectOne() {
-		//88733613是暂定的值，以后要修改
-		Seeker seeker=sm.selectOne(8733613);
+	public Seeker selectOne(int id) {
+		Seeker seeker=sm.selectOne(id);
 		return seeker;
+	}
+
+	@Override
+	public String add(Seeker seeker) {
+		sm.add(seeker);
+		return "添加成功";
+	}
+
+	@Override
+	public String deleteById(int id) {
+		sm.deleteById(id);
+		return "删除成功";
+	}
+
+	@Override
+	public String update(Seeker seeker) {
+		sm.update(seeker);
+		return "更新成功";
+	}
+
+	@Override
+	public String setIsForbidden(Seeker seeker) {
+		sm.setIsForbidden(seeker);
+		return "更改成功";
 	}
 	
 }
