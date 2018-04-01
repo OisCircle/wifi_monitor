@@ -23,4 +23,7 @@
 	<update id="setIsForbidden" parameterType="Seeker">
 		update seeker set isForbidden=#{isForbidden} where id=${id}
 	</update>
+	<select id="selectByZoneId" parameterType="int" resultType="Seeker">
+		select *from seeker where zone_id=#{id}
+	</select>
 </mapper>

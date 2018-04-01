@@ -54,23 +54,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	body{ /*整体颜色*/
 		background-color:#F8F8F8;
 	}
+	#tittle{
+	   width:700px;
+	   height:70px;
+	   margin-left:30px;
+	   margin-top:30px;
+	   float:left;
+	}
  	#showtime{/*显示时间*/
- 		margin:auto;
  		padding-top:10px;
  		padding-left:26px;  
  		width:260px;
  		height:30px;
  		margin-top:30px;
- 		/*margin-left:500px;*/  
+ 		margin-left:200px;  
  		background-color: black;
  		opacity: 0.6;
  		color:white;
         border-radius:20px;
+        float:left;
  	}
  </style>
   <body>
+  <div>
+    <div id="tittle">
+       <font color="#39AEFF"size="6" font-style="italic">大人流预警及人员轨迹跟踪系统</font>
+      </div>
     <div id="showtime" >
        	  <span class="glyphicon glyphicon-calendar"></span>
        </div>
+</div>
   </body>
 </html>

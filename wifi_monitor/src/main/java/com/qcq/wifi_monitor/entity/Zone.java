@@ -19,7 +19,7 @@ public class Zone {
 	}
 	@Override
 	public String toString() {
-		return "Map [id=" + id + ", name=" + name + ", description=" + description + ", x=" + x + ", y=" + y + "]";
+		return "Zone [id=" + id + ", name=" + name + ", description=" + description + ", x=" + x + ", y=" + y + "]";
 	}
 	public int getId() {
 		return id;

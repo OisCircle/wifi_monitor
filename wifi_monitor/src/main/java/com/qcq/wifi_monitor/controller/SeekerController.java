@@ -29,6 +29,11 @@ public class SeekerController {
 		mv.setViewName("left");
 		return mv;
 	}
+	@RequestMapping("/ajaxTest")
+	public ModelAndView ajaxTest(ModelAndView mv){
+		mv.setViewName("ajaxTest");
+		return mv;
+	}
 	@RequestMapping("/main")
 	public ModelAndView main(ModelAndView mv){
 		mv.setViewName("main");
@@ -37,6 +42,11 @@ public class SeekerController {
 	@RequestMapping("/top")
 	public ModelAndView top(ModelAndView mv){
 		mv.setViewName("top");
+		return mv;
+	}
+	@RequestMapping("/introduction")
+	public ModelAndView introduction(ModelAndView mv){
+		mv.setViewName("introduction");
 		return mv;
 	}
 	@RequestMapping(value="/index")
@@ -78,7 +88,6 @@ public class SeekerController {
 		mv.setViewName("seeker");
 		return mv;
 	}
-	
 	//以下是针对设备管理界面上面的增删改查
 	@RequestMapping(value="/seekerAdd")
 	public String seekerAdd(int id,int type,double x,double y,int indoor_x,int indoor_y,String location,int isForbidden,int zone_id){
@@ -111,4 +120,29 @@ public class SeekerController {
 		seeker.setIsForbidden(isForbidden);
 		return seekerService.setIsForbidden(seeker);
 	}
+	
+	//根据区域id取出关联的seeker
+	@RequestMapping(value="/indoor")
+	public ModelAndView indoor(ModelAndView mv,int minute,int zone_id){
+		SeekerFilterDTO dto=new SeekerFilterDTO(0,minute,-130);
+		List<Seeker> seekers=seekerService.selectByZoneId(zone_id);
+		mv.getModelMap().put("seekers", seekers);
+		
+		//将每一个seeker最新探测到的所有信号们放入List数组
+		List<List<Info>> listInfos=new ArrayList<List<Info>>();
+		for(int i=0;i<seekers.size();++i){
+			dto.setId(seekers.get(i).getId());
+			listInfos.add(infoService.selectLatestInfos(dto));
+		}
+		mv.getModelMap().put("listInfos", listInfos);
+		
+		mv.setViewName("indoor");
+		return mv;
+	}
+	@RequestMapping("/equip")
+	public ModelAndView equip(ModelAndView mv){
+		mv.setViewName("equip");
+		return mv;
+	}
+	
 }

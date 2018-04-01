@@ -3,6 +3,8 @@ package com.qcq.wifi_monitor.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,11 +15,13 @@ import org.springframework.web.servlet.ModelAndView;
 public class AjaxTestController {
 	@ResponseBody
 	@RequestMapping(value="/testAjax",method=RequestMethod.POST)
-	public Map<String,String> ajax(){
+	public Map<String,String> ajax(HttpSession session,int selectedId){
+		System.out.println("into ajax controller");
+		session.setAttribute("username", "hello world");
+		session.setAttribute("selectedId", selectedId);
 		Map<String,String> map=new HashMap<String, String>();
 		map.put("hello", "hello hello");
 		map.put("world", "world world");
-		System.out.println("into ajax controller");
 		return map;
 	}
 	

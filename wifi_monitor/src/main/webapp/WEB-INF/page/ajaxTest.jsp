@@ -24,12 +24,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
 	<script type="text/javascript">
 	function sendAjax(){
+		var params = {};
+		params.selectedId = 123456;
    		alert("into js method");
-   		var jsonData=[];
    		$.ajax({
-   			type:"post",
+   			type:"POST",
    			url:"/testAjax",
-   			data:{},
+   			data:params,
    			success:function(data){
  				jsonData=data;
  				alert(jsonData.hello);
@@ -46,7 +47,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
    </script>
   <body>
     This is my JSP page. <br>
-    
+    session:
+    <br>
+    <%= session.getAttribute("username") %>
+    <br>
+    selectedId:
+    <br>
+    <%= session.getAttribute("selectedId") %>
+    <br>
     <table id="table">i am a table</table>
     
     <button onclick="sendAjax()">我是按钮</button>

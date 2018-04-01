@@ -34,6 +34,42 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     	white-space:-moz-pre-wrap;
     	word-wrap:break-word;
     }
+    #selecttra{
+        position:absolute;
+        left:23%;
+        top:86px;
+        z-index:2000;
+        display:none;
+        width:23%;
+        height:200px;
+        opacity: 0.6;
+        background:white;
+        border-radius:5px;    
+    }
+    #selectlink{
+        position:absolute;
+        left:46%;
+        top:86px;
+        z-index:2000;
+        display:none;
+        width:23%;
+        height:200px;
+        opacity: 0.6;
+        background:white;
+        border-radius:5px;    
+    }
+    #selecttime{
+        position:absolute;
+        left:69%;
+        top:86px;
+        z-index:2000;
+        display:none;
+        width:23%;
+        height:200px;
+        opacity: 0.6;
+        background:white;
+        border-radius:5px;     
+    }
     #dituContent{
     	float: left;
     }
@@ -67,17 +103,44 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
-
+	<script type="text/javascript">
+	function playtra(){
+        var a = document.getElementById("selecttra");
+        if(a.style.display=="block") a.style.display = "none";
+        else a.style.display = "block";
+    }
+    function playlink(){
+        var a = document.getElementById("selectlink");
+        if(a.style.display=="block") a.style.display = "none";
+        else a.style.display = "block";
+    }
+    function playtime(){
+        var a = document.getElementById("selecttime");
+        if(a.style.display=="block") a.style.display = "none";
+        else a.style.display = "block";
+    }
+    
+    function selected(a){
+        //下拉选项显示后，给”item“添加点击事件：点击隐藏下拉列表
+        var b = document.getElementById("menu");
+        b.style.display = "none";
+        //讲选中项的值放到“sel“里显示
+        var txt = a.innerText;
+        document.getElementById("sel").innerText = txt;
+    }
+	</script>
   </head>
   
   <body>
   <div id="box">
-  <div id="other"><font color="blue" size="5" >视频</font></div>
-  <div id="now"><a href="index" target="right"><font color="gray" size="5" >WIFI</font></a></div>
-  <div id="other"><font color="blue" size="5" >融合</font></div>
-  <div id="other"><font color="blue" size="5" >地图列表</font></div>
-  <div style="width:1608px;height:775px;border:gray solid 0px;" id="dituContent"></div>
-  </div>
+  <div id="now"><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
+  <div id="other" onclick="playtra()"><font color="blue" size="5" >轨迹跟踪</font></div>
+  <div id="selecttra"></div>
+  <div id="other" onclick="playlink()"><font color="blue" size="5" >折线路径</font></div>
+  <div id="selectlink"></div>
+  <div id="other" onclick="playtime()"><font color="blue" size="5" >时间选取</font></div>
+  <div id="selecttime"></div></div>
+  <div style="width:1608px;height:775px;border:gray solid 0px;" id="dituContent"></div> 
   </body>
   <script type="text/javascript">
     //创建和初始化地图函数：
@@ -165,7 +228,7 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
           mp.addOverlay(myCompOverlay);
         <%}%>
         start.addEventListener("click", function(){
-              window.location("/seeker?id="+<%= seekers.get(i).getId()%>);
+              window.location("/seeker?id="+<%= seekers.get(i).getId()%>+"&minute=60&rssi=-130");
         })
 	    window.map = mp;
 	   <%}%>

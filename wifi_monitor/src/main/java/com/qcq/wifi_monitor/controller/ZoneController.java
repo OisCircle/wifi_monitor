@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.qcq.wifi_monitor.entity.Zone;
 import com.qcq.wifi_monitor.service.ZoneService;
@@ -14,7 +15,12 @@ import com.qcq.wifi_monitor.service.ZoneService;
 public class ZoneController {
 	@Resource
 	ZoneService zoneService;
-	
+
+	@RequestMapping(value = "/map")
+	public ModelAndView map(ModelAndView mv) {
+		mv.setViewName("map");
+		return mv;
+	}
 	@RequestMapping(value="/zoneAdd")
 	@ResponseBody
 	public String add(String name,String description,double x,double y){

@@ -13,4 +13,5 @@ public interface SeekerMapper {
 	public void deleteById(int id);
 	public void update(Seeker seeker);
 	public void setIsForbidden(Seeker seeker);
+	public List<Seeker> selectByZoneId(int id);
 }

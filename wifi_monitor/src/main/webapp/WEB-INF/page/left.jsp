@@ -20,7 +20,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <!--
     <link rel="stylesheet" type="text/css" href="styles.css">
     -->
-
+	<script type="text/javascript">
+	function playequip(){
+        var a = document.getElementById("liboxequip");
+        if(a.style.display=="block") a.style.display = "none";
+        else a.style.display = "block";
+    }
+	</script>
   </head>
   <style type="text/css">
    *{/*清空网页默认设置*/
@@ -36,21 +42,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     #libox{
     margin-top:50px;
     }
-    a{
-      text-decoration:none;
-    }
+    
  </style>
   <body>
     <ul style="margin-left:30px">
-        <li><div id="libox"><span class="glyphicon glyphicon-list-alt" style="font-size: 23px;"></span><font color="#777474"  size="5">系统用户介绍</font></div></li>
-        <li><div id="libox"><span class="glyphicon glyphicon-user" style="font-size: 23px;"></span><font color="#777474" size="5">用户管理</font></div></li>
-        <li><div id="libox"><span class="glyphicon glyphicon-object-align-bottom" style="font-size: 23px;"><font color="#777474" size="5">用户组管理</font></div></li>
-        <li><div id="libox"><span class="glyphicon glyphicon-tag" style="font-size: 23px;"><font color="#777474" size="5">组与权限管理</font></div></li>
-        <li><div id="libox"><span class="glyphicon glyphicon-globe" style="font-size: 23px;"><font color="#777474" size="5">地图管理</font></div></li>
-        <li><div id="libox"><span class="glyphicon glyphicon-record" style="font-size: 23px;"><font color="#777474" size="5">地图区域管理</font></div></li>
-        <li><div id="libox"><span class="glyphicon glyphicon-pushpin" style="font-size: 23px;"><font color="#777474" size="5">观测点管理</font></div></li>
-        <li><div id="libox"><a href="index" target="right"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"><font color="#777474" size="5">百度地图数据展示</font></a></div></li>
-        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"><font color="#777474" size="5">Echart地图实时展示</font></div></li>
+        <li><div id="libox"><span class="glyphicon glyphicon-list-alt" style="font-size: 23px;"></span><a style="text-decoration:none;" href="introduction" target="right"><font color="#777474"  size="5">系统用户介绍</font></a></div></li>
+        <li><div id="libox" onclick="playequip()"><span class="glyphicon glyphicon-cog" style="font-size: 23px;"></span><font color="#777474" size="5">系统管理</font></div></li>
+        <div id="liboxequip" style="display:none;margin-left:20px;">
+        	<ul>
+	           <li><span class="glyphicon glyphicon-globe" style="font-size: 23px;"></span><font color="#777474" size="5">地图管理</font></li>
+               <li><span class="glyphicon glyphicon-asterisk" style="font-size: 23px;"><a style="text-decoration:none;" href="equip" target="right"></span><font color="#777474" size="5">设备管理</font></a></li>
+           </ul>
+        </div>
+        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><a style="text-decoration:none;" href="index?minute=6000" target="right"><font color="#777474" size="5">百度地图数据展示</font></a></div></li>
+        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><font color="#777474" size="5">Echart地图实时展示</font></div></li>
       </ul>
   </body>
 </html>

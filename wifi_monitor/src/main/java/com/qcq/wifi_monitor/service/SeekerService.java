@@ -13,4 +13,5 @@ public interface SeekerService {
 	public String deleteById(int id);
 	public String update(Seeker seeker);
 	public String setIsForbidden(Seeker seeker);
+	public List<Seeker> selectByZoneId(int id);
 }

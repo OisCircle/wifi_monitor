@@ -47,5 +47,10 @@ public class SeekerServiceImpl implements SeekerService{
 		sm.setIsForbidden(seeker);
 		return "更改成功";
 	}
+
+	@Override
+	public List<Seeker> selectByZoneId(int id) {
+		return sm.selectByZoneId(id);
+	}
 	
 }
