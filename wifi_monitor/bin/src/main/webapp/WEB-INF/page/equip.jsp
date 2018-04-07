@@ -2,7 +2,6 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -76,23 +75,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        }    
 	   }
 	   function boxcheck(value,checked){
-	       var i=0;
-	       var params = {};
-		   params.id = value;
-		   if(checked==1)i=1;
-		   params.isForbidden=i;
-	       $.ajax({
-	            url:"/seekerSetIsForbidden",
-	            type:"Post",
-	            data:params,
-	            success:function(resp){
-	                alert("success");
-	                alert(resp);
-	            },
-	            error:function(jqXHR,textstatus){
-	                alert(textstatus);
-	            }
-	        });
+	       alert("ok!");
+	       alert(value);
+	       alert(checked);
 	   }
 	   sendAjax(0);
 </script>

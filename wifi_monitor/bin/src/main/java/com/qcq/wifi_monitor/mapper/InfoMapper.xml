@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qcq.wifi_monitor.mapper.InfoMapper" >
+	<insert id="insertSeeker" parameterType="Seeker">
+		insert ignore into seeker (id,type,x,y) values(#{id},#{type},#{x},#{y})
+	</insert>
+	<insert id="insertInfos">
+		insert ignore into info(rssi,mac,s_id) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.rssi},#{item.mac},#{item.s_id})
+		</foreach>
+	</insert>
+	
+	<!-- 参数id：seeker_id -->
+	<!-- 针对每个探针最新信号 -->
+	<select id="selectLatestInfos" parameterType="com.qcq.wifi_monitor.dto.SeekerFilterDTO" resultType="Info">
+		select b.id,a.mac mac,b.rssi rssi,date_format(a.time,'%Y-%m-%d %H:%i:%s')as time,b.s_id
+		from (select a.mac,max(time) as time from (select id,rssi,mac,time,s_id from info where s_id=#{id} and time>now()-INTERVAL #{minute} MINUTE) a
+		group by a.mac)a
+		left join info b
+		on a.mac=b.mac and a.time=b.time
+	</select>
+	<!-- 针对单个探针筛选出最近多少分钟以内的信号 -->
+	<select id="selectLatestInfosByMinute" parameterType="com.qcq.wifi_monitor.dto.SeekerFilterDTO" resultType="Info">
+		select a.id,a.mac,a.rssi,date_format(a.time,'%Y-%m-%d %H:%i:%s')as time from 
+		(select id,rssi,mac,time,s_id from info where info.time > NOW()-INTERVAL ${minute} MINUTE and rssi>=#{rssi}) a
+		where
+		a.s_id=#{id}
+	</select>
+</mapper>

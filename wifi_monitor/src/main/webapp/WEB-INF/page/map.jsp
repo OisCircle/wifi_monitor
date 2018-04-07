@@ -32,7 +32,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	   			data:{},
 	   			success:function(data){
 	 				jsonmap=data;
-	 				alert(jsonmap[0].name);
 	 				rowslength=jsonmap.length;
 	 				var root = document.getElementById("tbody");
 	 				var nowRows = root.getElementsByTagName('tr');
@@ -49,10 +48,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     nowCells[3].appendChild(Text);
                     var oCheckbox=document.createElement("input");
                     var myText=document.createTextNode("选用");
+                    if(<%= session.getAttribute("selectedId") %>==jsonmap[i].id)
+                    oCheckbox.setAttribute("checked","ture");
                     oCheckbox.setAttribute("type","radio");
                     oCheckbox.setAttribute("name","mapcheck");
-                    oCheckbox.setAttribute("value",jsonmap[i].id);
-                    oCheckbox.setAttribute("onclick","boxcheck(this.value,this.checked)");
+                    oCheckbox.setAttribute("id",jsonmap[i].id);
+                    oCheckbox.setAttribute("onclick","boxcheck(this.id,this.checked)");
                     nowCells[4].appendChild(oCheckbox);
                     nowCells[4].appendChild(myText);
                     }
@@ -75,18 +76,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	             sendmap(nowrows);
 	        }    
 	   }
-	   function boxcheck(value,checked){
-	       alert("ok!");
-	       alert(value);
-	       alert(checked);
-	       var dataJsonStr=JSON.stringify(value);
-		   alert(dataJsonStr);
+	   function boxcheck(id,checked){
+	       var params = {};
+		   params.selectedId = id;
 	       $.ajax({
-	            url:"/testAjax",
+	            url:"/sessionAttributeSetting",
 	            type:"Post",
-	            data:dataJsonStr,
-	            contentType:"application/json",
-	            dataType:"json",
+	            data:params,
 	            success:function(resp){
 	                alert("success");
 	                alert(resp);
@@ -100,6 +96,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </script>
   </head>
   <body>
+  	<%= session.getAttribute("selectedId") %>
      <table class="table table-bordered">
 	<caption>地图管理</caption>
    <thead>
@@ -183,8 +180,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
         </tr>
    </tbody>
+   <div id="edit">
+   </div>
 </table>
     <input style="margin-left:23%;" type="button" onclick="lastpage();"value="上一页"></input>
-    <input style="margin-left:50%;" type="button" onclick="nextpage();"value="下一页"></input>
+    <input style="margin-left:22%;" type="button" onclick="nextpage();"value="下一页"></input>
+    <input style="margin-left:10%;" type="button" onclick=""value="增加"></input>
+    <input style="margin-left:5%;" type="button" onclick=""value="删除"></input>
   </body>
 </html>

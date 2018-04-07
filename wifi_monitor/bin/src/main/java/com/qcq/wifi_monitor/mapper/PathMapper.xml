@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qcq.wifi_monitor.mapper.PathMapper" >
+	<insert id="insertPaths" parameterType="java.util.List">
+		insert into path (mac,start_x,start_y,end_x,end_y,start_time,end_time) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.mac},#{item.start_x},#{item.start_y},#{item.end_x},#{item.end_y},#{item.start_time},#{item.end_time})
+		</foreach>
+	</insert>
+	<select id="selectByMac" parameterType="String" resultType="Path">
+		select * from path where mac=#{mac}
+	</select>
+</mapper>

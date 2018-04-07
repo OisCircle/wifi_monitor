@@ -19,9 +19,6 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     	margin:0;
     	padding:0;
     }
-    span{
-       cursor:pointer;
-    }
     .iw_poi_title {
     	color:#CC5522;
     	font-size:14px;
@@ -45,7 +42,6 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
         display:none;
         width:23%;
         height:200px;
-        text-align: center;
         opacity: 0.6;
         background:white;
         border-radius:5px;    
@@ -58,7 +54,6 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
         display:none;
         width:23%;
         height:200px;
-        text-align: center;
         opacity: 0.6;
         background:white;
         border-radius:5px;    
@@ -71,7 +66,6 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
         display:none;
         width:23%;
         height:200px;
-        text-align: center;
         opacity: 0.6;
         background:white;
         border-radius:5px;     
@@ -134,15 +128,6 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
         var txt = a.innerText;
         document.getElementById("sel").innerText = txt;
     }
-    function pathfly(mac){
-         window.location="/path"+"?mac="+mac+"&minute=9999999";
-    }
-    function linkpathfly(mac){
-         window.location="/linkpath"+"?mac="+mac+"&minute=9999999";
-    }
-    function timefly(time){
-         window.location="/index?minute="+time;
-    }
 	</script>
   </head>
   
@@ -150,30 +135,11 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
   <div id="box">
   <div id="now"><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
   <div id="other" onclick="playtra()"><font color="blue" size="5" >轨迹跟踪</font></div>
-  <div id="selecttra"><%int m=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(m>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               m++;
-               if(m>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
+  <div id="selecttra"></div>
   <div id="other" onclick="playlink()"><font color="blue" size="5" >折线路径</font></div>
-  <div id="selectlink"><%int now=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(now>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               now++;
-               if(now>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
+  <div id="selectlink"></div>
   <div id="other" onclick="playtime()"><font color="blue" size="5" >时间选取</font></div>
-  <div id="selecttime">
-          <span  onclick="timefly(60);" >1小时内</span><br>
-          <span  onclick="timefly(120);" >2小时内</span><br>
-          <span  onclick="timefly(240);" >4小时内</span><br>
-          <span  onclick="timefly(9999999);" >所有</span><br>
-  </div></div>
+  <div id="selecttime"></div></div>
   <div style="width:1608px;height:775px;border:gray solid 0px;" id="dituContent"></div> 
   </body>
   <script type="text/javascript">
@@ -241,7 +207,6 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
             this._div['on'+event] = fun;
         }
          <%for(int i=0;i<seekers.size();++i) {%>
-         <%if(seekers.get(i).getIsForbidden()==1) continue;%>
         <% double X = seekers.get(i).getX(); %>
         <% double Y = seekers.get(i).getY(); %>
         <% int ID = seekers.get(i).getId(); %>
@@ -263,7 +228,7 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
           mp.addOverlay(myCompOverlay);
         <%}%>
         start.addEventListener("click", function(){
-              window.location("/seeker?id="+<%= seekers.get(i).getId()%>+"&minute=6000&rssi=-130");
+              window.location("/seeker?id="+<%= seekers.get(i).getId()%>+"&minute=60&rssi=-130");
         })
 	    window.map = mp;
 	   <%}%>

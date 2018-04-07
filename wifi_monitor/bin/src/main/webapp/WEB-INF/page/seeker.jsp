@@ -1,12 +1,9 @@
-<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.Info" pageEncoding="UTF-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 //
 List<Info>infos=(List<Info>)request.getAttribute("infos");
-List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
-//每个seeker对应的信息，下标与 seekers 一一对应
-List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 //每个info应该处在的坐标
 List<Map<String,Double>>coordinates=(List<Map<String,Double>>)request.getAttribute("coordinates");
 
@@ -28,10 +25,23 @@ int pr=2;
 			document.getElementById("time").textContent=time;
 		}
 		function searchMac(mac){
-			window.location="/path"+"?mac="+mac+"&minute=9999999";
+			window.location="/path"+"?mac="+mac
 		}
 		function highLightRow(row){
 			alert("into highLightRow()");
+			
+			
+			
+		}
+		function latestHour(){
+			var id=<%= seeker_id%>
+			var hour=document.getElementById("hourSelect").value;
+			window.location="/latestMinute?id="+id+"&minute="+hour*60
+		}
+		function latestMinute(){
+			var id=<%= seeker_id%>
+			var minute=document.getElementById("minuteSelect").value;
+  			window.location="/latestMinute?id="+id+"&minute="+minute
 		}
 	</script>
 	<head>
@@ -69,137 +79,9 @@ int pr=2;
 			    border:2px solid #6C6D69;
 			    border-radius:4px; 
 			}
-			 #selecttra{
-		        position:absolute;
-		        left:23%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;    
-		    }
-		    #selectlink{
-		        position:absolute;
-		        left:46%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;    
-		    }
-		    #selecttime{
-		        position:absolute;
-		        left:69%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;     
-		    }
-		    #other{
-		    	margin-top: 30px;
-		    	width:23%;
-		    	height:40px;
-		    	padding-top:15px;
-		    	text-align: center;
-		    	border:0px;
-		    	float: left; 
-		    }
-		    #now{
-		    	margin-top: 30px;
-		    	width:23%;
-		    	height:40px;
-		    	padding-top:15px; 
-		    	text-align: center;
-		    	background-image:url(shade.png);
-		    	background-repeat :no-repeat ;
-		    	background-color : transparent;  
-		    	float:left;
-		    }
-		    span{
-		       cursor:pointer;
-		    }
-		    a{
-			  text-decoration:none;
-			}
 		</style>
-		<script type="text/javascript">
-			function playtra(){
-		        var a = document.getElementById("selecttra");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    function playlink(){
-		        var a = document.getElementById("selectlink");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    function playtime(){
-		        var a = document.getElementById("selecttime");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    
-		    function selected(a){
-		        //下拉选项显示后，给”item“添加点击事件：点击隐藏下拉列表
-		        var b = document.getElementById("menu");
-		        b.style.display = "none";
-		        //讲选中项的值放到“sel“里显示
-		        var txt = a.innerText;
-		        document.getElementById("sel").innerText = txt;
-		    }
-		    function pathfly(mac){
-		         window.location="/path"+"?mac="+mac+"&minute=9999999";
-		    }
-		    function linkpathfly(mac){
-		         window.location="/linkpath"+"?mac="+mac+"&minute=9999999";
-		    }
-		    function timefly(time){
-		         window.location="/index?minute="+time;
-		    }
-	</script>
 	</head>
 	<body>
-	<div id="tittlebox">
-  <div id="now"><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
-  <div id="other" onclick="playtra()"><font color="blue" size="5" >轨迹跟踪</font></div>
-  <div id="selecttra"><%int m=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(m>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               m++;
-               if(m>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="other" onclick="playlink()"><font color="blue" size="5" >折线路径</font></div>
-  <div id="selectlink"><%int c=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(c>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               c++;
-               if(c>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="other" onclick="playtime()"><font color="blue" size="5" >时间选取</font></div>
-  <div id="selecttime">
-          <span  onclick="timefly(60);" >1小时内</span><br>
-          <span  onclick="timefly(120);" >2小时内</span><br>
-          <span  onclick="timefly(240);" >4小时内</span><br>
-          <span  onclick="timefly(9999999);" >所有</span><br>
-  </div></div>
-	<div>
 		<div id="circle">
 		<svg width=800 height=800 xmlns="http://www.w3.org/2000/svg" version="1.1">
 			<!-- 初始化背景圆 -->
@@ -272,12 +154,37 @@ int pr=2;
 				<input type="submit" value="搜索">
 				</h3>
 			</form>
+			<h3>细化搜索探针嗅探到的信号</h3>
+			<h4>
+			&nbsp&nbsp&nbsp&nbsp针对小时段搜索
+			<select id="hourSelect">
+				<option value="1">1小时</option>
+				<option value="2">2小时</option>
+				<option value="3">3小时</option>
+				<option value="5">5小时</option>
+				<option value="12">12小时</option>
+				<option value="24">24小时</option>
+			</select>
+			<button onclick="latestHour()">搜索</button>
+			</h4>
+			<h4>
+			&nbsp&nbsp&nbsp&nbsp针对分钟段搜索
+			<select id="minuteSelect">
+				<option value="1">1分钟</option>
+				<option value="2">2分钟</option>
+				<option value="5">5分钟</option>
+				<option value="10">10分钟</option>
+				<option value="15">15分钟</option>
+				<option value="30">30分钟</option>
+				<option value="45">45分钟</option>
+			</select>
+			<button onclick="latestMinute()">搜索</button>
+			</h4>
 			<div id="box">
 				<h2 id="mac" style="margin-left:20px"></h2>
 				<h2 id="rssi" style="margin-left:20px"></h2>
 				<h2 id="time" style="margin-left:20px"></h2>
 			</div>
-		  </div>
 		</div>
 </body>
 

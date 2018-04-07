@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qcq.wifi_monitor.mapper.SeekerMapper" >
+
+	<select id="selectOne" parameterType="Seeker" resultType="Seeker">
+		select *from seeker where id=#{id}
+	</select>
+	<select id="selectAll" resultType="Seeker">
+		select *from seeker
+	</select>
+	<insert id="add" parameterType="Seeker">
+		insert into seeker (id,type,x,y,indoor_x,indoor_y,location,isForbidden,zone_id)
+		values(#{id},#{type},#{x},#{y},#{indoor_x},#{indoor_y},#{location},#{isForbidden},#{zone_id})
+	</insert>
+	<delete id="deleteById">
+		delete from seeker where id=#{id}
+	</delete>
+	<update id="update">
+		update seeker set type=#{type},x=#{x},y=#{y},indoor_x=#{indoor_x},indoor_y=#{indoor_y},location=#{location},isForbidden=#{isForbidden},zone_id=#{zone_id} where id=#{id}
+	</update>
+	<update id="setIsForbidden" parameterType="Seeker">
+		update seeker set isForbidden=#{isForbidden} where id=${id}
+	</update>
+	<select id="selectByZoneId" parameterType="int" resultType="Seeker">
+		select *from seeker where zone_id=#{id}
+	</select>
+</mapper>

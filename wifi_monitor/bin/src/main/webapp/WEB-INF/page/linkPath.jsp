@@ -1,11 +1,8 @@
-<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*,com.qcq.wifi_monitor.entity.Path" pageEncoding="UTF-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
-//每个seeker对应的信息，下标与 seekers 一一对应
-List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
-//每个info应该处在的坐标
+
 List<Path> paths=(List<Path>)request.getAttribute("paths");
 %>
 
@@ -31,143 +28,17 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
     }
     #dituContent{
     	float: left;
-    }
-    #selecttra{
-		        position:absolute;
-		        left:23%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;    
-		    }
-		    #selectlink{
-		        position:absolute;
-		        left:46%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;    
-		    }
-		    #selecttime{
-		        position:absolute;
-		        left:69%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;     
-		    }
-		    #other{
-		    	margin-top: 30px;
-		    	width:23%;
-		    	height:40px;
-		    	padding-top:15px;
-		    	text-align: center;
-		    	border:0px;
-		    	float: left; 
-		    }
-		    #now{
-		    	margin-top: 30px;
-		    	width:23%;
-		    	height:40px;
-		    	padding-top:15px; 
-		    	text-align: center;
-		    	background-image:url(shade.png);
-		    	background-repeat :no-repeat ;
-		    	background-color : transparent;  
-		    	float:left;
-		    }
-		    span{
-		       cursor:pointer;
-		    }
-		    a{
-			  text-decoration:none;
-			}	 
+    }	 
 </style>
     <title>linkPath</title>
     
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
-    <script type="text/javascript">
-			function playtra(){
-		        var a = document.getElementById("selecttra");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    function playlink(){
-		        var a = document.getElementById("selectlink");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    function playtime(){
-		        var a = document.getElementById("selecttime");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    
-		    function selected(a){
-		        //下拉选项显示后，给”item“添加点击事件：点击隐藏下拉列表
-		        var b = document.getElementById("menu");
-		        b.style.display = "none";
-		        //讲选中项的值放到“sel“里显示
-		        var txt = a.innerText;
-		        document.getElementById("sel").innerText = txt;
-		    }
-		    function pathfly(mac){
-		         window.location="/path"+"?mac="+mac+"&minute=9999999";
-		    }
-		    function linkpathfly(mac){
-		         window.location="/linkpath"+"?mac="+mac+"&minute=9999999";
-		    }
-		    function timefly(time){
-		         window.location="/index?minute="+time;
-		    }
-	</script>
+    
   </head>
   
   <body>
-  <div id="tittlebox">
-  <div id="now"><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
-  <div id="other" onclick="playtra()"><font color="blue" size="5" >轨迹跟踪</font></div>
-  <div id="selecttra"><%int m=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(m>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               m++;
-               if(m>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="other" onclick="playlink()"><font color="blue" size="5" >折线路径</font></div>
-  <div id="selectlink"><%int c=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(c>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               c++;
-               if(c>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="other" onclick="playtime()"><font color="blue" size="5" >时间选取</font></div>
-  <div id="selecttime">
-          <span  onclick="timefly(60);" >1小时内</span><br>
-          <span  onclick="timefly(120);" >2小时内</span><br>
-          <span  onclick="timefly(240);" >4小时内</span><br>
-          <span  onclick="timefly(9999999);" >所有</span><br>
-  </div></div>
   <div id="box">
   <div style="width:1370px;height:860px;border:0px solid gray;" id="dituContent"></div>
   </div>

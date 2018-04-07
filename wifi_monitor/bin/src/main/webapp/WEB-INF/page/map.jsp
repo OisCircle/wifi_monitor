@@ -2,7 +2,6 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -10,37 +9,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>equip</title>
-    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css"> 
+    <title>map</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
 	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
 	<meta http-equiv="description" content="This is my page">
-	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
 <script type="text/javascript">
-    var nowrows=0;
+  var nowrows=0;
     var rowslength;
-	function sendAjax(row){
-	   		var jsonequip=[];
+	function sendmap(row){
+	   		var jsonmap=[];
 	   		$.ajax({
 	   			type:"post",
-	   			url:"/seekerSelectAll",
+	   			url:"/zoneSelectAll",
 	   			data:{},
 	   			success:function(data){
-	 				jsonequip=data;
-	 				rowslength=jsonequip.length;
+	 				jsonmap=data;
+	 				alert(jsonmap[0].name);
+	 				rowslength=jsonmap.length;
 	 				var root = document.getElementById("tbody");
 	 				var nowRows = root.getElementsByTagName('tr');
-	 				for(var i=row;i<=row+10&&i<jsonequip.length;i++){
+	 				for(var i=row;i<=row+10&&i<jsonmap.length;i++){
                     var nowCells = nowRows[i].getElementsByTagName('td');
-                    nowCells[0].innerHTML=i+1;
-                    nowCells[1].innerHTML=jsonequip[i].id;
-                    nowCells[2].innerHTML=jsonequip[i].location;
+                    nowCells[0].innerHTML=jsonmap[i].id;
+                    nowCells[1].innerHTML=jsonmap[i].name;
+                    nowCells[2].innerHTML=jsonmap[i].description;
                     var oSpan=document.createElement("span");
                     var Text=document.createTextNode("编辑");
                     oSpan.setAttribute("class","glyphicon glyphicon-tasks");
@@ -48,10 +48,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     nowCells[3].appendChild(oSpan);
                     nowCells[3].appendChild(Text);
                     var oCheckbox=document.createElement("input");
-                    var myText=document.createTextNode("禁用");
-                    oCheckbox.setAttribute("type","checkbox");
-                    oCheckbox.setAttribute("value",jsonequip[i].id);
-                    if(jsonequip[i].isForbidden==1) oCheckbox.setAttribute("checked","ture");
+                    var myText=document.createTextNode("选用");
+                    oCheckbox.setAttribute("type","radio");
+                    oCheckbox.setAttribute("name","mapcheck");
+                    oCheckbox.setAttribute("value",jsonmap[i].id);
                     oCheckbox.setAttribute("onclick","boxcheck(this.value,this.checked)");
                     nowCells[4].appendChild(oCheckbox);
                     nowCells[4].appendChild(myText);
@@ -66,25 +66,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	   function lastpage(){
 	        if(nowrows==0) alert("已是顶页！");
 	        else {nowrows-=10;
-	             sendAjax(nowrows);
+	             sendmap(nowrows);
 	        }    
 	   }
 	   function nextpage(){
 	        if((rowslength-nowrows)<=10) alert("已是尾页！");
 	        else {nowrows+=10;
-	             sendAjax(nowrows);
+	             sendmap(nowrows);
 	        }    
 	   }
 	   function boxcheck(value,checked){
-	       var i=0;
-	       var params = {};
-		   params.id = value;
-		   if(checked==1)i=1;
-		   params.isForbidden=i;
+	       alert("ok!");
+	       alert(value);
+	       alert(checked);
+	       var dataJsonStr=JSON.stringify(value);
+		   alert(dataJsonStr);
 	       $.ajax({
-	            url:"/seekerSetIsForbidden",
+	            url:"/testAjax",
 	            type:"Post",
-	            data:params,
+	            data:dataJsonStr,
+	            contentType:"application/json",
+	            dataType:"json",
 	            success:function(resp){
 	                alert("success");
 	                alert(resp);
@@ -94,20 +96,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            }
 	        });
 	   }
-	   sendAjax(0);
+	   sendmap(0);
 </script>
   </head>
-  
   <body>
-    <table class="table table-bordered">
-	<caption>设备管理</caption>
+     <table class="table table-bordered">
+	<caption>地图管理</caption>
    <thead>
       <tr class="active">
-         <th>序号</th>
-         <th>设备ID</th>
-         <th>设备别名</th>
-         <th>设备编辑</th>
-         <th>是否禁用</th>
+         <th>地图序号</th>
+         <th>地图名称</th>
+         <th>地图说明</th>
+         <th>地图编辑</th>
+         <th>地图选取</th>
       </tr>
    </thead>
    <tbody id="tbody">

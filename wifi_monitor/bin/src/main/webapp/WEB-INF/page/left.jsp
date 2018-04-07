@@ -50,7 +50,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <li><div id="libox" onclick="playequip()"><span class="glyphicon glyphicon-cog" style="font-size: 23px;"></span><font color="#777474" size="5">系统管理</font></div></li>
         <div id="liboxequip" style="display:none;margin-left:20px;">
         	<ul>
-	           <li><span class="glyphicon glyphicon-globe" style="font-size: 23px;"><a style="text-decoration:none;" href="map" target="right"></span><font color="#777474" size="5">地图管理</font></a></li>
+	           <li><span class="glyphicon glyphicon-globe" style="font-size: 23px;"></span><font color="#777474" size="5">地图管理</font></li>
                <li><span class="glyphicon glyphicon-asterisk" style="font-size: 23px;"><a style="text-decoration:none;" href="equip" target="right"></span><font color="#777474" size="5">设备管理</font></a></li>
            </ul>
         </div>

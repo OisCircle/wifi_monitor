@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -71,6 +72,18 @@ public class SeekerController {
 		SeekerFilterDTO dto=new SeekerFilterDTO(id,minute,rssi);
 		List<Info> infos=infoService.selectLatestInfosByMinute(dto);
 		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
+		
+		List<Seeker> seekers=seekerService.selectAll();
+		mv.getModelMap().put("seekers", seekers);
+		
+		//将每一个seeker最新探测到的所有信号们放入List数组
+		List<List<Info>> listInfos = new ArrayList<List<Info>>();
+		for (int i = 0; i < seekers.size(); ++i) {
+			dto.setId(seekers.get(i).getId());
+			listInfos.add(infoService.selectLatestInfos(dto));
+		}
+		mv.getModelMap().put("listInfos", listInfos);
+		
 		mv.getModelMap().put("seeker_id", id);
 		mv.getModelMap().put("infos", infos);
 		mv.getModelMap().put("coordinates",coordinates);
@@ -82,6 +95,18 @@ public class SeekerController {
 		SeekerFilterDTO dto=new SeekerFilterDTO(id,minute,rssi);
 		List<Info> infos=infoService.selectLatestInfosByMinute(dto);
 		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
+		
+		List<Seeker> seekers=seekerService.selectAll();
+		mv.getModelMap().put("seekers", seekers);
+		
+		//将每一个seeker最新探测到的所有信号们放入List数组
+		List<List<Info>> listInfos = new ArrayList<List<Info>>();
+		for (int i = 0; i < seekers.size(); ++i) {
+			dto.setId(seekers.get(i).getId());
+			listInfos.add(infoService.selectLatestInfos(dto));
+		}
+		mv.getModelMap().put("listInfos", listInfos);
+		
 		mv.getModelMap().put("seeker_id", id);
 		mv.getModelMap().put("infos", infos);
 		mv.getModelMap().put("coordinates",coordinates);
@@ -113,7 +138,8 @@ public class SeekerController {
 	public List<Seeker> seekerSelectAll(){
 		return seekerService.selectAll();
 	}
-	@RequestMapping(value="seekerSetIsForbidden")
+	@RequestMapping(value="/seekerSetIsForbidden",method=RequestMethod.POST)
+	@ResponseBody
 	public String seekerSetIsForbidden(int id,int isForbidden){
 		Seeker seeker=new Seeker();
 		seeker.setId(id);
