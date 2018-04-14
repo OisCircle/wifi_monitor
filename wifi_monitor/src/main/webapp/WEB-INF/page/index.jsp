@@ -141,7 +141,20 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
          window.location="/linkpath"+"?mac="+mac+"&minute=9999999";
     }
     function timefly(time){
-         window.location="/index?minute="+time;
+         var params = {};
+		   params.minute = time;
+	       $.ajax({
+	            url:"/setMinute",
+	            type:"Post",
+	            data:params,
+	            success:function(resp){
+	                alert("success");
+	                alert(resp);
+	            },
+	            error:function(jqXHR,textstatus){
+	                alert(textstatus);
+	            }
+	        });
     }
 	</script>
   </head>
@@ -172,7 +185,7 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
           <span  onclick="timefly(60);" >1小时内</span><br>
           <span  onclick="timefly(120);" >2小时内</span><br>
           <span  onclick="timefly(240);" >4小时内</span><br>
-          <span  onclick="timefly(9999999);" >所有</span><br>
+          <span  onclick="timefly(9999999999999);" >所有</span><br>
   </div></div>
   <div style="width:1608px;height:775px;border:gray solid 0px;" id="dituContent"></div> 
   </body>

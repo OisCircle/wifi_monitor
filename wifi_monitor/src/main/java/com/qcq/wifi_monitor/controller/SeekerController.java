@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
 
+import com.qcq.wifi_monitor.vo.Minute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -51,8 +53,8 @@ public class SeekerController {
 		return mv;
 	}
 	@RequestMapping(value="/index")
-	public ModelAndView index(ModelAndView mv,int minute){
-		SeekerFilterDTO dto=new SeekerFilterDTO(0,minute,-130);
+	public ModelAndView index(ModelAndView mv){
+		SeekerFilterDTO dto=new SeekerFilterDTO(0,Minute.getMinute(),-130);
 		List<Seeker> seekers=seekerService.selectAll();
 		mv.getModelMap().put("seekers", seekers);
 		
@@ -68,14 +70,14 @@ public class SeekerController {
 		return mv;
 	}
 	@RequestMapping(value="/seeker")
-	public ModelAndView seeker(ModelAndView mv,int id,int minute,int rssi){
-		SeekerFilterDTO dto=new SeekerFilterDTO(id,minute,rssi);
+	public ModelAndView seeker(ModelAndView mv,int id,int rssi){
+		SeekerFilterDTO dto=new SeekerFilterDTO(id,Minute.getMinute(),rssi);
 		List<Info> infos=infoService.selectLatestInfosByMinute(dto);
 		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
-		
+
 		List<Seeker> seekers=seekerService.selectAll();
 		mv.getModelMap().put("seekers", seekers);
-		
+
 		//将每一个seeker最新探测到的所有信号们放入List数组
 		List<List<Info>> listInfos = new ArrayList<List<Info>>();
 		for (int i = 0; i < seekers.size(); ++i) {
@@ -83,7 +85,7 @@ public class SeekerController {
 			listInfos.add(infoService.selectLatestInfos(dto));
 		}
 		mv.getModelMap().put("listInfos", listInfos);
-		
+
 		mv.getModelMap().put("seeker_id", id);
 		mv.getModelMap().put("infos", infos);
 		mv.getModelMap().put("coordinates",coordinates);
@@ -91,8 +93,8 @@ public class SeekerController {
 		return mv;
 	}
 	@RequestMapping(value="/latestMinute")
-	public ModelAndView latestMinute(ModelAndView mv,int id,int minute,int rssi){
-		SeekerFilterDTO dto=new SeekerFilterDTO(id,minute,rssi);
+	public ModelAndView latestMinute(ModelAndView mv,int id,int rssi){
+		SeekerFilterDTO dto=new SeekerFilterDTO(id,Minute.getMinute(),rssi);
 		List<Info> infos=infoService.selectLatestInfosByMinute(dto);
 		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
 		
@@ -124,8 +126,8 @@ public class SeekerController {
 		return seekerService.deleteById(id);
 	}
 	@RequestMapping(value="/seekerUpdate")
-	public String seekerUpdate(int id,int type,double x,double y,int indoor_x,int indoor_y,String location,int isForbidden,int zone_id){
-		Seeker seeker=new Seeker(id, type, x, y, indoor_x, indoor_y, location, isForbidden, zone_id);
+	public String seekerUpdate(int id,int type,double x,double y,int indoor_x,int indoor_y,String location,int zone_id){
+		Seeker seeker=new Seeker(id, type, x, y, indoor_x, indoor_y, location, -1, zone_id);
 		return seekerService.update(seeker);
 	}
 	@RequestMapping(value="/seekerSelectOne")
@@ -149,8 +151,8 @@ public class SeekerController {
 	
 	//根据区域id取出关联的seeker
 	@RequestMapping(value="/indoor")
-	public ModelAndView indoor(ModelAndView mv,int minute,int zone_id){
-		SeekerFilterDTO dto=new SeekerFilterDTO(0,minute,-130);
+	public ModelAndView indoor(ModelAndView mv,int zone_id){
+		SeekerFilterDTO dto=new SeekerFilterDTO(0,Minute.getMinute(),-130);
 		List<Seeker> seekers=seekerService.selectByZoneId(zone_id);
 		mv.getModelMap().put("seekers", seekers);
 		

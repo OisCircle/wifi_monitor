@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
 
+import com.qcq.wifi_monitor.vo.Minute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,10 +29,10 @@ public class PathController {
 	@Resource
 	InfoService infoService;
 	@RequestMapping(value="/path")
-	public ModelAndView path(ModelAndView mv,String mac,int minute){
+	public ModelAndView path(ModelAndView mv,String mac){
 		List<Path> paths=pathService.selectByMac(mac);
 		
-		SeekerFilterDTO dto=new SeekerFilterDTO(-1,minute,-130);
+		SeekerFilterDTO dto=new SeekerFilterDTO(-1, Minute.getMinute(),-130);
 		List<Seeker> seekers=seekerService.selectAll();
 		mv.getModelMap().put("seekers", seekers);
 		//将每一个seeker最新探测到的所有信号们放入List数组
@@ -47,10 +49,10 @@ public class PathController {
 	}
 	
 	@RequestMapping(value="/linkPath")
-	public ModelAndView linkPath(ModelAndView mv,String mac,int minute){
+	public ModelAndView linkPath(ModelAndView mv,String mac){
 		List<Path> paths=pathService.selectByMac(mac);
 		
-		SeekerFilterDTO dto=new SeekerFilterDTO(-1,minute,-130);
+		SeekerFilterDTO dto=new SeekerFilterDTO(-1,Minute.getMinute(),-130);
 		List<Seeker> seekers=seekerService.selectAll();
 		mv.getModelMap().put("seekers", seekers);
 		//将每一个seeker最新探测到的所有信号们放入List数组

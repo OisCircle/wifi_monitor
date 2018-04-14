@@ -17,8 +17,8 @@
 	<delete id="deleteById">
 		delete from seeker where id=#{id}
 	</delete>
-	<update id="update">
-		update seeker set type=#{type},x=#{x},y=#{y},indoor_x=#{indoor_x},indoor_y=#{indoor_y},location=#{location},isForbidden=#{isForbidden},zone_id=#{zone_id} where id=#{id}
+	<update id="update" parameterType="Seeker">
+		update seeker set type=#{type},x=#{x},y=#{y},indoor_x=#{indoor_x},indoor_y=#{indoor_y},location=#{location},zone_id=#{zone_id} where id=#{id}
 	</update>
 	<update id="setIsForbidden" parameterType="Seeker">
 		update seeker set isForbidden=#{isForbidden} where id=${id}

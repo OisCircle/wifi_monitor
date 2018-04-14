@@ -15,6 +15,9 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
   <script type="text/javascript">
 </script>
   <base href="<%=basePath%>">
+   <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
     
@@ -142,8 +145,8 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
   
   <body>
   <div id="tittlebox">
-  <div id="now"><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
-  <div id="other" onclick="playtra()"><font color="blue" size="5" >轨迹跟踪</font></div>
+  <div id="other" class="panel panel-info"><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
+  <div id="other" class="panel panel-info" onclick="playtra()"><font color="blue" size="5" >轨迹跟踪</font></div>
   <div id="selecttra"><%int m=0;
   for(int i=0;i<seekers.size();i++){ 
        if(m>=9) break;
@@ -152,7 +155,7 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
                if(m>=9) break;%>
            <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
     <% } }%></div>
-  <div id="other" onclick="playlink()"><font color="blue" size="5" >折线路径</font></div>
+  <div id="now" class="panel panel-success" onclick="playlink()"><font color="blue" size="5" >折线路径</font></div>
   <div id="selectlink"><%int c=0;
   for(int i=0;i<seekers.size();i++){ 
        if(c>=9) break;
@@ -161,7 +164,7 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
                if(c>=9) break;%>
            <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
     <% } }%></div>
-  <div id="other" onclick="playtime()"><font color="blue" size="5" >时间选取</font></div>
+  <div id="other" class="panel panel-info" onclick="playtime()"><font color="blue" size="5" >时间选取</font></div>
   <div id="selecttime">
           <span  onclick="timefly(60);" >1小时内</span><br>
           <span  onclick="timefly(120);" >2小时内</span><br>

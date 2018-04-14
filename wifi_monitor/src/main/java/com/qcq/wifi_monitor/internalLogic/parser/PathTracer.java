@@ -7,5 +7,5 @@ import com.qcq.wifi_monitor.entity.Path;
 import com.qcq.wifi_monitor.entity.Seeker;
 
 public interface PathTracer{
-	public List<Path> trace(List<Info> infos,Seeker seeker);
+	public List<Path> trace(List<Info> infos, Seeker seeker);
 }

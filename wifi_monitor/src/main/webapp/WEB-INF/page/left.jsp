@@ -54,7 +54,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                <li><span class="glyphicon glyphicon-asterisk" style="font-size: 23px;"><a style="text-decoration:none;" href="equip" target="right"></span><font color="#777474" size="5">设备管理</font></a></li>
            </ul>
         </div>
-        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><a style="text-decoration:none;" href="index?minute=6000" target="right"><font color="#777474" size="5">百度地图数据展示</font></a></div></li>
+        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><a style="text-decoration:none;" href="index?minute=600000" target="right"><font color="#777474" size="5">百度地图数据展示</font></a></div></li>
         <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><font color="#777474" size="5">Echart地图实时展示</font></div></li>
       </ul>
   </body>
