@@ -9,7 +9,6 @@ List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
 List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 //每个info应该处在的坐标
 List<Map<String,Double>>coordinates=(List<Map<String,Double>>)request.getAttribute("coordinates");
-
 int seeker_id=(int)request.getAttribute("seeker_id");
 //svg config
 //相对坐标中心点
@@ -17,27 +16,46 @@ double x0=(double)350;
 double y0=(double)400;
 int r=350;
 int pr=2;
-
 %>
+
+
 <!DOCTYPE HTML>
 <html>
+   <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
-		function showInfo(mac,rssi,time){
-			document.getElementById("mac").textContent=mac;
-			document.getElementById("rssi").textContent=rssi;
-			document.getElementById("time").textContent=time;
+		function search(mac,rssi,time){
+		  document.getElementById("mac").textContent=mac;
+		  document.getElementById("rssi").textContent=rssi;
+		  document.getElementById("time").textContent=time;
 		}
-		function searchMac(mac){
-			window.location="/path"+"?mac="+mac+"&minute=9999999";
+		function searchMac(macId,mac,rssi,time){
+		  var rect="rect"+macId;
+		  document.getElementById(rect.toString()).style.fill="#F70512";
+		  document.getElementById("mac").textContent=mac;
+		  document.getElementById("rssi").textContent=rssi;
+		  document.getElementById("time").textContent=time;
+		}
+		function searchOut(macId,time){
+		  var rect="rect"+macId;
+		  if(time<=3600)
+					document.getElementById(rect.toString()).style.fill="#B7CEE5";
+				else if(time<=7200)
+					document.getElementById(rect.toString()).style.fill="#C1B7E8";
+				else if(time<=10800)
+					document.getElementById(rect.toString()).style.fill="#71D39D";
+				else
+					document.getElementById(rect.toString()).style.fill="black";
+		  document.getElementById("mac").textContent="";
+		  document.getElementById("rssi").textContent="";
+		  document.getElementById("time").textContent="";
 		}
 		function highLightRow(row){
 			alert("into highLightRow()");
 		}
 	</script>
 	<head>
-	<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-    	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<title>main page</title>
 		<style type="text/css">
 			table tbody {
@@ -49,12 +67,14 @@ int pr=2;
 				display: table;
 				width: 100%;
 				table-layout: fixed;
+				cursor:pointer;
 			}
 			table thead {
 				width: calc(100% - 1em)
 			}
 			table thead th {
 				background: #ccc;
+				
 			}
 			#circle{
 				width:800px;
@@ -64,13 +84,18 @@ int pr=2;
 			#info{
 				width:400px;
 				height:800px;
+				margin-top:20px;
 				float:left;
 			}
 			#box{
+			    position:absolute;
+			    left:600px;
+			    top:680px;
 			    width:250px;
 			    height:200px;
 			    border:2px solid #6C6D69;
 			    border-radius:4px; 
+			    float:left;
 			}
 			 #selecttra{
 		        position:absolute;
@@ -131,12 +156,29 @@ int pr=2;
 		    	background-color : transparent;  
 		    	float:left;
 		    }
+		    #cricletittle{
+		        position:absolute;
+		        top:90px;
+		        left:10px;
+		        float:left;
+		    }
 		    span{
 		       cursor:pointer;
 		    }
 		    a{
 			  text-decoration:none;
+			  out-line: none;
+			  color: #*****;
 			}
+			a:hover{
+			  text-decoration:none;
+			}
+			#tittlebox{
+			   width:100%;
+			   height:87px;
+			   background-color:#F8F8F8;
+		       cursor:pointer;
+		    }
 		</style>
 		<script type="text/javascript">
 			function playtra(){
@@ -154,54 +196,171 @@ int pr=2;
 		        if(a.style.display=="block") a.style.display = "none";
 		        else a.style.display = "block";
 		    }
-		    
-		    function selected(a){
-		        //下拉选项显示后，给”item“添加点击事件：点击隐藏下拉列表
-		        var b = document.getElementById("menu");
-		        b.style.display = "none";
-		        //讲选中项的值放到“sel“里显示
-		        var txt = a.innerText;
-		        document.getElementById("sel").innerText = txt;
-		    }
 		    function pathfly(mac){
-		         window.location="/path"+"?mac="+mac+"&minute=9999999";
+	           var params = {};
+			   params.mac = mac;
+		     $.ajax({
+			   			type:"post",
+			   			url:"/pathCount",
+			   			data:params,
+			   			success:function(data){
+			   			    var longth=data;
+			   			    if(longth==0){
+			   			        alert("该MAC无路径！");
+			   			    }else{
+			   			        window.location="/path"+"?mac="+mac; 
+			   			    }         
+			   			},
+			   			error:function(){
+			   				alert("error...");
+			   			}
+			   		});
+		    }
+		    function path(){
+	           var params = {};
+	           var mac = document.getElementById("searchmac").value;
+			   params.mac = mac;
+		     $.ajax({
+			   			type:"post",
+			   			url:"/pathCount",
+			   			data:params,
+			   			success:function(data){
+			   			    var longth=data;
+			   			    if(longth==0){
+			   			        alert("该MAC无路径！");
+			   			    }else{
+			   			        window.location="/path"+"?mac="+mac; 
+			   			    }         
+			   			},
+			   			error:function(){
+			   				alert("error...");
+			   			}
+			   		});
 		    }
 		    function linkpathfly(mac){
-		         window.location="/linkpath"+"?mac="+mac+"&minute=9999999";
+		                var params = {};
+				        params.mac = mac; 
+		                $.ajax({
+					   			type:"post",
+					   			url:"/pathCount",
+					   			data:params,
+					   			success:function(data){
+					   			    var longth=data;
+					   			    if(longth==0){
+					   			        alert("该MAC无路径！");
+					   			    }else{
+					   			        window.location="/linkPath?mac="+mac;
+					   			    }         
+					   			},
+					   			error:function(){
+					   				alert("error...");
+					   			}
+					   		});
 		    }
-		    function timefly(time){
-		         window.location="/index?minute="+time;
-		    }
+		    function timefly(time) {
+                var params = {};
+                params.minute = time;
+                $.ajax({
+                    url: "/setMinute",
+                    type: "Post",
+                    data: params,
+                    success: function (resp) {
+                        location.reload();
+                    },
+                    error: function (jqXHR, textstatus) {
+                        alert(textstatus);
+                    }
+                });
+            }
+            function therssi(id,rssi){
+                var params = {};
+                params.id = id;
+                params.rssi = rssi;
+                $.ajax({
+                    url:"/seeker_count",
+                    type:"Post",
+                    data:params,
+                    success:function(data){
+                        var rssilength=data;
+                        if(rssilength==0){
+                            alert("该强度无信号！");
+                        }else{
+                            window.location="/seeker?id="+id+"&rssi="+rssi;
+                        }
+                    },
+                    error:function(jqXHR,textstatus){
+                        alert(textstatus);
+                    }
+                });
+            }
 	</script>
 	</head>
 	<body>
 	<div id="tittlebox">
-  <div id="now" class="panel panel-success"><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
-  <div id="other" class="panel panel-info" onclick="playtra()"><font color="blue" size="5" >轨迹跟踪</font></div>
+  <div id="now" ><a href="index?minute=6000" target="right"><font color="#23527C" size="5" >人群观测</font></a></div>
+  <div id="other"  onclick="playtra()"><font color="gray" size="5" >轨迹跟踪</font></div>
   <div id="selecttra"><%int m=0;
   for(int i=0;i<seekers.size();i++){ 
        if(m>=9) break;
           for(int j=0;j<listInfos.get(i).size();j++){
                m++;
                if(m>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
+           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
     <% } }%></div>
-  <div id="other" class="panel panel-info" onclick="playlink()"><font color="blue" size="5" >折线路径</font></div>
+  <div id="other"  onclick="playlink()"><font color="gray" size="5" >折线路径</font></div>
   <div id="selectlink"><%int c=0;
   for(int i=0;i<seekers.size();i++){ 
        if(c>=9) break;
           for(int j=0;j<listInfos.get(i).size();j++){
                c++;
                if(c>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
+           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
     <% } }%></div>
-  <div id="other" class="panel panel-info" onclick="playtime()"><font color="blue" size="5" >时间选取</font></div>
+  <div id="other" onclick="playtime()"><font color="gray" size="5" >时间选取</font></div>
   <div id="selecttime">
-          <span  onclick="timefly(60);" >1小时内</span><br>
-          <span  onclick="timefly(120);" >2小时内</span><br>
-          <span  onclick="timefly(240);" >4小时内</span><br>
-          <span  onclick="timefly(9999999);" >所有</span><br>
+          <span  onclick="timefly(5)" >最近五分钟</span><br>
+          <span  onclick="timefly(60)" >最近一小时</span><br>
+          <span  onclick="timefly(1440)" >最近一天</span><br>
+          <span  onclick="timefly(4320)" >最近三天</span><br>
+          <span  onclick="timefly(525600)" >所有</span><br>
   </div></div>
+	  <div id="cricletittle">
+	      <h4>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
+			 <rect  width="10" height="10" style="fill:#B7CEE5;stroke:pink;stroke-width:0;opacity:0.5" /></svg>1个小时内&nbsp;&nbsp;&nbsp;&nbsp;	
+			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
+			<rect  width="10" height="10" style="fill:#C1B7E8;stroke:pink;stroke-width:0;opacity:0.5" /></svg>1-2个小时内&nbsp;&nbsp;&nbsp;&nbsp;
+			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
+			<rect  width="10" height="10" style="fill:#71D39D;stroke:pink;stroke-width:0;opacity:0.5" /></svg>2-4个小时内&nbsp;&nbsp;&nbsp;&nbsp;
+			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
+			<rect  width="10" height="10" style="fill:black;stroke:pink;stroke-width:0;opacity:0.5" /></svg>4小时外&nbsp;&nbsp;&nbsp;&nbsp;
+		
+	  <div  class="dropdown">
+			<button type="button" class="btn dropdown-toggle" id="dropdownMenu1" 
+					data-toggle="dropdown">
+				       信号强度
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+				<li role="presentation">
+					<a role="menuitem" tabindex="-1" onclick="therssi('<%=seeker_id%>',-14)">14</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" tabindex="-1" onclick="therssi('<%=seeker_id%>',-43)">43</a>
+				</li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" onclick="therssi('<%=seeker_id%>',-72)">72</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" tabindex="-1" onclick="therssi('<%=seeker_id%>',-101)">101</a>
+				</li>
+				<li role="presentation">
+					<a role="menuitem" tabindex="-1" onclick="therssi('<%=seeker_id%>',-130)">130</a>
+				</li>
+			</ul>
+		</div>
+		</h4>
+	  </div>
 	<div>
 		<div id="circle">
 		<svg width=800 height=800 xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -221,25 +380,29 @@ int pr=2;
 				//秒数
 				long timeGap=(now.getTime()-infos.get(i).getTime().getTime())/1000;
 				if(timeGap<=3600)
-					fillColor="red";
+					fillColor="#B7CEE5";
 				else if(timeGap<=7200)
-					fillColor="orange";
+					fillColor="#C1B7E8";
 				else if(timeGap<=10800)
-					fillColor="yellow";
+					fillColor="#71D39D";
 				else
 					fillColor="black";
 			%>
 				<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-				  <rect 
-					onmouseover="showInfo('<%=infos.get(i).getMac() %>',<%=infos.get(i).getRssi() %>,'<%=infos.get(i).getTime().toLocaleString() %>')"
-				  onclick="searchMac('<%=infos.get(i).getMac() %>')"
-				  id=<%="rect"+i %> x=<%=x0+(Double)coordinates.get(i).get("x") %> y=<%=y0+(Double)coordinates.get(i).get("y") %> width="10" height="10" style="fill:<%=fillColor %>;stroke:pink;stroke-width:0;opacity:0.5" />
-				</svg>
+				  <rect onclick="pathfly('<%=infos.get(i).getMac() %>')" onmouseover="search(<%=infos.get(i).getId() %>,'<%=infos.get(i).getMac() %>',<%=infos.get(i).getRssi() %>,'<%=infos.get(i).getTime().toLocaleString() %>')"
+					    id="rect<%=infos.get(i).getId()%>" x=<%=x0+(Double)coordinates.get(i).get("x") %> y=<%=y0+(Double)coordinates.get(i).get("y") %> width="10" height="10" style="fill:<%=fillColor %>;stroke:pink;stroke-width:0;opacity:0.5" />
+		       </svg>
 			<%} %>
 			<circle cx=<%=x0%> cy=<%=y0%> r=<%=pr%> stroke="#8A2BE2" stroke-width="0" fill="#8A2BE2" />
 		</svg>
+		<script type="text/javascript">
+		</script>
 		</div>
-		
+		<div id="box">
+				<h3 id="mac" style="margin-left:20px"></h3>
+				<h3 id="rssi" style="margin-left:20px"></h3>
+				<h3 id="time" style="margin-left:20px"></h3>
+	   </div>
 		<div id="info">
 			<table id="macTable" width="100%" border="1">
 			<thead>
@@ -250,37 +413,22 @@ int pr=2;
 			<tbody>
 				<% for(int i=0;i<infos.size();++i) {%>
 					<tr>
-						<td id=<%= "mac"+i %> align="center" onclick="searchMac('<%=infos.get(i).getMac() %>')"><%=infos.get(i).getMac()%></td>
+					   <%  Date now =new Date();
+					   long TimeGap=(now.getTime()-infos.get(i).getTime().getTime())/1000; %>
+						<td id=<%= "mac"+i %> align="center" onmouseover="searchMac(<%=infos.get(i).getId() %>,'<%=infos.get(i).getMac() %>',<%=infos.get(i).getRssi() %>,'<%=infos.get(i).getTime().toLocaleString() %>')" 
+						 onclick="pathfly('<%=infos.get(i).getMac() %>')"
+						onmouseout="searchOut('<%=infos.get(i).getId() %>','<%=TimeGap%>')"
+						><%=infos.get(i).getMac()%></td>
 					</tr>
 				<%}%>
 			</tbody>
 			</table>
-			<br><h4>
-			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
-			 <rect  width="10" height="10" style="fill:red;stroke:pink;stroke-width:0;opacity:0.5" /></svg>1个小时内
-			</h4><h4>
-			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
-			<rect  width="10" height="10" style="fill:orange;stroke:pink;stroke-width:0;opacity:0.5" /></svg>1-2个小时内
-			</h4><h4>
-			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
-			<rect  width="10" height="10" style="fill:yellow;stroke:pink;stroke-width:0;opacity:0.5" /></svg>2-4个小时内
-			</h4><h4>
-			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
-			<rect  width="10" height="10" style="fill:black;stroke:pink;stroke-width:0;opacity:0.5" /></svg>4小时外
-			</h4>
 			
-			<form action="/path" method="get">
-				<h3>
-				针对MAC搜索:&nbsp&nbsp<input type="text" name="mac"/>
-				<input type="submit" value="搜索">
-				</h3>
-			</form>
-			<div id="box">
-				<h2 id="mac" style="margin-left:20px"></h2>
-				<h2 id="rssi" style="margin-left:20px"></h2>
-				<h2 id="time" style="margin-left:20px"></h2>
-			</div>
-		  </div>
+				<h4>
+				针对MAC搜索:&nbsp&nbsp<input id="searchmac" type="text"  value="<%= infos.get(0).getMac() %>"/>
+				<input type="button" onclick="path();" value="搜索轨迹">
+               </h4>
+           </div>
 		</div>
 </body>
 

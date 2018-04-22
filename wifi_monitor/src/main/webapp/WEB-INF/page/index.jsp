@@ -5,6 +5,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
 //每个seeker对应的信息，下标与 seekers 一一对应
 List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
+    System.out.println(listInfos.get(0).isEmpty());
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -13,6 +14,7 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
     <base href="<%=basePath%>">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=4IU3oIAMpZhfWZsMu7xzqBBAf6vMHcoa"></script>
     <style type="text/css">
     html,body{
@@ -37,6 +39,7 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     	white-space:-moz-pre-wrap;
     	word-wrap:break-word;
     }
+    
     #selecttra{
         position:absolute;
         left:23%;
@@ -93,15 +96,21 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     	width:23%;
     	height:40px;
     	padding-top:15px; 
-    	text-align: center;
-    	background-image:url(shade.png);
-    	background-repeat :no-repeat ;
-    	background-color : transparent;  
+    	text-align: center; 
     	float:left;
     }
     a{
 	  text-decoration:none;
 	}
+	a:hover{
+	  text-decoration:none;
+	}
+	#box{
+	   width:100%;
+	   height:87px;
+	   background-color:#F8F8F8;
+       cursor:pointer;
+    }
 </style>
     
     <title>index</title>
@@ -125,32 +134,56 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
         if(a.style.display=="block") a.style.display = "none";
         else a.style.display = "block";
     }
-    
-    function selected(a){
-        //下拉选项显示后，给”item“添加点击事件：点击隐藏下拉列表
-        var b = document.getElementById("menu");
-        b.style.display = "none";
-        //讲选中项的值放到“sel“里显示
-        var txt = a.innerText;
-        document.getElementById("sel").innerText = txt;
-    }
     function pathfly(mac){
-         window.location="/path"+"?mac="+mac+"&minute=9999999";
+           var params = {};
+		   params.mac = mac;
+		     $.ajax({
+			   			type:"post",
+			   			url:"/pathCount",
+			   			data:params,
+			   			success:function(data){
+			   			    var longth=data;
+			   			    if(longth==0){
+			   			        alert("该MAC无路径！");
+			   			    }else{
+			   			        window.location="/path"+"?mac="+mac; 
+			   			    }         
+			   			},
+			   			error:function(){
+			   				alert("error...");
+			   			}
+			   		});
     }
     function linkpathfly(mac){
-         window.location="/linkpath"+"?mac="+mac+"&minute=9999999";
+                var params = {};
+		        params.mac = mac; 
+                $.ajax({
+			   			type:"post",
+			   			url:"/pathCount",
+			   			data:params,
+			   			success:function(data){
+			   			    var longth=data;
+			   			    if(longth==0){
+			   			        alert("该MAC无路径！");
+			   			    }else{
+			   			        window.location="/linkPath?mac="+mac;
+			   			    }         
+			   			},
+			   			error:function(){
+			   				alert("error...");
+			   			}
+			   		});
     }
     function timefly(time){
-         var params = {};
+           var params = {};
 		   params.minute = time;
 	       $.ajax({
 	            url:"/setMinute",
 	            type:"Post",
 	            data:params,
 	            success:function(resp){
-	                alert("success");
-	                alert(resp);
-	            },
+	                location.reload();
+		            },
 	            error:function(jqXHR,textstatus){
 	                alert(textstatus);
 	            }
@@ -161,31 +194,32 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
   
   <body>
   <div id="box">
-  <div id="now"><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
-  <div id="other" onclick="playtra()"><font color="blue" size="5" >轨迹跟踪</font></div>
+  <div id="now"><a href="index?minute=6000" target="right"><font color="#23527C" size="5" >人群观测</font></a></div>
+  <div id="other" onclick="playtra()"><font color="gray" size="5" >轨迹跟踪</font></div>
   <div id="selecttra"><%int m=0;
   for(int i=0;i<seekers.size();i++){ 
        if(m>=9) break;
           for(int j=0;j<listInfos.get(i).size();j++){
                m++;
                if(m>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
+           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
     <% } }%></div>
-  <div id="other" onclick="playlink()"><font color="blue" size="5" >折线路径</font></div>
+  <div id="other" onclick="playlink()"><font color="gray" size="5" >折线路径</font></div>
   <div id="selectlink"><%int now=0;
   for(int i=0;i<seekers.size();i++){ 
        if(now>=9) break;
           for(int j=0;j<listInfos.get(i).size();j++){
                now++;
                if(now>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
+           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
     <% } }%></div>
-  <div id="other" onclick="playtime()"><font color="blue" size="5" >时间选取</font></div>
+  <div id="other" onclick="playtime()"><font color="gray" size="5" >时间选取</font></div>
   <div id="selecttime">
-          <span  onclick="timefly(60);" >1小时内</span><br>
-          <span  onclick="timefly(120);" >2小时内</span><br>
-          <span  onclick="timefly(240);" >4小时内</span><br>
-          <span  onclick="timefly(9999999999999);" >所有</span><br>
+          <span  onclick="timefly(5)" >最近五分钟</span><br>
+          <span  onclick="timefly(60)" >最近一小时</span><br>
+          <span  onclick="timefly(1440)" >最近一天</span><br>
+          <span  onclick="timefly(4320)" >最近三天</span><br>
+          <span  onclick="timefly(525600)" >所有</span><br>
   </div></div>
   <div style="width:1608px;height:775px;border:gray solid 0px;" id="dituContent"></div> 
   </body>
@@ -261,11 +295,11 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
         var point=new BMap.Point(<%=X%>,<%=Y%>)
         var start = new BMap.Marker(point);
         var opts = {
-	      width : 80,     // 信息窗口宽度
-	      height: 30,     // 信息窗口高度
-	      title : " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   当前：   " , // 信息窗口标题     
+	      width : 50,     // 信息窗口宽度
+	      height: 20,     // 信息窗口高度
+	      title : " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前：<%=listInfos.get(i).size()%>个信号   " , // 信息窗口标题     
 	    }
-	    var infoWindow = new BMap.InfoWindow("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=listInfos.get(i).size()%>个信号", opts);  // 创建信息窗口对象 
+	    var infoWindow = new BMap.InfoWindow("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", opts);  // 创建信息窗口对象 
 	    setmouse(start,infoWindow);
         mp.addOverlay(start);
         var circle = new BMap.Circle(point,250,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
@@ -274,10 +308,11 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
           var angle=Math.random()*360;
           var myCompOverlay = new ComplexCustomOverlay(new BMap.Point(<%=X%>-0.000017*<%=listInfos.get(i).get(j).getRssi()%>*Math.cos(angle),<%=Y%>-0.000017*<%=listInfos.get(i).get(j).getRssi()%>*Math.sin(angle)));
           mp.addOverlay(myCompOverlay);
-        <%}%>
+        <%}
+            if(listInfos.get(i).isEmpty()==false){%>
         start.addEventListener("click", function(){
-              window.location("/seeker?id="+<%= seekers.get(i).getId()%>+"&minute=6000&rssi=-130");
-        })
+              window.location("/seeker?id="+<%= seekers.get(i).getId()%>+"&rssi=-130");
+        })<%}%>
 	    window.map = mp;
 	   <%}%>
 	    function setmouse(marck,infoWindow){

@@ -33,6 +33,7 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
     	float:left;
     }
     #dituContent{
+        margin-top:10px;
     	float: left;
     }
     #selecttra{
@@ -89,9 +90,6 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
 		    	height:40px;
 		    	padding-top:15px; 
 		    	text-align: center;
-		    	background-image:url(shade.png);
-		    	background-repeat :no-repeat ;
-		    	background-color : transparent;  
 		    	float:left;
 		    }
 		    span{
@@ -100,6 +98,15 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
 		    a{
 			  text-decoration:none;
 			}	 
+			a:hover{
+			  text-decoration:none;
+			}
+			#tittlebox{
+			   width:100%;
+			   height:87px;
+			   background-color:#F8F8F8;
+		       cursor:pointer;
+		    }
 </style>
     <title>linkPath</title>
     
@@ -122,54 +129,92 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
 		        if(a.style.display=="block") a.style.display = "none";
 		        else a.style.display = "block";
 		    }
-		    
-		    function selected(a){
-		        //下拉选项显示后，给”item“添加点击事件：点击隐藏下拉列表
-		        var b = document.getElementById("menu");
-		        b.style.display = "none";
-		        //讲选中项的值放到“sel“里显示
-		        var txt = a.innerText;
-		        document.getElementById("sel").innerText = txt;
-		    }
 		    function pathfly(mac){
-		         window.location="/path"+"?mac="+mac+"&minute=9999999";
+           var params = {};
+		   params.mac = mac;
+		     $.ajax({
+			   			type:"post",
+			   			url:"/pathCount",
+			   			data:params,
+			   			success:function(data){
+			   			    var longth=data;
+			   			    if(longth==0){
+			   			        alert("该MAC无路径！");
+			   			    }else{
+			   			        window.location="/path"+"?mac="+mac; 
+			   			    }         
+			   			},
+			   			error:function(){
+			   				alert("error...");
+			   			}
+			   		});
 		    }
 		    function linkpathfly(mac){
-		         window.location="/linkpath"+"?mac="+mac+"&minute=9999999";
+		                var params = {};
+				        params.mac = mac; 
+		                $.ajax({
+					   			type:"post",
+					   			url:"/pathCount",
+					   			data:params,
+					   			success:function(data){
+					   			    var longth=data;
+					   			    if(longth==0){
+					   			        alert("该MAC无路径！");
+					   			    }else{
+					   			        window.location="/linkPath?mac="+mac;
+					   			    }         
+					   			},
+					   			error:function(){
+					   				alert("error...");
+					   			}
+					   		});
 		    }
 		    function timefly(time){
-		         window.location="/index?minute="+time;
+		           var params = {};
+				   params.minute = time;
+			       $.ajax({
+			            url:"/setMinute",
+			            type:"Post",
+			            data:params,
+			            success:function(resp){
+			                location.reload();
+			            },
+			            error:function(jqXHR,textstatus){
+			                alert(textstatus);
+			            }
+			        });
 		    }
 	</script>
   </head>
   
   <body>
   <div id="tittlebox">
-  <div id="other" class="panel panel-info"><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
-  <div id="other" class="panel panel-info" onclick="playtra()"><font color="blue" size="5" >轨迹跟踪</font></div>
+  <div id="other" ><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
+  <div id="other" onclick="playtra()"><font color="gray" size="5" >轨迹跟踪</font></div>
   <div id="selecttra"><%int m=0;
   for(int i=0;i<seekers.size();i++){ 
        if(m>=9) break;
           for(int j=0;j<listInfos.get(i).size();j++){
                m++;
                if(m>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
+           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
     <% } }%></div>
-  <div id="now" class="panel panel-success" onclick="playlink()"><font color="blue" size="5" >折线路径</font></div>
+  <div id="now" onclick="playlink()"><font color="#23527C" size="5" >折线路径</font></div>
   <div id="selectlink"><%int c=0;
   for(int i=0;i<seekers.size();i++){ 
        if(c>=9) break;
           for(int j=0;j<listInfos.get(i).size();j++){
                c++;
                if(c>=9) break;%>
-           <span value="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.value)"><%=listInfos.get(i).get(j).getMac() %></span><br>
+           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
     <% } }%></div>
-  <div id="other" class="panel panel-info" onclick="playtime()"><font color="blue" size="5" >时间选取</font></div>
+  <div id="other" onclick="playtime()"><font color="gray" size="5" >时间选取</font></div>
   <div id="selecttime">
-          <span  onclick="timefly(60);" >1小时内</span><br>
-          <span  onclick="timefly(120);" >2小时内</span><br>
-          <span  onclick="timefly(240);" >4小时内</span><br>
-          <span  onclick="timefly(9999999);" >所有</span><br>
+          <span  onclick="timefly(5)" >最近五分钟</span><br>
+          <span  onclick="timefly(60)" >最近一小时</span><br>
+          <span  onclick="timefly(1440)" >最近一天</span><br>
+          <span  onclick="timefly(4320)" >最近三天</span><br>
+          <span  onclick="timefly(525600)" >所有</span><br>
   </div></div>
   <div id="box">
   <div style="width:1370px;height:860px;border:0px solid gray;" id="dituContent"></div>

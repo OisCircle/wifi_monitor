@@ -8,6 +8,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     <base href="<%=basePath%>">
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>首页</title>
@@ -42,20 +45,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     #libox{
     margin-top:50px;
     }
-    
+    .my{
+        color:#777474;
+        font-size:23px;
+    }
+    .my:hover {
+        color:black;
+    }
+    .my:active{
+        color:#337AB7;
+    }
+    a:focus { 
+	   outline: none; 
+	} 
  </style>
   <body>
     <ul style="margin-left:30px">
-        <li><div id="libox"><span class="glyphicon glyphicon-list-alt" style="font-size: 23px;"></span><a style="text-decoration:none;" href="introduction" target="right"><font color="#777474"  size="5">系统用户介绍</font></a></div></li>
+        <li><div id="libox"><span class="glyphicon glyphicon-list-alt" style="font-size: 23px;"></span><a class="my" style="text-decoration:none;" href="introduction" target="right">系统用户介绍</a></div></li>
         <li><div id="libox" onclick="playequip()"><span class="glyphicon glyphicon-cog" style="font-size: 23px;"></span><font color="#777474" size="5">系统管理</font></div></li>
         <div id="liboxequip" style="display:none;margin-left:20px;">
         	<ul>
-	           <li><span class="glyphicon glyphicon-globe" style="font-size: 23px;"><a style="text-decoration:none;" href="map" target="right"></span><font color="#777474" size="5">地图管理</font></a></li>
-               <li><span class="glyphicon glyphicon-asterisk" style="font-size: 23px;"><a style="text-decoration:none;" href="equip" target="right"></span><font color="#777474" size="5">设备管理</font></a></li>
+	           <li><span class="glyphicon glyphicon-globe" style="font-size: 23px;"><a class="my" style="text-decoration:none;" href="map" target="right"></span>地图管理</a></li>
+               <li><span class="glyphicon glyphicon-asterisk" style="font-size: 23px;"><a class="my" style="text-decoration:none;" href="equip" target="right"></span>设备管理</a></li>
            </ul>
         </div>
-        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><a style="text-decoration:none;" href="index?minute=600000" target="right"><font color="#777474" size="5">百度地图数据展示</font></a></div></li>
-        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><font color="#777474" size="5">Echart地图实时展示</font></div></li>
+        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><a class="my" style="text-decoration:none;" href="index" target="right">百度地图数据展示</a></div></li>
+        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><a class="my" style="text-decoration:none;" href="indoor" target="right">Echart地图实时展示</a></div></li>
       </ul>
   </body>
 </html>

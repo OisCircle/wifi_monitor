@@ -23,6 +23,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-  	<img alt="image" src="path/abc.jpg">
+  	<div class="background" style="background-image: url(path/多少.jpg); width:100%; height: 100%;">
+  	<canvas id="myCanvas" width="200" height="100">
+	</canvas>
+	</div>
+    <script type="text/javascript">
+	var c=document.getElementById("myCanvas");
+	var cxt=c.getContext("2d");
+	cxt.moveTo(10,10);
+	cxt.lineTo(150,50);
+	cxt.lineTo(10,50);
+	cxt.stroke();
+	
+	</script>
   </body>
 </html>

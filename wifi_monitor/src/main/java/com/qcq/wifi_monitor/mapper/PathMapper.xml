@@ -4,12 +4,26 @@
 
 <mapper namespace="com.qcq.wifi_monitor.mapper.PathMapper" >
 	<insert id="insertPaths" parameterType="java.util.List">
-		insert into path (mac,start_x,start_y,end_x,end_y,start_time,end_time) values
+		insert into path (mac,start_x,start_y,end_x,end_y,start_time,end_time,seekerIdFrom,seekerIdTo) values
 		<foreach collection="list" item="item" index="index" separator=",">
-			(#{item.mac},#{item.start_x},#{item.start_y},#{item.end_x},#{item.end_y},#{item.start_time},#{item.end_time})
+			(#{item.mac},#{item.start_x},#{item.start_y},#{item.end_x},
+            #{item.end_y},#{item.start_time},#{item.end_time},#{item.seekerIdFrom},
+            #{item.seekerIdTo})
 		</foreach>
 	</insert>
 	<select id="selectByMac" parameterType="String" resultType="Path">
 		select * from path where mac=#{mac}
 	</select>
+
+    <select id="selectCountByMac" parameterType="String" resultType="int">
+        select count(mac) from path where mac=#{mac}
+    </select>
+
+	<select id="selectByMacAndZoneId" resultType="Path">
+        select * from path p where 
+					(p.seekerIdFrom in(select id from seeker where zone_id=#{zoneId})
+          and p.seekerIdTo in(select id from seeker where zone_id=#{zoneId}))
+          and mac=#{mac}
+    </select>
+
 </mapper>

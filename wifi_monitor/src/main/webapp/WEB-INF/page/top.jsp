@@ -52,7 +52,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
        
 	}
 	body{ /*整体颜色*/
-		background-color:#F8F8F8;
+		background-color:#563D7C;
+	}
+	#top{
+	    border-bottom:1px solid  gray;
 	}
 	#tittle{
 	   width:700px;
@@ -76,9 +79,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  	}
  </style>
   <body>
-  <div>
+  <div id="top">
     <div id="tittle">
-       <font color="#39AEFF"size="6" font-style="italic">大人流预警及人员轨迹跟踪系统</font>
+       <font color="white"size="6" font-style="italic">大人流预警及人员轨迹跟踪系统</font>
       </div>
     <div id="showtime" >
        	  <span class="glyphicon glyphicon-calendar"></span>

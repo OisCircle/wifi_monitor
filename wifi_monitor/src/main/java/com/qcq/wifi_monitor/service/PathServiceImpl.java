@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.qcq.wifi_monitor.dto.IndoorPathDTO;
 import com.qcq.wifi_monitor.entity.Path;
 import com.qcq.wifi_monitor.mapper.PathMapper;
 @Service
@@ -17,4 +18,13 @@ public class PathServiceImpl implements PathService{
 		return mapper.selectByMac(mac);
 	}
 
+	@Override
+	public int selectCountByMac(String mac) {
+		return mapper.selectCountByMac(mac);
+	}
+
+	@Override
+	public List<Path> selectByMacAndZoneId(IndoorPathDTO dto) {
+		return mapper.selectByMacAndZoneId(dto);
+	}
 }

@@ -7,7 +7,17 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.validation.constraints.Min;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPObject;
+import com.oracle.jrockit.jfr.InstantEvent;
+import com.qcq.wifi_monitor.service.PathService;
 import com.qcq.wifi_monitor.vo.Minute;
+import com.qcq.wifi_monitor.vo.SelectedId;
+
+import jdk.nashorn.internal.runtime.JSONFunctions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -69,6 +79,7 @@ public class SeekerController {
 		mv.setViewName("index");
 		return mv;
 	}
+
 	@RequestMapping(value="/seeker")
 	public ModelAndView seeker(ModelAndView mv,int id,int rssi){
 		SeekerFilterDTO dto=new SeekerFilterDTO(id,Minute.getMinute(),rssi);
@@ -91,6 +102,15 @@ public class SeekerController {
 		mv.getModelMap().put("coordinates",coordinates);
 		mv.setViewName("seeker");
 		return mv;
+	}
+
+	@RequestMapping("/seeker_count")
+	@ResponseBody
+	public int seeker_count(int id,int rssi) {
+		SeekerFilterDTO dto=new SeekerFilterDTO(id,Minute.getMinute(),rssi);
+		List<Info> infos=infoService.selectLatestInfosByMinute(dto);
+
+		return infos.size();
 	}
 	@RequestMapping(value="/latestMinute")
 	public ModelAndView latestMinute(ModelAndView mv,int id,int rssi){
@@ -151,26 +171,96 @@ public class SeekerController {
 	
 	//根据区域id取出关联的seeker
 	@RequestMapping(value="/indoor")
-	public ModelAndView indoor(ModelAndView mv,int zone_id){
+	public ModelAndView indoor(ModelAndView mv){
+	   SeekerFilterDTO dto=new SeekerFilterDTO(0,Minute.getMinute(),-130);
+
+	   List<Seeker> seekers=seekerService.selectByZoneId(SelectedId.getSelectId());
+
+	   mv.getModelMap().put("seekers", seekers);
+
+
+
+	   //将每一个seeker最新探测到的所有信号们放入List数组
+
+	   List<List<Info>> listInfos=new ArrayList<List<Info>>();
+
+	   for(int i=0;i<seekers.size();++i){
+
+	      dto.setId(seekers.get(i).getId());
+
+	      listInfos.add(infoService.selectLatestInfos(dto));
+
+	   }
+
+	   mv.getModelMap().put("listInfos", listInfos);
+	   mv.setViewName("indoor");
+	   return mv;
+	}
+
+
+
+	//根据区域id取出关联的seeker
+
+	//由于兼容问题，indoor页面改为用json
+	@RequestMapping(value = "/indoor_seekers")
+	@ResponseBody
+	public List<Seeker> indoor_json_seekers(){
 		SeekerFilterDTO dto=new SeekerFilterDTO(0,Minute.getMinute(),-130);
-		List<Seeker> seekers=seekerService.selectByZoneId(zone_id);
-		mv.getModelMap().put("seekers", seekers);
-		
+		List<Seeker> seekers=seekerService.selectByZoneId(SelectedId.getSelectId());
+		return seekers;
+	}
+
+//	@RequestMapping(value = "/indoor_listInfos")
+//	@ResponseBody
+//	public List<List<Info>> indoor_json_listInfos(){
+//		SeekerFilterDTO dto=new SeekerFilterDTO(0,Minute.getMinute(),-130);
+//		List<Seeker> seekers=seekerService.selectByMac(SelectedId.getSelectId());
+//		//将每一个seeker最新探测到的所有信号们放入List数组
+//		List<List<Info>> listInfos=new ArrayList<List<Info>>();
+//		for(int i=0;i<seekers.size();++i){
+//			dto.setId(seekers.get(i).getId());
+//			System.out.println(infoService.selectLatestInfos(dto).size());
+//			listInfos.add(infoService.selectLatestInfos(dto));
+//		}
+//		return listInfos;
+//	}
+	@RequestMapping(value = "/indoor_listInfos")
+	@ResponseBody
+	public String indoor_json_listInfos(){
+		SeekerFilterDTO dto=new SeekerFilterDTO(0,Minute.getMinute(),-130);
+		List<Seeker> seekers=seekerService.selectByZoneId(SelectedId.getSelectId());
 		//将每一个seeker最新探测到的所有信号们放入List数组
-		List<List<Info>> listInfos=new ArrayList<List<Info>>();
+
+		JSONObject jsonObject=new JSONObject();
+
 		for(int i=0;i<seekers.size();++i){
 			dto.setId(seekers.get(i).getId());
-			listInfos.add(infoService.selectLatestInfos(dto));
+			List<Info> infoList=infoService.selectLatestInfos(dto);
+//			JSONObject jsonObject1=new JSONObject();
+			JSONArray jsonArray=new JSONArray();
+			for (int j = 0; j < infoList.size(); j++) {
+//				jsonObject1.put("inner obj"+j,JSON.toJSON(infoList.get(j)));
+				jsonArray.add(JSON.toJSON(infoList.get(j)));
+			}
+//			jsonObject.put("outer Obj" + i, jsonObject1);
+			jsonObject.put("Obj" + i, jsonArray);
 		}
-		mv.getModelMap().put("listInfos", listInfos);
-		
-		mv.setViewName("indoor");
-		return mv;
+		return jsonObject.toString();
 	}
 	@RequestMapping("/equip")
 	public ModelAndView equip(ModelAndView mv){
 		mv.setViewName("equip");
 		return mv;
 	}
-	
+
+	@RequestMapping("/getSeekersByZoneId")
+	@ResponseBody
+	public List<Seeker> getSeekersByZoneId() {
+		SeekerFilterDTO dto2=new SeekerFilterDTO(0,Minute.getMinute(),-130);
+
+		List<Seeker> seekers=seekerService.selectByZoneId(SelectedId.getSelectId());
+
+		return seekers;
+	}
+
 }

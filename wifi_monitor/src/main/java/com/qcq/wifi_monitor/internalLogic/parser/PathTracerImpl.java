@@ -110,7 +110,7 @@ public class PathTracerImpl implements PathTracer{
 				
 				
 //			if(timeGap>=minimumSecond&&timeGap<=maximumSecond){
-				Path path=new Path(-1, route.getMac(), seeker1.getX(), seeker1.getY(), seeker2.getX(), seeker2.getY(), time1, time2);
+				Path path=new Path(-1, route.getMac(), seeker1.getX(), seeker1.getY(), seeker2.getX(), seeker2.getY(), time1, time2,seeker1.getId(),seeker2.getId());
 				System.out.println("path:\n\n\n\n\n"+path);
 				return path;
 			}

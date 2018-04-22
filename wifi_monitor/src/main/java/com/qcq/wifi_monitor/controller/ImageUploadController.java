@@ -15,7 +15,7 @@ public class ImageUploadController {
 	@RequestMapping(value="/imageTest",method=RequestMethod.POST)
 	public ModelAndView imageTest(ModelAndView mv,MultipartFile file,String fileName){
 		System.out.println("fileName-->" + fileName);
-//		filePath = "C:\\wifi_monitor_local_resources\\images\\";
+//		filePath = "C:\\wifi_monitor_local_resources\\images\\"; 
 		System.out.println("filePath:"+filePath);
 		try {
 			FileUtil.uploadFile(file.getBytes(), filePath, fileName);
@@ -33,6 +33,12 @@ public class ImageUploadController {
 		mv.setViewName("imageTest");
 		return mv;
 	}
+	@RequestMapping(value="/imageTest2")
+	public ModelAndView imageTest(ModelAndView mv){
+		mv.setViewName("imageTest2");
+		return mv;
+	}
+
 	//上传图片
 	@RequestMapping(value="/imageUpload",method=RequestMethod.POST)
 	public String imageUpload(MultipartFile file,String fileName){

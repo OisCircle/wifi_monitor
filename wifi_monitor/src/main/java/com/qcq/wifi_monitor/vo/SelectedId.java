@@ -1,13 +1,13 @@
 package com.qcq.wifi_monitor.vo;
 
 public class SelectedId {
-    int selectId;
+    static int selectId;
 
-    public int getSelectId() {
+    public static int getSelectId() {
         return selectId;
     }
 
-    public void setSelectId(int selectId) {
-        this.selectId = selectId;
+    public static void setSelectId(int selectId) {
+        SelectedId.selectId= selectId;
     }
 }

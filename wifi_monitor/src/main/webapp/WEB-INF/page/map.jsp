@@ -26,6 +26,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     var rowslength;
     var jsonmap=[];
 	function sendmap(row){
+	      var id;
+          $.ajax({
+	   			type:"post",
+	   			url:"/getSelectedId",
+	   			data:{},
+	   			success:function(data){
+	 				id=data;  
+	   			},
+	   			error:function(){
+	   				alert("error...");
+	   			}
+	   		});
 	   		$.ajax({
 	   			type:"post",
 	   			url:"/zoneSelectAll",
@@ -42,42 +54,55 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                clearCells[2].innerHTML="";
 		                clearCells[3].innerHTML="";
 		                clearCells[4].innerHTML="";
+		                clearCells[5].innerHTML="";
 		            }
 	 				for(var i=row;i<row+10&&i<jsonmap.length;i++){
 	                    var nowCells = nowRows[i-row].getElementsByTagName('td');
 	                    nowCells[0].innerHTML=i+1;
 	                    nowCells[1].innerHTML=jsonmap[i].name;
 	                    nowCells[2].innerHTML=jsonmap[i].description;
-	                    var oSpan=document.createElement("span");
+	                    var oinput=document.createElement("button");
 	                    var Text=document.createTextNode("编辑");
-	                    oSpan.setAttribute("id",i);
-	                    oSpan.setAttribute("class","glyphicon glyphicon-tasks");
-	                    oSpan.setAttribute("style","font-size: 23px;");
-	                    oSpan.setAttribute("onclick","openPop(this.id)");
+	                    oinput.setAttribute("id",i);
+	                    oinput.setAttribute("type","button");
+	                    oinput.setAttribute("class","btn btn-info");
+	                    oinput.setAttribute("data-toggle","button");
+	                    oinput.setAttribute("onclick","openPop(this.id)");
 	                    nowCells[3].innerHTML="";
-	                    nowCells[3].appendChild(oSpan);
-	                    nowCells[3].appendChild(Text);
-	                    var oCheckbox=document.createElement("input");
-	                    var myText=document.createTextNode("选用");
-	                    var delectspan=document.createElement("span");
-	                    var delectbox=document.createElement("div");
-	                    if(<%= session.getAttribute("selectedId") %>==jsonmap[i].id)
-	                    oCheckbox.setAttribute("checked","ture");
-	                    oCheckbox.setAttribute("type","radio");
-	                    oCheckbox.setAttribute("name","mapcheck");
-	                    oCheckbox.setAttribute("value",jsonmap[i].id);
-	                    oCheckbox.setAttribute("onclick","boxcheck(this.value,this.checked)");
-	                    delectbox.setAttribute("id","delect"+i)
-	                    delectbox.setAttribute("style", "margin-left:10px;display:none;");
-	                    delectspan.setAttribute("id", jsonmap[i].id);
-	                    delectspan.setAttribute("class", "glyphicon glyphicon-remove");
-	                    delectspan.setAttribute("style", "color:red;")
-	                    delectspan.setAttribute("onclick", "delect(this.id)");
-	                    delectbox.appendChild(delectspan);
-	                    nowCells[4].innerHTML="";
-	                    nowCells[4].appendChild(oCheckbox);
-	                    nowCells[4].appendChild(myText);
-	                    nowCells[4].appendChild(delectbox);
+	                    oinput.appendChild(Text);
+	                    nowCells[3].appendChild(oinput);   
+	                    if(id==jsonmap[i].id){
+		                    var Checkbox=document.createElement("button");
+		                    var CheckText=document.createTextNode("已选");
+		                    Checkbox.setAttribute("type","button");
+		                    Checkbox.setAttribute("class","btn btn-danger");
+		                    Checkbox.setAttribute("name","mapcheck");
+		                    Checkbox.setAttribute("data-toggle","button");
+		                    nowCells[4].innerHTML="";
+		                    Checkbox.appendChild(CheckText);
+	                        nowCells[4].appendChild(Checkbox);
+	                    }else{
+		                    var Checkbox=document.createElement("button");
+		                    var CheckText=document.createTextNode("选用");
+		                    Checkbox.setAttribute("type","button");
+		                    Checkbox.setAttribute("class","btn btn-success");
+		                    Checkbox.setAttribute("name","mapcheck");
+		                    Checkbox.setAttribute("value",jsonmap[i].id);
+		                    Checkbox.setAttribute("data-toggle","button");
+		                    Checkbox.setAttribute("onclick","boxcheck(this.value)");
+		                    nowCells[4].innerHTML="";
+		                    Checkbox.appendChild(CheckText);
+	                        nowCells[4].appendChild(Checkbox);
+	                    }
+	            		var delect=document.createElement("button");
+	            		var delectedText=document.createTextNode("删除");
+	            		delect.setAttribute("type","button");
+	            		delect.setAttribute("class","btn btn-warning");
+	                    delect.setAttribute("value",jsonmap[i].id);
+	                    delect.setAttribute("onclick","delect(this.value)");
+	                    nowCells[5].innerHTML="";
+	                    delect.appendChild(delectedText);
+	                    nowCells[5].appendChild(delect);
 	                }            
 	   			},
 	   			error:function(){
@@ -97,16 +122,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        else {nowrows+=10;
 	             sendmap(nowrows);
 	        }    
-	   }
-	   function openDelect(){
-	            for(var i=nowrows;i<=nowrows+10&&i<jsonmap.length;i++){
-	                var thisid="delect"+i;  
-	                if(document.getElementById(thisid.toString()).style.display=="block"){
-	                      document.getElementById(thisid.toString()).style.display="none";
-	                }else{
-	                      document.getElementById(thisid.toString()).style.display="block"
-	                }
-	            }
 	   }
 	   function openPop(id){
 	          document.getElementById("mapId").value=jsonmap[id].id;
@@ -151,8 +166,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			            type:"Post",
 			            data:params,
 			            success:function(resp){
-			                alert("success");
-			                alert(resp);
 			                sendmap(nowrows);
 			                document.getElementById("Pop").style.display="none";
 			            },
@@ -161,31 +174,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			            }
 			        }); 
 	          }
-	   }
-	   function AddMap(){
-	          if(review()){
-	               alert("名称重复，请修改！");
-	          }else{
-			       var params = {};
-		           params.name = document.getElementById("AddmapName").value;
-		           params.description = document.getElementById("Adddescription").value;
-		           params.x = document.getElementById("Addmap_X").value;
-		           params.y = document.getElementById("Addmap_Y").value;
-			       $.ajax({
-			            url:"/zoneAdd",
-			            type:"Post",
-			            data:params,
-			            success:function(resp){
-			                alert("success");
-			                alert(resp);
-			                sendmap(nowrows);
-			                document.getElementById("AddPop").style.display="none";
-			            },
-			            error:function(jqXHR,textstatus){
-			                alert(textstatus);
-			            }
-			        }); 
-	          }
+	          
 	   }
 	   function nonePop(){
 	          document.getElementById("Pop").style.display="none";
@@ -194,38 +183,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	          document.getElementById("AddPop").style.display="none";
 	   }
 	   function delect(id){
-	       alert(id);
-	       var params = {};
-		   params.id = id;
-	       $.ajax({
-	            url:"/zoneDelete",
-	            type:"Post",
-	            data:params,
-	            success:function(resp){
-	                alert("success");
-	                alert(resp);
-	                for(var i=nowrows;i<=nowrows+10&&i<jsonmap.length;i++){
-	                   var thisid="delect"+i;  
-	                  document.getElementById(thisid.toString()).style.display="none";
-	                 }
-	                sendmap(nowrows);
-	            },
-	            error:function(jqXHR,textstatus){
-	                alert(textstatus);
-	            }
-	        });
-	        
+	       if(confirm("是否确认删除?")){
+		       var params = {};
+			   params.id = id;
+		       $.ajax({
+		            url:"/zoneDelete",
+		            type:"Post",
+		            data:params,
+		            success:function(resp){
+		                sendmap(nowrows);
+		            },
+		            error:function(jqXHR,textstatus){
+		                alert(textstatus);
+		            }
+		        });
+	      }  
 	   }
-	   function boxcheck(id,checked){
+	   function boxcheck(id){
 	       var params = {};
 		   params.selectedId = id;
 	       $.ajax({
-	            url:"/sessionAttributeSetting",
+	            url:"/setSelectedId",
 	            type:"Post",
 	            data:params,
 	            success:function(resp){
-	                alert("success");
-	                alert(resp);
+	                sendmap(nowrows);
 	            },
 	            error:function(jqXHR,textstatus){
 	                alert(textstatus);
@@ -269,7 +251,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   <body>
      <table class="table table-bordered">
-	<caption>地图管理</caption>
+	<caption>地图管理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ps:选择的图片最好为1600*750的格式</caption>
    <thead>
       <tr class="active">
          <th>地图序号</th>
@@ -277,6 +259,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
          <th>地图说明</th>
          <th>地图编辑</th>
          <th>地图选取</th>
+         <th>删除</th>
       </tr>
    </thead>
    <tbody id="tbody">
@@ -286,22 +269,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
             <td></td>
         </tr>
         <tr>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
             <td></td>
             <td></td>
             <td></td>
@@ -314,22 +285,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
             <td></td>
         </tr>
         <tr>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
             <td></td>
             <td></td>
             <td></td>
@@ -342,8 +301,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -356,10 +349,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	     <form class="form-horizontal" role="form">
 		    <div class="form-group">
 				<label class="col-sm-2 control-label">地图名称：</label>
-				<div class="col-sm-10">
 					<input class="form-control" id="mapName" type="text">
 					<input type="hidden" id="mapId"> 
-				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-2 control-label">经度_x：</label>
@@ -383,38 +374,43 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
    </div>
    <div id="AddPop">
 	   <h4>修改地图信息</h4>
-	     <form class="form-horizontal" role="form">
+	     <form enctype="multipart/form-data" method="post"
+		action="/zoneAdd" class="form-horizontal" role="form">
+		    <div class="form-group">
+				<label class="col-sm-2 control-label">选择图片：</label>
+				<div class="col-sm-10">
+					<input class="form-control" type="file" name="file" />
+				</div>
+			</div>
 		    <div class="form-group">
 				<label class="col-sm-2 control-label">地图名称：</label>
 				<div class="col-sm-10">
-					<input class="form-control" id="AddmapName" type="text">
-					<input type="hidden" id="mapId"> 
+					<input class="form-control" name="name" type="text">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-2 control-label">经度_x：</label>
 				<div class="col-sm-10">
-					<input class="form-control" id="Addmap_X" type="text">
+					<input class="form-control" name="x" type="text">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-2 control-label">纬度_y：</label>
 				<div class="col-sm-10">
-					<input class="form-control" id="Addmap_Y" type="text">
+					<input class="form-control" name="y" type="text">
 				</div>
 			</div>	
 			<div class="form-group">
 				    <label for="name">地图说明：</label>
-				    <textarea id="Adddescription"class="form-control" rows="3"></textarea>
+				    <textarea name="description"class="form-control" rows="3"></textarea>
 			  </div>
-			  <input style="margin-left:30%;" class="btn btn-default" onclick="AddMap();" type="button" value="确认">
+			  <input style="margin-left:30%;" class="btn btn-default" type="submit" value="确认">
 	          <input style="margin-left:18%;" class="btn btn-default" onclick="noneAddPop();"type="button" value="取消">
 		</form>
    </div>
 </table>
-    <input style="margin-left:23%;" type="button" onclick="lastpage();"value="上一页"></input>
-    <input style="margin-left:22%;" type="button" onclick="nextpage();"value="下一页"></input>
-    <input style="margin-left:10%;" type="button" onclick="openAddPop()"value="增加"></input>
-    <input style="margin-left:5%;" type="button" onclick="openDelect();"value="删除"></input>
+    <a class="btn btn-lg btn-primary" style="margin-left:23%;"onclick="lastpage();" role="button">上一页</a>
+    <a class="btn btn-lg btn-primary" style="margin-left:22%;"onclick="nextpage();" role="button">下一页</a>
+    <a class="btn btn-lg btn-primary" style="margin-left:10%;"onclick="openAddPop();" role="button">增加</a>
   </body>
 </html>

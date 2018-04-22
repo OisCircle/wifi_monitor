@@ -43,40 +43,57 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                clearCells[2].innerHTML="";
 		                clearCells[3].innerHTML="";
 		                clearCells[4].innerHTML="";
+		                clearCells[5].innerHTML="";
 		            }
 	 				for(var i=row;i<row+10&&i<jsonequip.length;i++){
 	                    var nowCells = nowRows[i-row].getElementsByTagName('td');
 	                    nowCells[0].innerHTML=i+1;
 	                    nowCells[1].innerHTML=jsonequip[i].id;
 	                    nowCells[2].innerHTML=jsonequip[i].location;
-	                    var oSpan=document.createElement("span");
+	                    var oinput=document.createElement("button");
 	                    var Text=document.createTextNode("编辑");
-	                    oSpan.setAttribute("id",i);
-	                    oSpan.setAttribute("class","glyphicon glyphicon-tasks");
-	                    oSpan.setAttribute("style","font-size: 23px;");
-	                    oSpan.setAttribute("onclick","openPop(this.id)");
-	                    nowCells[3].innerHTML='';
-	                    nowCells[3].appendChild(oSpan);
-	                    nowCells[3].appendChild(Text);
-	                    var oCheckbox=document.createElement("input");
-	                    var myText=document.createTextNode("禁用");
-	                    var delectspan=document.createElement("span");
-	                    var delectbox=document.createElement("div");
-	                    oCheckbox.setAttribute("type","checkbox");
-	                    oCheckbox.setAttribute("value",jsonequip[i].id);
-	                    if(jsonequip[i].isForbidden==1) oCheckbox.setAttribute("checked","ture");
-	                    oCheckbox.setAttribute("onclick","boxcheck(this.value,this.checked)");
-	                    delectbox.setAttribute("id","delect"+i)
-	                    delectbox.setAttribute("style", "margin-left:10px;display:none;");
-	                    delectspan.setAttribute("id", jsonequip[i].id);
-	                    delectspan.setAttribute("class", "glyphicon glyphicon-remove");
-	                    delectspan.setAttribute("style", "color:red;")
-	                    delectspan.setAttribute("onclick", "delect(this.id)");
-	                    delectbox.appendChild(delectspan);
-	                    nowCells[4].innerHTML='';
-	                    nowCells[4].appendChild(oCheckbox);
-	                    nowCells[4].appendChild(myText);
-	                    nowCells[4].appendChild(delectbox);
+	                    oinput.setAttribute("id",i);
+	                    oinput.setAttribute("type","button");
+	                    oinput.setAttribute("class","btn btn-info");
+	                    oinput.setAttribute("data-toggle","button");
+	                    oinput.setAttribute("onclick","openPop(this.id)");
+	                    nowCells[3].innerHTML="";
+	                    oinput.appendChild(Text);
+	                    nowCells[3].appendChild(oinput);
+	                    if(jsonequip[i].isForbidden==1){
+		                    var Checkbox=document.createElement("button");
+		                    var CheckText=document.createTextNode("选用");
+		                    Checkbox.setAttribute("type","button");
+		                    Checkbox.setAttribute("value",jsonequip[i].id);
+		                    Checkbox.setAttribute("class","btn btn-danger");
+		                    Checkbox.setAttribute("name","mapcheck");
+		                    Checkbox.setAttribute("data-toggle","button");
+		                    Checkbox.setAttribute("onclick","boxcheck(this.value,0)");
+		                    nowCells[4].innerHTML="";
+		                    Checkbox.appendChild(CheckText);
+	                        nowCells[4].appendChild(Checkbox);
+	                    }else{
+	                        var Checkbox=document.createElement("button");
+		                    var CheckText=document.createTextNode("禁用");
+		                    Checkbox.setAttribute("type","button");
+		                    Checkbox.setAttribute("value",jsonequip[i].id);
+		                    Checkbox.setAttribute("class","btn btn-success");
+		                    Checkbox.setAttribute("name","mapcheck");
+		                    Checkbox.setAttribute("data-toggle","button");
+		                    Checkbox.setAttribute("onclick","boxcheck(this.value,1)");
+		                    nowCells[4].innerHTML="";
+		                    Checkbox.appendChild(CheckText);
+	                        nowCells[4].appendChild(Checkbox);
+	                    }
+	                    var delect=document.createElement("button");
+	            		var delectedText=document.createTextNode("删除");
+	            		delect.setAttribute("type","button");
+	            		delect.setAttribute("class","btn btn-warning");
+	                    delect.setAttribute("value",jsonequip[i].id);
+	                    delect.setAttribute("onclick","delect(this.value)");
+	                    nowCells[5].innerHTML="";
+	                    delect.appendChild(delectedText);
+	                    nowCells[5].appendChild(delect);
                     }
 	   			},
 	   			error:function(){
@@ -116,16 +133,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        else {nowrows+=10;
 	             sendAjax(nowrows);
 	        }    
-	   }
-	   function openDelect(){
-	            for(var i=nowrows;i<=nowrows+10&&i<jsonequip.length;i++){
-	                var thisid="delect"+i;  
-	                if(document.getElementById(thisid.toString()).style.display=="block"){
-	                      document.getElementById(thisid.toString()).style.display="none";
-	                }else{
-	                      document.getElementById(thisid.toString()).style.display="block"
-	                }
-	            }
 	   }
 	   function openPop(id){
 		 	  document.getElementById("equipID").value=jsonequip[id].id;
@@ -175,9 +182,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			            url:"/seekerUpdate",
 			            type:"Post",
 			            data:params,
-			            success:function(resp){
-			                alert("success");
-			                alert(resp);
+			            success:function(resp){        
 			                document.getElementById("Pop").style.display="none";
 			                sendAjax(nowrows);
 			            },
@@ -206,8 +211,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			            type:"Post",
 			            data:params,
 			            success:function(resp){
-			                alert("success");
-			                alert(resp);
 			                document.getElementById("AddPop").style.display="none";
 			                 sendAjax(nowrows);
 			            },
@@ -224,27 +227,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	          document.getElementById("AddPop").style.display="none";
 	   }
 	   function delect(id){
-	       alert(id);
-	       var params = {};
-		   params.id = id;
-	       $.ajax({
-	            url:"/seekerDelete",
-	            type:"Post",
-	            data:params,
-	            success:function(resp){
-	                alert("success");
-	                alert(resp);
-	                for(var i=nowrows;i<=nowrows+10&&i<jsonequip.length;i++){
-	                   var thisid="delect"+i;  
-	                  document.getElementById(thisid.toString()).style.display="none";
-	                 }
-	                sendAjax(nowrows);
-	            },
-	            error:function(jqXHR,textstatus){
-	                alert(textstatus);
-	            }
-	        });
-	        
+	       if(confirm("是否确认删除?")){
+		       var params = {};
+			   params.id = id;
+		       $.ajax({
+		            url:"/seekerDelete",
+		            type:"Post",
+		            data:params,
+		            success:function(resp){
+		                sendAjax(nowrows);
+		            },
+		            error:function(jqXHR,textstatus){
+		                alert(textstatus);
+		            }
+		        });
+	        }
 	   }
 	   function boxcheck(value,checked){
 	       var i=0;
@@ -257,8 +254,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            type:"Post",
 	            data:params,
 	            success:function(resp){
-	                alert("success");
-	                alert(resp);
+	                sendAjax(nowrows);
 	            },
 	            error:function(jqXHR,textstatus){
 	                alert(textstatus);
@@ -311,7 +307,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
          <th>设备ID</th>
          <th>设备别名</th>
          <th>设备编辑</th>
-         <th>是否禁用</th>
+         <th>是否选用</th>
+         <th>删除</th>
       </tr>
    </thead>
    <tbody id="tbody">
@@ -321,22 +318,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
             <td></td>
         </tr>
         <tr>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
             <td></td>
             <td></td>
             <td></td>
@@ -349,22 +334,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
             <td></td>
         </tr>
         <tr>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
             <td></td>
             <td></td>
             <td></td>
@@ -377,8 +350,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -499,9 +506,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</form>
    </div>
 </table>
-    <input style="margin-left:23%;" type="button" onclick="lastpage();"value="上一页"></input>
-    <input style="margin-left:22%;" type="button" onclick="nextpage();"value="下一页"></input>
-    <input style="margin-left:10%;" type="button" onclick="openAddPop()"value="增加"></input>
-    <input style="margin-left:5%;" type="button" onclick="openDelect();"value="删除"></input>
+    <a class="btn btn-lg btn-primary" style="margin-left:23%;"onclick="lastpage();" role="button">上一页</a>
+    <a class="btn btn-lg btn-primary" style="margin-left:22%;"onclick="nextpage();" role="button">下一页</a>
+    <a class="btn btn-lg btn-primary" style="margin-left:10%;"onclick="openAddPop();" role="button">增加</a>
   </body>
 </html>
