@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +25,8 @@ import com.qcq.wifi_monitor.mapper.PathMapper;
 import com.qcq.wifi_monitor.mapper.SeekerMapper;
 @Component
 public class Monitor implements CommandLineRunner{
-	
-	int port=8080;
+	@Value("${monitor.port}")
+	int port;
 	DatagramSocket ds;
 	DatagramPacket dp;
 	byte[] buf=null;
@@ -49,7 +50,7 @@ public class Monitor implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 			try {
 				ds=new DatagramSocket(port);
-				System.out.println("monitor is online, waiting for data...");
+				System.out.println("monitor is online, waiting for data...port: "+port);
 //				test to send something
 				String strSend="true";
 				InetAddress addr=InetAddress.getByName("39.108.162.211");

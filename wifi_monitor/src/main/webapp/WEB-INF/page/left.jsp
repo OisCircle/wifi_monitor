@@ -4,73 +4,91 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <base href="<%=basePath%>">
-    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-    	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-    <meta charset="UTF-8">
-    <title>首页</title>
-    
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="cache-control" content="no-cache">
-    <meta http-equiv="expires" content="0">    
-    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-    <meta http-equiv="description" content="This is my page">
-    <!--
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    -->
-	<script type="text/javascript">
-	function playequip(){
-        var a = document.getElementById("liboxequip");
-        if(a.style.display=="block") a.style.display = "none";
-        else a.style.display = "block";
-    }
-	</script>
-  </head>
-  <style type="text/css">
-   *{/*清空网页默认设置*/
-        margin:0;
-        padding:0;
-    }
-    body{
-        background-color:#F8F8F8; 
-    }
-    ul li{
-    list-style-type:none; 
-    }
-    #libox{
-    margin-top:50px;
-    }
-    .my{
-        color:#777474;
-        font-size:23px;
-    }
-    .my:hover {
-        color:black;
-    }
-    .my:active{
-        color:#337AB7;
-    }
-    a:focus { 
-	   outline: none; 
-	} 
- </style>
-  <body>
-    <ul style="margin-left:30px">
-        <li><div id="libox"><span class="glyphicon glyphicon-list-alt" style="font-size: 23px;"></span><a class="my" style="text-decoration:none;" href="introduction" target="right">系统用户介绍</a></div></li>
-        <li><div id="libox" onclick="playequip()"><span class="glyphicon glyphicon-cog" style="font-size: 23px;"></span><font color="#777474" size="5">系统管理</font></div></li>
-        <div id="liboxequip" style="display:none;margin-left:20px;">
-        	<ul>
-	           <li><span class="glyphicon glyphicon-globe" style="font-size: 23px;"><a class="my" style="text-decoration:none;" href="map" target="right"></span>地图管理</a></li>
-               <li><span class="glyphicon glyphicon-asterisk" style="font-size: 23px;"><a class="my" style="text-decoration:none;" href="equip" target="right"></span>设备管理</a></li>
-           </ul>
-        </div>
-        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><a class="my" style="text-decoration:none;" href="index" target="right">百度地图数据展示</a></div></li>
-        <li><div id="libox"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span><a class="my" style="text-decoration:none;" href="indoor" target="right">Echart地图实时展示</a></div></li>
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="utf-8">
+     
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+		<link rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+		<link rel='stylesheet' href='css/style.css'>
+		<script src="http://cdn.bootcss.com/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
+		<script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>   
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <style>
+        *{/*清空网页默认设置*/
+            margin:0;
+            padding:0;
+       }
+        #sidebar-wrapper{
+            width: 100%;
+            height:100%;
+            background-color:#5D5A5A;
+        }
+        .nav{
+            font-size:23px;
+            border-left:4px solid #4B528B;  
+        }
+        #menubox{
+            display:none; 
+        }
+        a{
+            color: white;
+        }
+        a:focus {  
+          outline:none;  
+          -moz-outline:none;  
+        } 
+        .dropdown-menu{
+            width:100%;
+            height:200px; 
+        }
+        .secondnav{
+            border-left:0px solid white; 
+            background-color:#A5A0A0; 
+        }
+        </style>
+        <script type="text/javascript">
+            function openmenu(){
+                var a=document.getElementById("menubox");
+                if(a.style.display=="block") a.style.display="none";
+                else {a.style.display="block"}
+            }
+            function closemenu(){
+                document.getElementById("menubox").style.display="none";
+            }
+        </script>
+    </head>
+
+    <body >
+     <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+      <ul  class="nav sidebar-nav">
+          <li >
+              <a class="my" style="text-decoration:none;" href="introduction" target="right"><i onclick="closemenu()"><span class="glyphicon glyphicon-list-alt" style="font-size: 23px;"></span> 系统介绍</i></a>
+          </li>
+          <li>
+            <a class="my">
+                <i onclick="openmenu()"><span class="glyphicon glyphicon-cog" style="font-size: 23px;"></span>系统管理 </i>
+            </a>
+            <div id="menubox">
+                <ul class="nav secondnav">
+                  <li><a class="my" style="text-decoration:none;" href="map" target="right"><i>&nbsp;&nbsp;<span class="glyphicon glyphicon-globe" style="font-size: 23px;"></span>地图管理</i></a></li>
+                  <li><a class="my" style="text-decoration:none;" href="equip" target="right"><i>&nbsp;&nbsp;<span class="glyphicon glyphicon-asterisk" style="font-size: 23px;"></span>设备管理</i></a></li>
+                </ul>
+            <div>
+          </li>
+          <li>
+              <a class="my" style="text-decoration:none;" href="index" target="right"><i onclick="closemenu()"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span> 百度地图数据展示 </i></a>
+          </li>
+          <li>
+              <a class="my" style="text-decoration:none;" href="indoor" target="right"><i onclick="closemenu()"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span> Echart地图实时展示 </i></a>
+          </li>
       </ul>
-  </body>
+</nav>
+</body>
 </html>

@@ -24,7 +24,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	-->
 <script type="text/javascript">
     var nowrows=0;
+    var nowpage=1; 
     var rowslength;
+     var thispage;
     var jsonequip=[];
 	function sendAjax(row){
 	   		$.ajax({
@@ -34,6 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	   			success:function(data){
 	 				jsonequip=data;
 	 				rowslength=jsonequip.length;
+	 				thispage=Math.ceil(rowslength/10);
 	 				var root = document.getElementById("tbody");
 	 				var nowRows = root.getElementsByTagName('tr');
 	 				for(var m=0;m<10;m++){
@@ -42,8 +45,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                clearCells[1].innerHTML="";
 		                clearCells[2].innerHTML="";
 		                clearCells[3].innerHTML="";
-		                clearCells[4].innerHTML="";
-		                clearCells[5].innerHTML="";
 		            }
 	 				for(var i=row;i<row+10&&i<jsonequip.length;i++){
 	                    var nowCells = nowRows[i-row].getElementsByTagName('td');
@@ -55,7 +56,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                    oinput.setAttribute("id",i);
 	                    oinput.setAttribute("type","button");
 	                    oinput.setAttribute("class","btn btn-info");
-	                    oinput.setAttribute("data-toggle","button");
+	                    oinput.setAttribute("data-toggle","modal");
+	                    oinput.setAttribute("style","margin-left:5px;");
+	                    oinput.setAttribute("data-target","#UpdateequipModal");
 	                    oinput.setAttribute("onclick","openPop(this.id)");
 	                    nowCells[3].innerHTML="";
 	                    oinput.appendChild(Text);
@@ -66,35 +69,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                    Checkbox.setAttribute("type","button");
 		                    Checkbox.setAttribute("value",jsonequip[i].id);
 		                    Checkbox.setAttribute("class","btn btn-danger");
+		                    Checkbox.setAttribute("style","margin-left:10px;");
 		                    Checkbox.setAttribute("name","mapcheck");
 		                    Checkbox.setAttribute("data-toggle","button");
 		                    Checkbox.setAttribute("onclick","boxcheck(this.value,0)");
-		                    nowCells[4].innerHTML="";
 		                    Checkbox.appendChild(CheckText);
-	                        nowCells[4].appendChild(Checkbox);
+	                        nowCells[3].appendChild(Checkbox);
 	                    }else{
 	                        var Checkbox=document.createElement("button");
 		                    var CheckText=document.createTextNode("禁用");
 		                    Checkbox.setAttribute("type","button");
 		                    Checkbox.setAttribute("value",jsonequip[i].id);
 		                    Checkbox.setAttribute("class","btn btn-success");
+		                    Checkbox.setAttribute("style","margin-left:10px;");
 		                    Checkbox.setAttribute("name","mapcheck");
 		                    Checkbox.setAttribute("data-toggle","button");
 		                    Checkbox.setAttribute("onclick","boxcheck(this.value,1)");
-		                    nowCells[4].innerHTML="";
 		                    Checkbox.appendChild(CheckText);
-	                        nowCells[4].appendChild(Checkbox);
+	                        nowCells[3].appendChild(Checkbox);
 	                    }
 	                    var delect=document.createElement("button");
 	            		var delectedText=document.createTextNode("删除");
 	            		delect.setAttribute("type","button");
 	            		delect.setAttribute("class","btn btn-warning");
+	            		delect.setAttribute("style","margin-left:10px;");
 	                    delect.setAttribute("value",jsonequip[i].id);
 	                    delect.setAttribute("onclick","delect(this.value)");
-	                    nowCells[5].innerHTML="";
 	                    delect.appendChild(delectedText);
-	                    nowCells[5].appendChild(delect);
+	                    nowCells[3].appendChild(delect);
                     }
+                    page();
 	   			},
 	   			error:function(){
 	   				alert("error...");
@@ -143,31 +147,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		 	  document.getElementById("mapselect").value=jsonequip[id].zone_id;
 		 	  document.getElementById("zone_X").value=jsonequip[id].indoor_x;
 		 	  document.getElementById("zone_Y").value=jsonequip[id].indoor_y;
-		 	  document.getElementById("Pop").style.display="block";
-	   }
-	   function openAddPop(){
-		 	  document.getElementById("AddPop").style.display="block";
-	   }
-	    function judgment(){	      
-	          for(var i=0;i<jsonequip.length;i++){
-	          if(jsonequip[i].id==document.getElementById("equipID").value) continue;
-	          else if(document.getElementById("equipName").value==jsonequip[i].name){
-	                return 1;
-	             } 
-	          }
-	          return 0;
-	   }
-	   function review(){
-	       for(var i=0;i<jsonequip.length;i++){
-	          if(document.getElementById("AddequipName").value==jsonequip[i].name){
-	                return 1;
-	            } 
-	          }
-	          return 0;
 	   }
 	   function changeequip(){
 	          if(judgment()){
-	               alert("名称重复，请修改！");
+	          
 	          }else{
 			       var params = {};
 		           params.id=document.getElementById("equipID").value;
@@ -182,8 +165,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			            url:"/seekerUpdate",
 			            type:"Post",
 			            data:params,
-			            success:function(resp){        
-			                document.getElementById("Pop").style.display="none";
+			            success:function(resp){
+			                $('#UpdateequipModal').modal('hide');        
 			                sendAjax(nowrows);
 			            },
 			            error:function(jqXHR,textstatus){
@@ -194,7 +177,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	   }
 	   function Addequip(){
 	          if(review()){
-	               alert("名称重复，请修改！");
+	                
 	          }else{
 			       var params = {};
 		          params.id=document.getElementById("AddequipID").value;
@@ -211,7 +194,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			            type:"Post",
 			            data:params,
 			            success:function(resp){
-			                document.getElementById("AddPop").style.display="none";
+			                 $('#AddequipModal').modal('hide');
 			                 sendAjax(nowrows);
 			            },
 			            error:function(jqXHR,textstatus){
@@ -219,12 +202,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			            }
 			        }); 
 	          }
-	   }
-	   function nonePop(){
-	          document.getElementById("Pop").style.display="none";
-	   }
-	   function noneAddPop(){
-	          document.getElementById("AddPop").style.display="none";
 	   }
 	   function delect(id){
 	       if(confirm("是否确认删除?")){
@@ -282,6 +259,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         border:1px solid #9DAFC6;
         border-radius:4px;
     }
+     #pagebox{
+    	 position:relative;
+         width:100%; 
+         height:50px;
+         margin-top:100px;  
+    }
+	#pages{
+		position:absolute;
+		left:42%; 
+		top:10px;
+		width:200px;
+		height:40px; 
+		border:0px;
+		text-align:center;  
+	}
+	#airdis{
+	    width:200px;
+	    heigth:50px;
+	    text-align:center;
+	}
+	#airDis{
+	    width:200px;
+	    heigth:50px;
+	    text-align:center;
+	}
     #AddPop{
         position:absolute;
         margin-left:30%;
@@ -299,16 +301,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-    <table class="table table-bordered">
-	<caption>设备管理</caption>
+    <table class="table table-bordered" style="margin-left:30px;"> 
+	<caption>设备管理 <a  data-toggle="modal" data-target="#AddequipModal" style="margin-left:1300px;">增加设备</a></caption>
    <thead>
       <tr class="active">
          <th>序号</th>
          <th>设备ID</th>
          <th>设备别名</th>
-         <th>设备编辑</th>
-         <th>是否选用</th>
-         <th>删除</th>
+         <th>设备操作</th>
       </tr>
    </thead>
    <tbody id="tbody">
@@ -317,20 +317,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -341,20 +329,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -365,6 +341,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -373,6 +353,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -381,133 +365,266 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
         </tr>
    </tbody>
-   <div id="Pop">
-	   <h4>&nbsp;&nbsp;&nbsp;修改设备信息</h4>
-	     <form class="form-horizontal" role="form">
-		    <div class="form-group">
-				<label class="col-sm-2 control-label">设备ID：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="equipID" type="text">
+ <!-- -->
+</table>
+<div>
+<div class="modal fade" id="UpdateequipModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					 <font style="font-weight: bold;">修改设备信息</font></font>
+				</h4>
+			</div>
+			<div class="modal-body">
+			  <form  class="form-horizontal" role="form">
+				<div class="form-group">
+				<label class="col-sm-3 control-label">设备ID：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" id="equipID" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">设备别名：</label>
-				<div class="col-sm-10">
+				<label class="col-sm-3 control-label">设备别名：</label>
+				<div class="col-sm-9">
 					<input class="form-control" id="equipName" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">设备型号：</label>
-				<div class="col-sm-10">
+				<label class="col-sm-3 control-label">设备型号：<font color="red">*</font></label>
+				<div class="col-sm-9">
 					<input class="form-control" id="equipType" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">探针经度X：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="wifi_X" type="text">
+				<label class="col-sm-3 control-label">探针经度X：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" id="wifi_X" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">探针纬度Y：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="wifi_Y" type="text">
+				<label class="col-sm-3 control-label">探针纬度Y：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" id="wifi_Y" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">选择地图：</label>
-				<div class="col-sm-10">
+				<label class="col-sm-3 control-label">选择地图：<font color="red">*</font></label>
+				<div class="col-sm-9">
 					<select id="mapselect" class="form-control">
                    </select>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">相对地图的X：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="zone_X" type="text">
+				<label class="col-sm-3 control-label">相对地图的X：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" id="zone_X" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">相对地图的Y：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="zone_Y" type="text">
+				<label class="col-sm-3 control-label">相对地图的Y：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" id="zone_Y" type="text">
 				</div>
 			</div>
-			  <input style="margin-left:30%;" class="btn btn-default" onclick="changeequip();" type="button" value="确认">
-	          <input style="margin-left:18%;" class="btn btn-default" onclick="nonePop();"type="button" value="取消">
+			<div class="modal-footer">
+			    <div id="airdis">
+			         <h4 id="airplay" style="color:red;"></h4>
+			    </div>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="button" onclick="changeequip();" class="btn btn-primary">
+				     提交更改	
+				</button>
+			</div>
+		</div>
 		</form>
-   </div>
-   <div id="AddPop">
-	   <h4>修改设备信息</h4>
-	     <form class="form-horizontal" role="form">
-		    <div class="form-group">
-				<label class="col-sm-2 control-label">设备ID：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="AddequipID" type="text">
-				</div>
+		</div>
+	</div>
+	</div>
+	<div>
+<div class="modal fade" id="AddequipModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					 <font style="font-weight: bold;">增加设备信息</font></font>
+				</h4>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label">设备别名：</label>
-				<div class="col-sm-10">
+			<div class="modal-body">
+			  <form  class="form-horizontal" role="form">
+				<div class="form-group">
+			      <label class="col-sm-3 control-label">设备ID：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" id="AddequipID" type="text">
+				</div>
+			   </div>
+			   <div class="form-group">
+				<label class="col-sm-3 control-label">设备别名：</label>
+				<div class="col-sm-9">
 					<input class="form-control" id="AddequipName" type="text">
 				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label">设备型号：</label>
-				<div class="col-sm-10">
+			   </div>
+			   <div class="form-group">
+				<label class="col-sm-3 control-label">设备型号：<font color="red">*</font></label>
+				<div class="col-sm-9">
 					<input class="form-control" id="AddequipType" type="text">
 				</div>
-			</div>
+			   </div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">探针经度X：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="Addwifi_X" type="text">
+				<label class="col-sm-3 control-label">探针经度X：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')"  id="Addwifi_X" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">探针纬度Y：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="Addwifi_Y" type="text">
+				<label class="col-sm-3 control-label">探针纬度Y：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" id="Addwifi_Y" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">选择地图：</label>
-				<div class="col-sm-10">
+				<label class="col-sm-3 control-label">选择地图：<font color="red">*</font></label>
+				<div class="col-sm-9">
 					<select id="Addmapselect" class="form-control">
                    </select>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">相对地图的X：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="Addzone_X" type="text">
+				<label class="col-sm-3 control-label">相对地图的X：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" id="Addzone_X" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">相对地图的Y：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="Addzone_Y" type="text">
+				<label class="col-sm-3 control-label">相对地图的Y：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" id="Addzone_Y" type="text">
 				</div>
 			</div>
-			  <input style="margin-left:30%;" class="btn btn-default" onclick="Addequip();" type="button" value="确认">
-	          <input style="margin-left:18%;" class="btn btn-default" onclick="noneAddPop();"type="button" value="取消">
-		</form>
-   </div>
-</table>
-    <a class="btn btn-lg btn-primary" style="margin-left:23%;"onclick="lastpage();" role="button">上一页</a>
-    <a class="btn btn-lg btn-primary" style="margin-left:22%;"onclick="nextpage();" role="button">下一页</a>
-    <a class="btn btn-lg btn-primary" style="margin-left:10%;"onclick="openAddPop();" role="button">增加</a>
-  </body>
+			</form>
+			</div>
+			<div class="modal-footer">
+			    <div id="airDis">
+			         <h4 id="airPlay" style="color:red;"></h4>
+			    </div>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="button" onclick="Addequip();" class="btn btn-primary">
+				     提交更改	
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	</div>
+ <div id="pagebox">
+			   <a class="btn btn-lg btn-primary" role="button" style="margin-left:33%;"onclick="lastpage();" >上一页</a>
+			   <div id="pages"><font id="page" size="5" style="margin-top:20px; " color="blue"></font></div>
+		       <a class="btn btn-lg btn-primary" role="button" style="margin-left:20%;"onclick="nextpage();">下一页</a>
+    </div>
+</body>
+<script type="text/javascript">
+	function page(){
+	    var page = document.getElementById("page");
+	    page.innerHTML="";
+	    var Text=document.createTextNode("第"+window.nowpage+"页/共"+window.thispage+"页");
+	    page.appendChild(Text);
+    }
+    function judgment(){
+        var airplay=document.getElementById("airplay");
+        for(var i=0;i<window.jsonequip.length;i++){
+	          if(window.jsonequip[i].id==document.getElementById("equipID").value) continue;
+	          else if(document.getElementById("equipName").value==window.jsonequip[i].name){
+	                airplay.innerHTML="设备别名重复！";
+	                return true;
+	             } 
+	    }
+        var ID=document.getElementById("equipID");
+        if(ID.value == ''){
+			airplay.innerHTML="设备ID不能为空！";
+			return true;
+		}
+		var Type=document.getElementById("equipType");
+        if(Type.value == ''){
+			airplay.innerHTML="设备型号不能为空！";
+			return true;
+		}
+		var X=document.getElementById("wifi_X");
+        if(X.value == ''){
+			airplay.innerHTML="经度不能为空！";
+			return true;
+		}
+		var Y=document.getElementById("xifi_Y");
+        if(Y.value == ''){
+			airplay.innerHTML="纬度不能为空！";
+			return true;
+		}
+		var x=document.getElementById("zone_X");
+        if(x.value == ''){
+			airplay.innerHTML="地图经度不能为空！";
+			return true;
+		}
+		var y=document.getElementById("zone_Y");
+        if(y.value == ''){
+			airplay.innerHTML="地图纬度不能为空！";
+			return true;
+		}
+		return false;
+    }
+    function review(){
+        var airplay=document.getElementById("airPlay");
+        for(var i=0;i<window.jsonequip.length;i++){
+	          if(document.getElementById("AddequipName").value==window.jsonequip[i].name){
+	                airplay.innerHTML="设备别名重复！";
+	                return true;
+	             } 
+	    }
+        var ID=document.getElementById("AddequipID");
+        if(ID.value == ''){
+			airplay.innerHTML="设备ID不能为空！";
+			return true;
+		}
+		var Type=document.getElementById("AddequipType");
+        if(Type.value == ''){
+			airplay.innerHTML="设备型号不能为空！";
+			return true;
+		}
+		var X=document.getElementById("Addwifi_X");
+        if(X.value == ''){
+			airplay.innerHTML="经度不能为空！";
+			return true;
+		}
+		var Y=document.getElementById("Addxifi_Y");
+        if(Y.value == ''){
+			airplay.innerHTML="纬度不能为空！";
+			return true;
+		}
+		var x=document.getElementById("Addzone_X");
+        if(x.value == ''){
+			airplay.innerHTML="地图经度不能为空！";
+			return true;
+		}
+		var y=document.getElementById("Addzone_Y");
+        if(y.value == ''){
+			airplay.innerHTML="地图纬度不能为空！";
+			return true;
+		}
+		return false;
+    }
+</script>
 </html>

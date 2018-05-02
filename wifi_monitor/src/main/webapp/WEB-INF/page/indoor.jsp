@@ -30,56 +30,10 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     	margin:0;
     	padding:0;
     }
-    #other{
-    	margin-top: 30px;
-    	width:33%;
-    	height:40px;
-    	padding-top:15px;
-    	text-align: center;
-    	border:0px;
-    	float: left; 
-    }
-    #now{
-    	margin-top: 30px;
-    	width:33%;
-    	height:40px;
-    	padding-top:15px; 
-    	text-align: center;
-    	background-image:url(shade.png);
-    	background-repeat :no-repeat ;
-    	background-color : transparent;  
-    	float:left;
-    }
-	#selectlink{
-        position:absolute;
-        left:33%;
-        top:86px;
-        z-index:2000;
-        display:none;
-        width:23%;
-        height:200px;
-        text-align: center;
-        opacity: 0.6;
-        background:white;
-        border-radius:5px;    
-    }
-    #selecttime{
-        position:absolute;
-        left:66%;
-        top:86px;
-        z-index:2000;
-        display:none;
-        width:23%;
-        height:200px;
-        text-align: center;
-        opacity: 0.6;
-        background:white;
-        border-radius:5px;     
-    }
     #EchartMap{
         width:1600px;
         height:750px;
-        margin-top:19px;
+        margin-top:9px;
         margin-left:4px;
         backgroung-color:glay;
         background-size:1600px 750px;
@@ -98,19 +52,33 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 	   background-color:#F8F8F8;
        cursor:pointer;
     }
+    #mapinfo{
+         position:absolute;
+         left:1450px;
+         top:45px;
+         width:150px;
+         height:40px;
+         text-align:center;
+    }
+    #mapinfos{
+        position:absolute;
+        left:85%;
+        top:96px;
+        width:13%;
+        height:150px;
+        opacity:0.6;
+        border-radius:5px;
+        background-color:black;
+        display:none;
+    }
+    .nav{
+    	font-size:25px; 
+		margin-top:36px;
+		margin-left:0;
+	}
 	</style>
 
   <script type="text/javascript">
-    function playlink(){
-        var a = document.getElementById("selectlink");
-        if(a.style.display=="block") a.style.display = "none";
-        else a.style.display = "block";
-    }
-    function playtime(){
-        var a = document.getElementById("selecttime");
-        if(a.style.display=="block") a.style.display = "none";
-        else a.style.display = "block";
-    }
     function linkpathfly(mac){
                 var params = {};
 		        params.mac = mac; 
@@ -150,24 +118,55 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
   </head>
   <body>
 	  <div id="box">
-	  <div id="now"><a href="index?minute=6000" target="right"><font color="#23527C" size="5" >人群观测</font></a></div>
-	  <div id="other" onclick="playlink()"><font color="gray" size="5" >折线路径</font></div>
-	  <div id="selectlink"><%int now=0;
-	  for(int i=0;i<seekers.size();i++){ 
-	       if(now>=9) break;
-	          for(int j=0;j<listInfos.get(i).size();j++){
-	               now++;
-	               if(now>=9) break;%>
-	           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-	    <% } }%></div>
-	  <div id="other" onclick="playtime()"><font color="gray" size="5" >时间选取</font></div>
-	  <div id="selecttime">
-	          <span  onclick="timefly(5)" >最近五分钟</span><br>
-	          <span  onclick="timefly(60)" >最近一小时</span><br>
-	          <span  onclick="timefly(1440)" >最近一天</span><br>
-	          <span  onclick="timefly(4320)" >最近三天</span><br>
-	          <span  onclick="timefly(525600)" >所有</span><br>
-	  </div></div>
+	  	<nav class="navbar navbar-default" role="navigation">
+		    <div class="container-fluid">
+		    <div>
+		        <ul class="nav navbar-nav">
+		            <li><a href="index?minute=6000">人群观测</a></li>
+		            <li class="dropdown">
+		                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+		                                                               折线路径
+		                    <b class="caret"></b>
+		                </a>
+		                <ul class="dropdown-menu">
+		                    <%int now=0;
+	                          for(int i=0;i<seekers.size();i++){ 
+	                             if(now>=9) break;
+	                             for(int j=0;j<listInfos.get(i).size();j++){
+	                                 now++;
+	                                if(now>=9) break;%>
+	                           <li><a id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></a></li>
+	                       <% } }%>
+		                </ul>
+		            </li>
+		            <li class="dropdown">
+		                <a class="dropdown-toggle" data-toggle="dropdown">
+		                                                                时间选取
+		                    <b class="caret"></b>
+		                </a>
+		                <ul class="dropdown-menu">
+		                    <li><a onclick="timefly(5)" >最近五分钟</a></li>
+		                    <li><a onclick="timefly(60)" >最近一小时</a></li>
+		                    <li><a onclick="timefly(1440)" >最近一天</a></li>
+		                    <li><a onclick="timefly(4320)" >最近三天</a></li>
+		                    <li><a onclick="timefly(525600)" >所有</a></li>
+		                </ul>
+		            </li>
+		        </ul>
+		    </div>
+		    </div>
+		    </nav>
+		    <div id="mapinfo" onclick="mapInfomation();">
+		        <i class="glyphicon glyphicon-globe" style="font-size:20px;color:#5BC0DE;"></i><font size="5" color="#5BC0DE">地图信息</font>
+		    </div>
+		    <div id="mapinfos">
+		        <h4 id="infomapname" style="margin-left:20%;color:white;"></h4>
+		        <h4 id="infomacnumber" style="margin-left:20%;color:white;"></h4>
+		        <h4 id="infomapx" style="margin-left:20%;color:white;"></h4>
+		        <h4 id="infomapy" style="margin-left:20%;color:white;"></h4>
+		    </div>
+	  </div>
+      
    <div id="EchartMap" >
   	<canvas id="myCanvas" width="1600" height="750">
 	</canvas>
@@ -187,6 +186,11 @@ function Cricre(x,y,mac){
 	    cricre.setAttribute("onclick", "getpath(this.id)");
 	    Echart.appendChild(cricre);
     }
+function mapInfomation(){
+        var infomation=document.getElementById("mapinfos");
+        if(infomation.style.display=="block") infomation.style.display="none";
+        else infomation.style.display="block";
+}
 function getpath(macs){
 		      var params={};
 		      params.mac=macs;
@@ -265,7 +269,13 @@ function map(){
 	   			    var jsonmap=[];
 	 				jsonmap=data;
 	 				for(var i=0;i<jsonmap.length;i++){
-	 				     if(jsonmap[i].id==id){var mappath="url(path/"+jsonmap[i].name.toString()+".jpg)";}
+	 				     if(jsonmap[i].id==id){
+	 				          var mappath="url(path/"+jsonmap[i].name.toString()+".jpg)";
+	 				          document.getElementById("infomapname").innerHTML="地图名称:"+jsonmap[i].name;
+	 				          document.getElementById("infomacnumber").innerHTML="探针数量:"+getJsonLength(infos);
+	 				          document.getElementById("infomapx").innerHTML="经度:"+jsonmap[i].x;
+	 				          document.getElementById("infomapy").innerHTML="纬度:"+jsonmap[i].y;
+	 				     }
 	 				}
 	 				Echart.style.backgroundImage=mappath;	
 	 				var c=document.getElementById("myCanvas");

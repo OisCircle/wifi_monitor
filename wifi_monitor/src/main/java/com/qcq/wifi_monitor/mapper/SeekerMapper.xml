@@ -2,28 +2,33 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.qcq.wifi_monitor.mapper.SeekerMapper" >
+<mapper namespace="com.qcq.wifi_monitor.mapper.SeekerMapper">
 
-	<select id="selectOne" parameterType="Seeker" resultType="Seeker">
+    <select id="selectOne" parameterType="Seeker" resultType="Seeker">
 		select *from seeker where id=#{id}
 	</select>
-	<select id="selectAll" resultType="Seeker">
+    <select id="selectAll" resultType="Seeker">
 		select *from seeker
 	</select>
-	<insert id="add" parameterType="Seeker">
+    <insert id="add" parameterType="Seeker">
 		insert into seeker (id,type,x,y,indoor_x,indoor_y,location,isForbidden,zone_id)
 		values(#{id},#{type},#{x},#{y},#{indoor_x},#{indoor_y},#{location},#{isForbidden},#{zone_id})
 	</insert>
-	<delete id="deleteById">
+    <delete id="deleteById">
 		delete from seeker where id=#{id}
 	</delete>
-	<update id="update" parameterType="Seeker">
+    <update id="update" parameterType="Seeker">
 		update seeker set type=#{type},x=#{x},y=#{y},indoor_x=#{indoor_x},indoor_y=#{indoor_y},location=#{location},zone_id=#{zone_id} where id=#{id}
 	</update>
-	<update id="setIsForbidden" parameterType="Seeker">
+    <update id="setIsForbidden" parameterType="Seeker">
 		update seeker set isForbidden=#{isForbidden} where id=${id}
 	</update>
-	<select id="selectByZoneId" parameterType="int" resultType="Seeker">
+    <select id="selectByZoneId" parameterType="int" resultType="Seeker">
 		select *from seeker where zone_id=#{id}
+	</select>
+    <select id="getLocationAndRssi" resultType="com.qcq.wifi_monitor.dto.SeekerLocation">
+		select s.x,s.y,a.rssi
+		from (select s_id,rssi from info where mac = #{mac} and s_id =#{seeker_id} order by time desc limit 1) a
+		join seeker s on a.s_id = s.id and s.isForbidden = 0
 	</select>
 </mapper>

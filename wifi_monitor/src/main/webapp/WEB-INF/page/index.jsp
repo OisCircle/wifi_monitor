@@ -12,92 +12,19 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <meta http-equiv="Content-Type" content="text/html" />
     <base href="<%=basePath%>">
-    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=4IU3oIAMpZhfWZsMu7xzqBBAf6vMHcoa"></script>
     <style type="text/css">
     html,body{
     	margin:0;
     	padding:0;
     }
-    span{
-       cursor:pointer;
-    }
-    .iw_poi_title {
-    	color:#CC5522;
-    	font-size:14px;
-    	font-weight:bold;
-    	overflow:hidden;
-    	padding-right:13px;
-    	white-space:nowrap;
-    }
-    .iw_poi_content {
-    	font:12px arial,sans-serif;
-    	overflow:visible;
-    	padding-top:4px;
-    	white-space:-moz-pre-wrap;
-    	word-wrap:break-word;
-    }
-    
-    #selecttra{
-        position:absolute;
-        left:23%;
-        top:86px;
-        z-index:2000;
-        display:none;
-        width:23%;
-        height:200px;
-        text-align: center;
-        opacity: 0.6;
-        background:white;
-        border-radius:5px;    
-    }
-    #selectlink{
-        position:absolute;
-        left:46%;
-        top:86px;
-        z-index:2000;
-        display:none;
-        width:23%;
-        height:200px;
-        text-align: center;
-        opacity: 0.6;
-        background:white;
-        border-radius:5px;    
-    }
-    #selecttime{
-        position:absolute;
-        left:69%;
-        top:86px;
-        z-index:2000;
-        display:none;
-        width:23%;
-        height:200px;
-        text-align: center;
-        opacity: 0.6;
-        background:white;
-        border-radius:5px;     
-    }
     #dituContent{
     	float: left;
-    }
-    #other{
-    	margin-top: 30px;
-    	width:23%;
-    	height:40px;
-    	padding-top:15px;
-    	text-align: center;
-    	border:0px;
-    	float: left; 
-    }
-    #now{
-    	margin-top: 30px;
-    	width:23%;
-    	height:40px;
-    	padding-top:15px; 
-    	text-align: center; 
-    	float:left;
     }
     a{
 	  text-decoration:none;
@@ -111,6 +38,11 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 	   background-color:#F8F8F8;
        cursor:pointer;
     }
+    .nav{
+         font-size:25px;    
+		 margin-top:36px;
+		 margin-left:0;
+	 }
 </style>
     
     <title>index</title>
@@ -119,21 +51,6 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
 	<script type="text/javascript">
-	function playtra(){
-        var a = document.getElementById("selecttra");
-        if(a.style.display=="block") a.style.display = "none";
-        else a.style.display = "block";
-    }
-    function playlink(){
-        var a = document.getElementById("selectlink");
-        if(a.style.display=="block") a.style.display = "none";
-        else a.style.display = "block";
-    }
-    function playtime(){
-        var a = document.getElementById("selecttime");
-        if(a.style.display=="block") a.style.display = "none";
-        else a.style.display = "block";
-    }
     function pathfly(mac){
            var params = {};
 		   params.mac = mac;
@@ -194,33 +111,61 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
   
   <body>
   <div id="box">
-  <div id="now"><a href="index?minute=6000" target="right"><font color="#23527C" size="5" >人群观测</font></a></div>
-  <div id="other" onclick="playtra()"><font color="gray" size="5" >轨迹跟踪</font></div>
-  <div id="selecttra"><%int m=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(m>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               m++;
-               if(m>=9) break;%>
-           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="other" onclick="playlink()"><font color="gray" size="5" >折线路径</font></div>
-  <div id="selectlink"><%int now=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(now>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               now++;
-               if(now>=9) break;%>
-           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="other" onclick="playtime()"><font color="gray" size="5" >时间选取</font></div>
-  <div id="selecttime">
-          <span  onclick="timefly(5)" >最近五分钟</span><br>
-          <span  onclick="timefly(60)" >最近一小时</span><br>
-          <span  onclick="timefly(1440)" >最近一天</span><br>
-          <span  onclick="timefly(4320)" >最近三天</span><br>
-          <span  onclick="timefly(525600)" >所有</span><br>
-  </div></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+    <div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="index?minute=6000">人群观测</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                                                            轨迹跟踪
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                <%int m=0;
+                  for(int i=0;i<seekers.size();i++){ 
+                  if(m>=9) break;
+                   for(int j=0;j<listInfos.get(i).size();j++){
+                       m++;
+                        if(m>=9) break;%>
+                      <li> <a id="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></a></li>
+                 <% } }%>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                               折线路径
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <%int c=0;
+                      for(int i=0;i<seekers.size();i++){ 
+                          if(c>=9) break;
+                          for(int j=0;j<listInfos.get(i).size();j++){
+                                c++;
+                                if(c>=9) break;%>
+                      <li><a id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></a></li>
+                   <% } }%>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                                                                时间选取
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a onclick="timefly(5)" >最近五分钟</a></li>
+                    <li><a onclick="timefly(60)" >最近一小时</a></li>
+                    <li><a onclick="timefly(1440)" >最近一天</a></li>
+                    <li><a onclick="timefly(4320)" >最近三天</a></li>
+                    <li><a onclick="timefly(525600)" >所有</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    </div>
+</nav>
+</div>
   <div style="width:1608px;height:775px;border:gray solid 0px;" id="dituContent"></div> 
   </body>
   <script type="text/javascript">
@@ -295,11 +240,11 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
         var point=new BMap.Point(<%=X%>,<%=Y%>)
         var start = new BMap.Marker(point);
         var opts = {
-	      width : 50,     // 信息窗口宽度
-	      height: 20,     // 信息窗口高度
-	      title : " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前：<%=listInfos.get(i).size()%>个信号   " , // 信息窗口标题     
+	      width : 40,     // 信息窗口宽度
+	      height: 100,     // 信息窗口高度
+	      title : " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;探针ID:<%=seekers.get(i).getId()%>  " , // 信息窗口标题     
 	    }
-	    var infoWindow = new BMap.InfoWindow("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", opts);  // 创建信息窗口对象 
+	    var infoWindow = new BMap.InfoWindow("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前:<%=listInfos.get(i).size()%>个信号 <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;经度:<%=X%><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;纬度:<%=Y%>", opts);  // 创建信息窗口对象 
 	    setmouse(start,infoWindow);
         mp.addOverlay(start);
         var circle = new BMap.Circle(point,250,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
@@ -317,13 +262,22 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 	   <%}%>
 	    function setmouse(marck,infoWindow){
 	      marck.addEventListener("mouseover", function(e){          
-	          openInfo(infoWindow,e)
+	          openInfo(infoWindow,e);
+	      });
+	      marck.addEventListener("mouseout", function(e){          
+	          closeInfo(infoWindow,e);
 	      });
 	    }
 	    function openInfo(content,e){
 		var p = e.target;
 		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
 		mp.openInfoWindow(content,point); //开启信息窗口
+		window.map=mp;
+	   }
+	   function closeInfo(content,e){
+		var p = e.target;
+		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+		mp.closeInfoWindow(content,point); //开启信息窗口
 		window.map=mp;
 	   }
 	 }

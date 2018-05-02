@@ -23,77 +23,23 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
     
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=4IU3oIAMpZhfWZsMu7xzqBBAf6vMHcoa"></script>
     <style type="text/css">
-    html,body{
-    	margin:0;
-    	padding:0;
-    }
-    #box{
-        width:1370px;
-        height:860px;
-    	float:left;
-    }
-    #dituContent{
-        margin-top:10px;
-    	float: left;
-    }
-    #selecttra{
-		        position:absolute;
-		        left:23%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;    
+		    html,body{
+		    	margin:0;
+		    	padding:0;
 		    }
-		    #selectlink{
-		        position:absolute;
-		        left:46%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;    
-		    }
-		    #selecttime{
-		        position:absolute;
-		        left:69%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;     
-		    }
-		    #other{
-		    	margin-top: 30px;
-		    	width:23%;
-		    	height:40px;
-		    	padding-top:15px;
-		    	text-align: center;
-		    	border:0px;
-		    	float: left; 
-		    }
-		    #now{
-		    	margin-top: 30px;
-		    	width:23%;
-		    	height:40px;
-		    	padding-top:15px; 
-		    	text-align: center;
+		    #box{
+		        width:1370px;
+		        height:860px;
 		    	float:left;
 		    }
-		    span{
-		       cursor:pointer;
+		    #dituContent{
+		        margin-top:0px;
+		    	float: left;
+		    }
+		   .nav{
+		        font-size:25px; 
+				margin-top:36px;
+		        margin-left:0;
 		    }
 		    a{
 			  text-decoration:none;
@@ -114,21 +60,6 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
     <script type="text/javascript">
-			function playtra(){
-		        var a = document.getElementById("selecttra");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    function playlink(){
-		        var a = document.getElementById("selectlink");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    function playtime(){
-		        var a = document.getElementById("selecttime");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
 		    function pathfly(mac){
            var params = {};
 		   params.mac = mac;
@@ -189,33 +120,61 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
   
   <body>
   <div id="tittlebox">
-  <div id="other" ><a href="index?minute=6000" target="right"><font color="gray" size="5" >人群观测</font></a></div>
-  <div id="other" onclick="playtra()"><font color="gray" size="5" >轨迹跟踪</font></div>
-  <div id="selecttra"><%int m=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(m>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               m++;
-               if(m>=9) break;%>
-           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="now" onclick="playlink()"><font color="#23527C" size="5" >折线路径</font></div>
-  <div id="selectlink"><%int c=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(c>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               c++;
-               if(c>=9) break;%>
-           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="other" onclick="playtime()"><font color="gray" size="5" >时间选取</font></div>
-  <div id="selecttime">
-          <span  onclick="timefly(5)" >最近五分钟</span><br>
-          <span  onclick="timefly(60)" >最近一小时</span><br>
-          <span  onclick="timefly(1440)" >最近一天</span><br>
-          <span  onclick="timefly(4320)" >最近三天</span><br>
-          <span  onclick="timefly(525600)" >所有</span><br>
-  </div></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+    <div>
+        <ul class="nav navbar-nav">
+            <li><a href="index?minute=6000">人群观测</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                                                            轨迹跟踪
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                <%int m=0;
+                  for(int i=0;i<seekers.size();i++){ 
+                  if(m>=9) break;
+                   for(int j=0;j<listInfos.get(i).size();j++){
+                       m++;
+                        if(m>=9) break;%>
+                      <li> <a id="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></a></li>
+                 <% } }%>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                               折线路径
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <%int c=0;
+                      for(int i=0;i<seekers.size();i++){ 
+                          if(c>=9) break;
+                          for(int j=0;j<listInfos.get(i).size();j++){
+                                c++;
+                                if(c>=9) break;%>
+                      <li><a id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></a></li>
+                   <% } }%>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                                                                时间选取
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a onclick="timefly(5)" >最近五分钟</a></li>
+                    <li><a onclick="timefly(60)" >最近一小时</a></li>
+                    <li><a onclick="timefly(1440)" >最近一天</a></li>
+                    <li><a onclick="timefly(4320)" >最近三天</a></li>
+                    <li><a onclick="timefly(525600)" >所有</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    </div>
+</nav>
+</div>
   <div id="box">
   <div style="width:1370px;height:860px;border:0px solid gray;" id="dituContent"></div>
   </div>

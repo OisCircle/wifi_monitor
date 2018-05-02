@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPObject;
 import com.oracle.jrockit.jfr.InstantEvent;
+import com.qcq.wifi_monitor.dto.SeekerLocation;
 import com.qcq.wifi_monitor.service.PathService;
 import com.qcq.wifi_monitor.vo.Minute;
 import com.qcq.wifi_monitor.vo.SelectedId;
@@ -84,7 +85,6 @@ public class SeekerController {
 	public ModelAndView seeker(ModelAndView mv,int id,int rssi){
 		SeekerFilterDTO dto=new SeekerFilterDTO(id,Minute.getMinute(),rssi);
 		List<Info> infos=infoService.selectLatestInfosByMinute(dto);
-		List<Map<String,Double>> coordinates=MathUtil.getCoordinates(infos);
 
 		List<Seeker> seekers=seekerService.selectAll();
 		mv.getModelMap().put("seekers", seekers);
@@ -99,11 +99,30 @@ public class SeekerController {
 
 		mv.getModelMap().put("seeker_id", id);
 		mv.getModelMap().put("infos", infos);
-		mv.getModelMap().put("coordinates",coordinates);
 		mv.setViewName("seeker");
 		return mv;
 	}
+	@RequestMapping(value="/newseeker")
+	public ModelAndView newseeker(ModelAndView mv,int id,int rssi){
+		SeekerFilterDTO dto=new SeekerFilterDTO(id,Minute.getMinute(),rssi);
+		List<Info> infos=infoService.selectLatestInfosByMinute(dto);
 
+		List<Seeker> seekers=seekerService.selectAll();
+		mv.getModelMap().put("seekers", seekers);
+
+		//将每一个seeker最新探测到的所有信号们放入List数组
+		List<List<Info>> listInfos = new ArrayList<List<Info>>();
+		for (int i = 0; i < seekers.size(); ++i) {
+			dto.setId(seekers.get(i).getId());
+			listInfos.add(infoService.selectLatestInfos(dto));
+		}
+		mv.getModelMap().put("listInfos", listInfos);
+
+		mv.getModelMap().put("seeker_id", id);
+		mv.getModelMap().put("infos", infos);
+		mv.setViewName("newseeker");
+		return mv;
+	}
 	@RequestMapping("/seeker_count")
 	@ResponseBody
 	public int seeker_count(int id,int rssi) {
@@ -263,4 +282,9 @@ public class SeekerController {
 		return seekers;
 	}
 
+	@RequestMapping("/getLocationAndRssi")
+	@ResponseBody
+	public SeekerLocation getLocationAndRssi(String mac, int seeker_id) {
+		return seekerService.getLocationAndRssi(mac, seeker_id);
+	}
 }

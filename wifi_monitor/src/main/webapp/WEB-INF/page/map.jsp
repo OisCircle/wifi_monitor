@@ -23,7 +23,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	-->
 <script type="text/javascript">
     var nowrows=0;
+    var nowpage=1; 
     var rowslength;
+    var thispage;
     var jsonmap=[];
 	function sendmap(row){
 	      var id;
@@ -45,6 +47,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	   			success:function(data){
 	 				jsonmap=data;
 	 				rowslength=jsonmap.length;
+	 				thispage=Math.ceil(rowslength/10);
 	 				var root = document.getElementById("tbody");
 	 				var nowRows = root.getElementsByTagName('tr');
 	 				for(var m=0;m<10;m++){
@@ -53,8 +56,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                clearCells[1].innerHTML="";
 		                clearCells[2].innerHTML="";
 		                clearCells[3].innerHTML="";
-		                clearCells[4].innerHTML="";
-		                clearCells[5].innerHTML="";
 		            }
 	 				for(var i=row;i<row+10&&i<jsonmap.length;i++){
 	                    var nowCells = nowRows[i-row].getElementsByTagName('td');
@@ -66,7 +67,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                    oinput.setAttribute("id",i);
 	                    oinput.setAttribute("type","button");
 	                    oinput.setAttribute("class","btn btn-info");
-	                    oinput.setAttribute("data-toggle","button");
+	                    oinput.setAttribute("data-toggle","modal");
+	                    oinput.setAttribute("style","margin-left:5px;");
+	                    oinput.setAttribute("data-target","#UpdateModal");
 	                    oinput.setAttribute("onclick","openPop(this.id)");
 	                    nowCells[3].innerHTML="";
 	                    oinput.appendChild(Text);
@@ -76,34 +79,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                    var CheckText=document.createTextNode("已选");
 		                    Checkbox.setAttribute("type","button");
 		                    Checkbox.setAttribute("class","btn btn-danger");
+		                    Checkbox.setAttribute("style","margin-left:10px;");
 		                    Checkbox.setAttribute("name","mapcheck");
 		                    Checkbox.setAttribute("data-toggle","button");
-		                    nowCells[4].innerHTML="";
 		                    Checkbox.appendChild(CheckText);
-	                        nowCells[4].appendChild(Checkbox);
+	                        nowCells[3].appendChild(Checkbox);
 	                    }else{
 		                    var Checkbox=document.createElement("button");
 		                    var CheckText=document.createTextNode("选用");
 		                    Checkbox.setAttribute("type","button");
 		                    Checkbox.setAttribute("class","btn btn-success");
+		                    Checkbox.setAttribute("style","margin-left:10px;");
 		                    Checkbox.setAttribute("name","mapcheck");
 		                    Checkbox.setAttribute("value",jsonmap[i].id);
 		                    Checkbox.setAttribute("data-toggle","button");
 		                    Checkbox.setAttribute("onclick","boxcheck(this.value)");
-		                    nowCells[4].innerHTML="";
 		                    Checkbox.appendChild(CheckText);
-	                        nowCells[4].appendChild(Checkbox);
+	                        nowCells[3].appendChild(Checkbox);
 	                    }
 	            		var delect=document.createElement("button");
 	            		var delectedText=document.createTextNode("删除");
 	            		delect.setAttribute("type","button");
 	            		delect.setAttribute("class","btn btn-warning");
+	            		delect.setAttribute("style","margin-left:10px;");
 	                    delect.setAttribute("value",jsonmap[i].id);
 	                    delect.setAttribute("onclick","delect(this.value)");
-	                    nowCells[5].innerHTML="";
 	                    delect.appendChild(delectedText);
-	                    nowCells[5].appendChild(delect);
-	                }            
+	                    nowCells[3].appendChild(delect);
+	                    
+	                } 
+	                page();           
 	   			},
 	   			error:function(){
 	   				alert("error...");
@@ -114,12 +119,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	   function lastpage(){
 	        if(nowrows==0) alert("已是顶页！");
 	        else {nowrows-=10;
+	              nowpage-=1;
 	             sendmap(nowrows);
 	        }    
 	   }
 	   function nextpage(){
 	        if((rowslength-nowrows)<=10) alert("已是尾页！");
 	        else {nowrows+=10;
+	              nowpage+=1;
 	             sendmap(nowrows);
 	        }    
 	   }
@@ -129,58 +136,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		 	  document.getElementById("map_X").value=jsonmap[id].x;
 		 	  document.getElementById("map_Y").value=jsonmap[id].y;
 		 	  document.getElementById("description").value=jsonmap[id].description;
-		 	  document.getElementById("Pop").style.display="block";
-	   }
-	   function openAddPop(){
-		 	  document.getElementById("AddPop").style.display="block";
-	   }
-	   function judgment(){
-	       for(var i=0;i<jsonmap.length;i++){
-	          if(jsonmap[i].id==document.getElementById("mapId").value) continue;
-	          else if(document.getElementById("mapName").value==jsonmap[i].name){
-	                return 1;
-	             } 
-	          }
-	          return 0;
-	   }
-	   function review(){
-	       for(var i=0;i<jsonmap.length;i++){
-	          if(document.getElementById("AddmapName").value==jsonmap[i].name){
-	                return 1;
-	            } 
-	          }
-	          return 0;
-	   }
-	   function changeMap(){
-	          if(judgment()){
-	               alert("名称重复，请修改！");
-	          }else{
-			       var params = {};
-		           params.id = document.getElementById("mapId").value;
-		           params.name = document.getElementById("mapName").value;
-		           params.description = document.getElementById("description").value;
-		           params.x = document.getElementById("map_X").value;
-		           params.y = document.getElementById("map_Y").value;
-			       $.ajax({
-			            url:"/zoneUpdate",
-			            type:"Post",
-			            data:params,
-			            success:function(resp){
-			                sendmap(nowrows);
-			                document.getElementById("Pop").style.display="none";
-			            },
-			            error:function(jqXHR,textstatus){
-			                alert(textstatus);
-			            }
-			        }); 
-	          }
-	          
-	   }
-	   function nonePop(){
-	          document.getElementById("Pop").style.display="none";
-	   }
-	   function noneAddPop(){
-	          document.getElementById("AddPop").style.display="none";
 	   }
 	   function delect(id){
 	       if(confirm("是否确认删除?")){
@@ -234,32 +189,50 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         border:1px solid #9DAFC6;
         border-radius:4px;
     }
-    #AddPop{
-        position:absolute;
-        margin-left:30%;
-        margin-top:5%;
-        z-index:10000;
-        display:none;
-        width:700px;
-        height:400px;
-        background-color:#E8F2FE;
-        opacity:0.9;
-        border:1px solid #9DAFC6;
-        border-radius:4px;
+     #pagebox{
+    	 position:relative;
+         width:100%; 
+         height:50px;
+         margin-top:100px;  
     }
+	#pages{
+		position:absolute;
+		left:42%; 
+		top:10px;
+		width:200px;
+		height:40px; 
+		border:0px;
+		text-align:center;  
+	}
+	#airdis{
+	    width:200px;
+	    heigth:50px;
+	    text-align:center;
+	}
+	#airDis{
+	    width:200px;
+	    heigth:50px;
+	    text-align:center;
+	}
+    a{
+		text-decoration:none;
+		out-line: none;
+		cursor:pointer;
+	}
+    a:hover{
+		text-decoration:none;
+	}
 </style>
   </head>
   <body>
-     <table class="table table-bordered">
-	<caption>地图管理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ps:选择的图片最好为1600*750的格式</caption>
+     <table class="table table-bordered" style="margin-left:30px;">
+	<caption>地图管理<a  data-toggle="modal" data-target="#AddModal" style="margin-left:1300px;">增加地图</a></caption>
    <thead>
       <tr class="active">
          <th>地图序号</th>
          <th>地图名称</th>
          <th>地图说明</th>
-         <th>地图编辑</th>
-         <th>地图选取</th>
-         <th>删除</th>
+         <th>地图操作</th>
       </tr>
    </thead>
    <tbody id="tbody">
@@ -268,20 +241,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -292,20 +253,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -316,6 +265,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -324,6 +277,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -332,85 +289,198 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
         </tr>
    </tbody>
-   <div id="Pop">
-	   <h4>&nbsp;&nbsp;&nbsp;修改地图信息</h4>
-	     <form class="form-horizontal" role="form">
-		    <div class="form-group">
-				<label class="col-sm-2 control-label">地图名称：</label>
-					<input class="form-control" id="mapName" type="text">
-					<input type="hidden" id="mapId"> 
+   <div class="modal fade" id="UpdateModal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					 <font style="font-weight: bold;">修改地图信息</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="3">ps:选择的图片最好为1600*750的格式</font>
+				</h4>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label">经度_x：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="map_X" type="text">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label">纬度_y：</label>
-				<div class="col-sm-10">
-					<input class="form-control" id="map_Y" type="text">
-				</div>
-			</div>	
-			<div class="form-group">
-				    <label for="name">地图说明：</label>
-				    <textarea id="description"class="form-control" rows="3"></textarea>
-			  </div>
-			  <input style="margin-left:30%;" class="btn btn-default" onclick="changeMap();" type="button" value="确认">
-	          <input style="margin-left:18%;" class="btn btn-default" onclick="nonePop();"type="button" value="取消">
-		</form>
-   </div>
-   <div id="AddPop">
-	   <h4>修改地图信息</h4>
-	     <form enctype="multipart/form-data" method="post"
-		action="/zoneAdd" class="form-horizontal" role="form">
-		    <div class="form-group">
-				<label class="col-sm-2 control-label">选择图片：</label>
-				<div class="col-sm-10">
+			<div class="modal-body">
+				<form enctype="multipart/form-data" method="post" onsubmit="return airdisplay()" action="/zoneUpdate" class="form-horizontal" role="form">
+				<div class="form-group">
+				<label class="col-sm-3 control-label">选择图片：</label>
+				<div class="col-sm-9">
 					<input class="form-control" type="file" name="file" />
 				</div>
 			</div>
 		    <div class="form-group">
-				<label class="col-sm-2 control-label">地图名称：</label>
-				<div class="col-sm-10">
-					<input class="form-control" name="name" type="text">
+				<label class="col-sm-3 control-label">地图名称：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" id="mapName" name="name" type="text">
+					<input type="hidden" name="id" id="mapId"> 
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">经度_x：</label>
-				<div class="col-sm-10">
-					<input class="form-control" name="x" type="text">
+				<label class="col-sm-3 control-label">经度_x：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" id="map_X" name="x" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">纬度_y：</label>
-				<div class="col-sm-10">
-					<input class="form-control" name="y" type="text">
+				<label class="col-sm-3 control-label">纬度_y：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" id="map_Y" name="y" type="text">
 				</div>
 			</div>	
 			<div class="form-group">
 				    <label for="name">地图说明：</label>
-				    <textarea name="description"class="form-control" rows="3"></textarea>
+                    <textarea id="description" name="description"class="form-control" rows="3"></textarea>
 			  </div>
-			  <input style="margin-left:30%;" class="btn btn-default" type="submit" value="确认">
-	          <input style="margin-left:18%;" class="btn btn-default" onclick="noneAddPop();"type="button" value="取消">
+			</div>
+			<div class="modal-footer">
+			    <div id="airdis">
+			         <h4 id="airplay" style="color:red;"></h4>
+			    </div>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="submit" class="btn btn-primary">
+				     提交更改	
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
 		</form>
-   </div>
+		</div><!-- /.modal -->
+	</div>
+   <div class="modal fade" id="AddModal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					 <font style="font-weight: bold;">增加地图信息</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="3">ps:选择的图片最好为1600*750的格式</font>
+				</h4>
+			</div>
+			<div class="modal-body">
+			  <form enctype="multipart/form-data" method="post" onsubmit="return airDisplay()" action="/zoneAdd" class="form-horizontal" role="form">
+				<div class="form-group">
+				<label class="col-sm-3 control-label">选择图片：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" id="file"  type="file" name="file" />
+				</div>
+			</div>
+		    <div class="form-group">
+				<label class="col-sm-3 control-label">地图名称：<font color="red">*</font></label>
+				<div class="col-sm-9" >
+					<input class="form-control" id="mapname" name="name" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">经度_x：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" id="map_x" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" name="x" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">纬度_y：<font color="red">*</font></label>
+				<div class="col-sm-9">
+					<input class="form-control" id="map_y" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" name="y" type="text">
+				</div>
+			</div>	
+			<div class="form-group">
+				    <label for="name">地图说明：</label>
+				    <textarea name="description" class="form-control" rows="3"></textarea>
+			  </div>
+			</div>
+			<div class="modal-footer">
+			   <div id="airDis">
+			         <h4 id="airPlay" style="color:red;"></h4>
+			    </div>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="submit" class="btn btn-primary">
+				     提交更改	
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+		</form>
+		</div><!-- /.modal -->
+	</div>
 </table>
-    <a class="btn btn-lg btn-primary" style="margin-left:23%;"onclick="lastpage();" role="button">上一页</a>
-    <a class="btn btn-lg btn-primary" style="margin-left:22%;"onclick="nextpage();" role="button">下一页</a>
-    <a class="btn btn-lg btn-primary" style="margin-left:10%;"onclick="openAddPop();" role="button">增加</a>
+   <div id="pagebox">
+			   <a class="btn btn-lg btn-primary" role="button" style="margin-left:33%;"onclick="lastpage();" >上一页</a>
+			   <div id="pages"><font id="page" size="5" style="margin-top:20px; " color="blue"></font></div>
+		       <a class="btn btn-lg btn-primary" role="button" style="margin-left:20%;"onclick="nextpage();">下一页</a>
+    </div> 
   </body>
+  <script type="text/javascript">
+	function page(){
+	    var page = document.getElementById("page");
+	    page.innerHTML="";
+	    var Text=document.createTextNode("第"+window.nowpage+"页/共"+window.thispage+"页");
+	    page.appendChild(Text);
+    }
+    function airdisplay(){
+        var airplay=document.getElementById("airplay");
+        for(var i=0;i<window.jsonmap.length;i++){
+	          if(window.jsonmap[i].id==document.getElementById("mapId").value) continue;
+	          else if(document.getElementById("mapName").value==jsonmap[i].name){
+	                airplay.innerHTML="地图名称重复！";
+	                return false;
+	             } 
+	    }
+        var name=document.getElementById("mapName");
+        if(name.value == ''){
+			airplay.innerHTML="地图名称不能为空！";
+			return false;
+		}
+		var mapx=document.getElementById("map_X");
+        if(mapx.value == ''){
+			airplay.innerHTML="经度不能为空！";
+			return false;
+		}
+		var mapy=document.getElementById("map_Y");
+        if(mapy.value == ''){
+			airplay.innerHTML="纬度不能为空！";
+			return false;
+		}
+		return true;
+    }
+    function airDisplay(){
+        var airplay=document.getElementById("airPlay");
+         for(var i=0;i<window.jsonmap.length;i++){
+	          if(document.getElementById("mapname").value==jsonmap[i].name){
+	                airplay.innerHTML="地图名称重复！";
+	                return false;
+	             } 
+	    }
+        var file=document.getElementById("file");
+        if(file.value == ''){
+			airplay.innerHTML="图片不能为空！";
+			return false;
+		}
+        var name=document.getElementById("mapname");
+        if(name.value == ''){
+			airplay.innerHTML="地图名称不能为空！";
+			return false;
+		}
+		var mapx=document.getElementById("map_x");
+        if(mapx.value == ''){
+			airplay.innerHTML="经度不能为空！";
+			return false;
+		}
+		var mapy=document.getElementById("map_y");
+        if(mapy.value == ''){
+			airplay.innerHTML="纬度不能为空！";
+			return false;
+		}
+		return true;
+    }
+</script>
 </html>

@@ -7,15 +7,7 @@ List<Info>infos=(List<Info>)request.getAttribute("infos");
 List<Seeker> seekers =(List<Seeker>)request.getAttribute("seekers");
 //每个seeker对应的信息，下标与 seekers 一一对应
 List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
-//每个info应该处在的坐标
-List<Map<String,Double>>coordinates=(List<Map<String,Double>>)request.getAttribute("coordinates");
 int seeker_id=(int)request.getAttribute("seeker_id");
-//svg config
-//相对坐标中心点
-double x0=(double)350;
-double y0=(double)400;
-int r=350;
-int pr=2;
 %>
 
 
@@ -24,201 +16,72 @@ int pr=2;
    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script type="text/javascript">
-		function search(mac,rssi,time){
-		  document.getElementById("mac").textContent=mac;
-		  document.getElementById("rssi").textContent=rssi;
-		  document.getElementById("time").textContent=time;
-		}
-		function searchMac(macId,mac,rssi,time){
-		  var rect="rect"+macId;
-		  document.getElementById(rect.toString()).style.fill="#F70512";
-		  document.getElementById("mac").textContent=mac;
-		  document.getElementById("rssi").textContent=rssi;
-		  document.getElementById("time").textContent=time;
-		}
-		function searchOut(macId,time){
-		  var rect="rect"+macId;
-		  if(time<=3600)
-					document.getElementById(rect.toString()).style.fill="#B7CEE5";
-				else if(time<=7200)
-					document.getElementById(rect.toString()).style.fill="#C1B7E8";
-				else if(time<=10800)
-					document.getElementById(rect.toString()).style.fill="#71D39D";
-				else
-					document.getElementById(rect.toString()).style.fill="black";
-		  document.getElementById("mac").textContent="";
-		  document.getElementById("rssi").textContent="";
-		  document.getElementById("time").textContent="";
-		}
-		function highLightRow(row){
-			alert("into highLightRow()");
-		}
-	</script>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=4IU3oIAMpZhfWZsMu7xzqBBAf6vMHcoa"></script>
 	<head>
 	<title>main page</title>
 		<style type="text/css">
-			table tbody {
-				display: block;
-				height: 195px;
-				overflow-y: scroll;
-			}
-			table thead, tbody tr {
-				display: table;
-				width: 100%;
-				table-layout: fixed;
-				cursor:pointer;
-			}
-			table thead {
-				width: calc(100% - 1em)
-			}
-			table thead th {
-				background: #ccc;
-				
-			}
-			#circle{
-				width:800px;
-				height:800px;
-				float:left;
-			}
-			#info{
-				width:400px;
-				height:800px;
-				margin-top:20px;
-				float:left;
-			}
-			#box{
-			    position:absolute;
-			    left:600px;
-			    top:680px;
-			    width:250px;
-			    height:200px;
-			    border:2px solid #6C6D69;
-			    border-radius:4px; 
-			    float:left;
-			}
-			 #selecttra{
-		        position:absolute;
-		        left:23%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;    
-		    }
-		    #selectlink{
-		        position:absolute;
-		        left:46%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;    
-		    }
-		    #selecttime{
-		        position:absolute;
-		        left:69%;
-		        top:86px;
-		        z-index:2000;
-		        display:none;
-		        width:23%;
-		        height:200px;
-		        text-align: center;
-		        opacity: 0.6;
-		        background:white;
-		        border-radius:5px;     
-		    }
-		    #other{
-		    	margin-top: 30px;
-		    	width:23%;
-		    	height:40px;
-		    	padding-top:15px;
-		    	text-align: center;
-		    	border:0px;
-		    	float: left; 
-		    }
-		    #now{
-		    	margin-top: 30px;
-		    	width:23%;
-		    	height:40px;
-		    	padding-top:15px; 
-		    	text-align: center;
-		    	background-image:url(shade.png);
-		    	background-repeat :no-repeat ;
-		    	background-color : transparent;  
-		    	float:left;
-		    }
-		    #cricletittle{
-		        position:absolute;
-		        top:90px;
-		        left:10px;
-		        float:left;
-		    }
-		    span{
-		       cursor:pointer;
-		    }
-		    a{
-			  text-decoration:none;
-			  out-line: none;
-			  color: #*****;
-			}
-			a:hover{
-			  text-decoration:none;
-			}
-			#tittlebox{
-			   width:100%;
-			   height:87px;
-			   background-color:#F8F8F8;
-		       cursor:pointer;
-		    }
-		</style>
-		<script type="text/javascript">
-			function playtra(){
-		        var a = document.getElementById("selecttra");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    function playlink(){
-		        var a = document.getElementById("selectlink");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
-		    function playtime(){
-		        var a = document.getElementById("selecttime");
-		        if(a.style.display=="block") a.style.display = "none";
-		        else a.style.display = "block";
-		    }
+    html,body{
+    	margin:0;
+    	padding:0;
+    }
+    #dituContent{
+        margin-top:0;
+    	float:left;
+    }
+    a{
+	  text-decoration:none;
+	}
+	a:hover{
+	  text-decoration:none;
+	}
+	#box{
+	   width:100%;
+	   height:87px;
+	   background-color:#F8F8F8;
+       cursor:pointer;
+    }
+    #strogle{
+       position:absolute;
+       z-index:1000;
+       left:50px;
+       top:100px;
+    }
+     #seekersearch{
+         position:absolute;
+         left:1250px;
+         top:45px;
+         width:350px;
+         height:40px;
+    }
+    #SearchEnd{
+         position:absolute;
+         left:1250px;
+         top:10px;
+         width:200px;
+         height:20px;
+         border:0;
+    }
+    #macinfos{
+        position:absolute;
+        z-index:1000;
+        left:85%;
+        top:96px;
+        width:13%;
+        height:150px;
+        opacity:0.6;
+        border-radius:5px;
+        background-color:black;
+        display:none;
+    }
+    .nav{
+         font-size:25px;    
+		 margin-top:36px;
+		 margin-left:0;
+	 }
+    </style>
+	<script type="text/javascript">
 		    function pathfly(mac){
 	           var params = {};
-			   params.mac = mac;
-		     $.ajax({
-			   			type:"post",
-			   			url:"/pathCount",
-			   			data:params,
-			   			success:function(data){
-			   			    var longth=data;
-			   			    if(longth==0){
-			   			        alert("该MAC无路径！");
-			   			    }else{
-			   			        window.location="/path"+"?mac="+mac; 
-			   			    }         
-			   			},
-			   			error:function(){
-			   				alert("error...");
-			   			}
-			   		});
-		    }
-		    function path(){
-	           var params = {};
-	           var mac = document.getElementById("searchmac").value;
 			   params.mac = mac;
 		     $.ajax({
 			   			type:"post",
@@ -296,47 +159,65 @@ int pr=2;
 	</script>
 	</head>
 	<body>
-	<div id="tittlebox">
-  <div id="now" ><a href="index?minute=6000" target="right"><font color="#23527C" size="5" >人群观测</font></a></div>
-  <div id="other"  onclick="playtra()"><font color="gray" size="5" >轨迹跟踪</font></div>
-  <div id="selecttra"><%int m=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(m>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               m++;
-               if(m>=9) break;%>
-           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="other"  onclick="playlink()"><font color="gray" size="5" >折线路径</font></div>
-  <div id="selectlink"><%int c=0;
-  for(int i=0;i<seekers.size();i++){ 
-       if(c>=9) break;
-          for(int j=0;j<listInfos.get(i).size();j++){
-               c++;
-               if(c>=9) break;%>
-           <span id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></span><br>
-    <% } }%></div>
-  <div id="other" onclick="playtime()"><font color="gray" size="5" >时间选取</font></div>
-  <div id="selecttime">
-          <span  onclick="timefly(5)" >最近五分钟</span><br>
-          <span  onclick="timefly(60)" >最近一小时</span><br>
-          <span  onclick="timefly(1440)" >最近一天</span><br>
-          <span  onclick="timefly(4320)" >最近三天</span><br>
-          <span  onclick="timefly(525600)" >所有</span><br>
-  </div></div>
-	  <div id="cricletittle">
-	      <h4>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
-			 <rect  width="10" height="10" style="fill:#B7CEE5;stroke:pink;stroke-width:0;opacity:0.5" /></svg>1个小时内&nbsp;&nbsp;&nbsp;&nbsp;	
-			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
-			<rect  width="10" height="10" style="fill:#C1B7E8;stroke:pink;stroke-width:0;opacity:0.5" /></svg>1-2个小时内&nbsp;&nbsp;&nbsp;&nbsp;
-			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
-			<rect  width="10" height="10" style="fill:#71D39D;stroke:pink;stroke-width:0;opacity:0.5" /></svg>2-4个小时内&nbsp;&nbsp;&nbsp;&nbsp;
-			<svg width=10 height=10 xmlns="http://www.w3.org/2000/svg" version="1.1">
-			<rect  width="10" height="10" style="fill:black;stroke:pink;stroke-width:0;opacity:0.5" /></svg>4小时外&nbsp;&nbsp;&nbsp;&nbsp;
-		
-	  <div  class="dropdown">
-			<button type="button" class="btn dropdown-toggle" id="dropdownMenu1" 
+	<div id="box">
+	<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+    <div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="index?minute=6000">人群观测</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                                                            轨迹跟踪
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                <%int m=0;
+                  for(int i=0;i<seekers.size();i++){ 
+                  if(m>=9) break;
+                   for(int j=0;j<listInfos.get(i).size();j++){
+                       m++;
+                        if(m>=9) break;%>
+                      <li> <a id="<%=listInfos.get(i).get(j).getMac() %>" onclick="pathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></a></li>
+                 <% } }%>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                               折线路径
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <%int c=0;
+                      for(int i=0;i<seekers.size();i++){ 
+                          if(c>=9) break;
+                          for(int j=0;j<listInfos.get(i).size();j++){
+                                c++;
+                                if(c>=9) break;%>
+                      <li><a id="<%=listInfos.get(i).get(j).getMac() %>" onclick="linkpathfly(this.id)"><%=listInfos.get(i).get(j).getMac() %></a></li>
+                   <% } }%>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                                                                时间选取
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a onclick="timefly(5)" >最近五分钟</a></li>
+                    <li><a onclick="timefly(60)" >最近一小时</a></li>
+                    <li><a onclick="timefly(1440)" >最近一天</a></li>
+                    <li><a onclick="timefly(4320)" >最近三天</a></li>
+                    <li><a onclick="timefly(525600)" >所有</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    </div>
+   </nav>
+  </div>
+  <div id="strogle">	
+  <div class="dropdown">
+		   <button type="button" class="btn dropdown-toggle" id="dropdownMenu1" 
 					data-toggle="dropdown">
 				       信号强度
 				<span class="caret"></span>
@@ -359,77 +240,309 @@ int pr=2;
 				</li>
 			</ul>
 		</div>
-		</h4>
-	  </div>
-	<div>
-		<div id="circle">
-		<svg width=800 height=800 xmlns="http://www.w3.org/2000/svg" version="1.1">
-			<!-- 初始化背景圆 -->
-			<%for(int i=90;i>=0;i-=10,r-=39){%>
-				<%Double stroke_width=(double)0.5;if(r%2==1) stroke_width=(double)0; %>
-				<circle cx=<%=x0%> cy=<%=y0%> r=<%=r%> stroke="black" stroke-width="<%=stroke_width %>" fill="<%= "#D8FF"+String.valueOf(i) %>" />
-				<%if(r%2==0){ %>
-					<text x=<%=x0+r %> y=<%=y0 %> fill="red"><%=String.valueOf((int)(((double)r)/((double)350/(double)130))*-1) %></text>
-				
-				<%} %>
-			<%} %>
-			<%for(int i=0;i<coordinates.size();++i){ 
-				//每个time进行时间判断，分配颜色
-				Date now =new Date();
-				String fillColor;
-				//秒数
-				long timeGap=(now.getTime()-infos.get(i).getTime().getTime())/1000;
-				if(timeGap<=3600)
-					fillColor="#B7CEE5";
-				else if(timeGap<=7200)
-					fillColor="#C1B7E8";
-				else if(timeGap<=10800)
-					fillColor="#71D39D";
-				else
-					fillColor="black";
-			%>
-				<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-				  <rect onclick="pathfly('<%=infos.get(i).getMac() %>')" onmouseover="search(<%=infos.get(i).getId() %>,'<%=infos.get(i).getMac() %>',<%=infos.get(i).getRssi() %>,'<%=infos.get(i).getTime().toLocaleString() %>')"
-					    id="rect<%=infos.get(i).getId()%>" x=<%=x0+(Double)coordinates.get(i).get("x") %> y=<%=y0+(Double)coordinates.get(i).get("y") %> width="10" height="10" style="fill:<%=fillColor %>;stroke:pink;stroke-width:0;opacity:0.5" />
-		       </svg>
-			<%} %>
-			<circle cx=<%=x0%> cy=<%=y0%> r=<%=pr%> stroke="#8A2BE2" stroke-width="0" fill="#8A2BE2" />
-		</svg>
-		<script type="text/javascript">
-		</script>
 		</div>
-		<div id="box">
-				<h3 id="mac" style="margin-left:20px"></h3>
-				<h3 id="rssi" style="margin-left:20px"></h3>
-				<h3 id="time" style="margin-left:20px"></h3>
-	   </div>
-		<div id="info">
-			<table id="macTable" width="100%" border="1">
-			<thead>
-				<tr>
-					<th>Seeker ID:<%= seeker_id%></th>
-				</tr>
-			</thead>
-			<tbody>
-				<% for(int i=0;i<infos.size();++i) {%>
-					<tr>
-					   <%  Date now =new Date();
-					   long TimeGap=(now.getTime()-infos.get(i).getTime().getTime())/1000; %>
-						<td id=<%= "mac"+i %> align="center" onmouseover="searchMac(<%=infos.get(i).getId() %>,'<%=infos.get(i).getMac() %>',<%=infos.get(i).getRssi() %>,'<%=infos.get(i).getTime().toLocaleString() %>')" 
-						 onclick="pathfly('<%=infos.get(i).getMac() %>')"
-						onmouseout="searchOut('<%=infos.get(i).getId() %>','<%=TimeGap%>')"
-						><%=infos.get(i).getMac()%></td>
-					</tr>
-				<%}%>
-			</tbody>
-			</table>
-			
-				<h4>
-				针对MAC搜索:&nbsp&nbsp<input id="searchmac" type="text"  value="<%= infos.get(0).getMac() %>"/>
-				<input type="button" onclick="path();" value="搜索轨迹">
-               </h4>
-           </div>
+		<div id="SearchEnd">
+		     <h4 id="searchend" style="margin-left:15px;color:red;"></h4>
 		</div>
+		<div id="seekersearch">
+		   <div class="input-group col-md-6" >  
+               <input type="text" class="form-control" style="width:150px;"id="search" placeholder="请输入mac名" / >  
+               <input type="hidden" id="seekerid" value="<%=seeker_id%>">
+		       <span class="input-group-btn">  
+		             <button class="btn btn-info btn-search" onclick="searchmac()">搜索mac</button>  
+		             <button class="btn btn-info btn-search" style="margin-left:3px" onclick="createMap()">显示所有mac</button>  
+		       </span>  
+		   </div> 
+		</div>
+		 <div id="macinfos">
+		        <h4 id="infomac" style="margin-left:20%;margin-top:15%;color:white;"></h4>
+		        <h4 id="inforssi" style="margin-left:20%;color:white;"></h4>
+		        <h4 id="infomacid" style="margin-left:20%;color:white;"></h4>
+		 </div>
+	<div style="width:1608px;height:775px;border:gray solid 0px;" id="dituContent"></div> 
 </body>
-
+<script type="text/javascript">
+	function getJsonLength(jsonData){  
+		    var jsonLength = 0;  
+		    for(var item in jsonData){    
+		        jsonLength++;    
+		    }  	  
+		    return jsonLength;  
+	}  
+    function searchmac(){
+             var params = {};
+             var mac = document.getElementById("search").value;
+             var seekerid = document.getElementById("seekerid").value;
+             params.mac=mac;
+             params.seeker_id=seekerid;
+                $.ajax({
+                    url:"/getLocationAndRssi",
+                    type:"Post",
+                    data:params,
+                    success:function(data){
+                        var rssidata={};
+                        rssidata=data;
+                        if(getJsonLength(rssidata)==0){
+                            document.getElementById("searchend").innerHTML="该mac无信号！"
+                        }else{
+                            createMap_search(rssidata.x,rssidata.y,rssidata.rssi,mac,seekerid);
+                        }
+                    },
+                    error:function(jqXHR,textstatus){
+                        alert(textstatus);
+                    }
+                });
+            }
+</script>
+<script type="text/javascript">
+    //创建和初始化地图函数：
+    function initMap(){
+        createMap();//创建地图
+        setMapEvent();//设置地图事件
+        addMapControl();//向地图添加控件
+    }
+    
+    //创建地图函数：
+    function createMap(){
+        var mp = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
+        <%for(int i=0;i<seekers.size();++i) {%>
+        <%if(seekers.get(i).getId()==seeker_id){%>
+        var point = new BMap.Point(<%=seekers.get(i).getX()%>,<%=seekers.get(i).getY()%>);//定义一个中心点坐标
+        <%}}%>
+        mp.centerAndZoom(point,18);//设定地图的中心点和坐标并将地图显示在地图容器中
+        mp.enableScrollWheelZoom();
+        function ComplexCustomOverlay(point){
+          this._point = point;
+          
+        }
+    　　 // 继承API的BMap.Overlay  
+        ComplexCustomOverlay.prototype = new BMap.Overlay();
+        //初始化自定义覆盖物
+        // 实现初始化方法  
+        ComplexCustomOverlay.prototype.initialize = function(map){
+          // 保存map对象实例 
+          this._map = map;
+          // 创建div元素，作为自定义覆盖物的容器  
+          var div = this._div = document.createElement("div");
+          div.style.position = "absolute";
+          div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);//聚合功能?
+          // 可以根据参数设置元素外观
+          div.style.height = "8px";
+          div.style.width="8px";
+          var arrow = this._arrow = document.createElement("img");
+          arrow.src = "http://www.yantiansf.cn/mapImage/1.gif";
+          arrow.style.width = "8px";
+          arrow.style.height = "8px";
+          arrow.style.top = "5px";
+          arrow.style.left = "10px";
+          div.appendChild(arrow);
+         
+    　                    // 将div添加到覆盖物容器中  
+          mp.getPanes().labelPane.appendChild(div);//getPanes(),返回值:MapPane,返回地图覆盖物容器列表  labelPane呢???
+          // 需要将div元素作为方法的返回值，当调用该覆盖物的show、  
+          // hide方法，或者对覆盖物进行移除时，API都将操作此元素。
+          return div;
+          
+        }
+        
+        //绘制覆盖物
+        // 实现绘制方法
+        ComplexCustomOverlay.prototype.draw = function(){
+          var map = this._map;
+          var pixel = map.pointToOverlayPixel(this._point);
+          this._div.style.left = pixel.x - parseInt(this._arrow.style.left) + "px";
+          this._div.style.top  = pixel.y - 30 + "px";
+        }
+       
+            
+       
+        //自定义覆盖物添加事件方法
+        ComplexCustomOverlay.prototype.addEventListener = function(event,fun){
+            this._div['on'+event] = fun;
+        }
+         <%for(int i=0;i<seekers.size();++i) {%>
+         <%if(seekers.get(i).getId()==seeker_id){%>
+        <% double X = seekers.get(i).getX(); %>
+        <% double Y = seekers.get(i).getY(); %>
+        <% int ID = seekers.get(i).getId(); %>
+        var point=new BMap.Point(<%=X%>,<%=Y%>)
+        var start = new BMap.Marker(point);
+        var opts = {
+	      width : 40,     // 信息窗口宽度
+	      height: 100,     // 信息窗口高度
+	      title : " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;探针ID:<%=seekers.get(i).getId()%>  " , // 信息窗口标题     
+	    }
+	    var infoWindow = new BMap.InfoWindow("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前:<%=infos.size()%>个信号 <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;经度:<%=X%><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;纬度:<%=Y%>", opts);  // 创建信息窗口对象 
+	    setmouse(start,infoWindow);
+        mp.addOverlay(start);
+        var circle = new BMap.Circle(point,250,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+        mp.addOverlay(circle);
+        <%for(int j=0;j<infos.size();j++){%>
+          var angle=Math.random()*360;
+          var myCompOverlay = new ComplexCustomOverlay(new BMap.Point(<%=X%>-0.000017*<%=infos.get(j).getRssi()%>*Math.cos(angle),<%=Y%>-0.000017*<%=infos.get(j).getRssi()%>*Math.sin(angle)));
+          mp.addOverlay(myCompOverlay);
+          myCompOverlay.addEventListener("click", function(){
+             pathfly('<%=infos.get(j).getMac()%>');
+          })   
+          myCompOverlay.addEventListener("mouseover", function(e){
+                document.getElementById("infomac").innerHTML="mac:<%=infos.get(j).getMac()%>";
+                document.getElementById("inforssi").innerHTML="信号强度:<%=infos.get(j).getRssi()%>";
+                document.getElementById("infomacid").innerHTML="seekerID:<%=seeker_id%>";
+                document.getElementById("macinfos").style.display="block";
+          }) 
+          myCompOverlay.addEventListener("mouseout", function(e){
+               document.getElementById("macinfos").style.display="none";
+          })  
+        <%}%>
+	    window.map = mp;
+	   <%}}%>
+	    function setmouse(marcks,infoWindow){
+	      marcks.addEventListener("mouseover", function(e){          
+	          openInfo(infoWindow,e);
+	      });
+	      marcks.addEventListener("mouseout", function(e){          
+	          closeInfo(infoWindow,e);
+	      });
+	    }
+	    function openInfo(content,e){
+		var p = e.target;
+		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+		mp.openInfoWindow(content,point); //开启信息窗口
+		window.map=mp;
+	   }
+	   function closeInfo(content,e){
+		var p = e.target;
+		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+		mp.closeInfoWindow(content,point); //关闭信息窗口
+		window.map=mp;
+	   }
+	 }
+	 //创建search地图函数：
+    function createMap_search(X,Y,rssi,mac,seekerid){
+        var mp = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
+        var point = new BMap.Point(X,Y);//定义一个中心点坐标
+        mp.centerAndZoom(point,18);//设定地图的中心点和坐标并将地图显示在地图容器中
+        mp.enableScrollWheelZoom();
+        function ComplexCustomOverlay(point){
+          this._point = point;
+          
+        }
+    　　 // 继承API的BMap.Overlay  
+        ComplexCustomOverlay.prototype = new BMap.Overlay();
+        //初始化自定义覆盖物
+        // 实现初始化方法  
+        ComplexCustomOverlay.prototype.initialize = function(map){
+          // 保存map对象实例 
+          this._map = map;
+          // 创建div元素，作为自定义覆盖物的容器  
+          var div = this._div = document.createElement("div");
+          div.style.position = "absolute";
+          div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);//聚合功能?
+          // 可以根据参数设置元素外观
+          div.style.height = "8px";
+          div.style.width="8px";
+          var arrow = this._arrow = document.createElement("img");
+          arrow.src = "http://www.yantiansf.cn/mapImage/1.gif";
+          arrow.style.width = "8px";
+          arrow.style.height = "8px";
+          arrow.style.top = "5px";
+          arrow.style.left = "10px";
+          div.appendChild(arrow);
+         
+    　                    // 将div添加到覆盖物容器中  
+          mp.getPanes().labelPane.appendChild(div);//getPanes(),返回值:MapPane,返回地图覆盖物容器列表  labelPane呢???
+          // 需要将div元素作为方法的返回值，当调用该覆盖物的show、  
+          // hide方法，或者对覆盖物进行移除时，API都将操作此元素。
+          return div;
+          
+        }
+        
+        //绘制覆盖物
+        // 实现绘制方法
+        ComplexCustomOverlay.prototype.draw = function(){
+          var map = this._map;
+          var pixel = map.pointToOverlayPixel(this._point);
+          this._div.style.left = pixel.x - parseInt(this._arrow.style.left) + "px";
+          this._div.style.top  = pixel.y - 30 + "px";
+        }
+       
+            
+       
+        //自定义覆盖物添加事件方法
+        ComplexCustomOverlay.prototype.addEventListener = function(event,fun){
+            this._div['on'+event] = fun;
+        }
+        var point=new BMap.Point(X,Y)
+        var start = new BMap.Marker(point);
+        var opts = {
+	      width : 40,     // 信息窗口宽度
+	      height: 100,     // 信息窗口高度
+	      title : " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;探针ID:"+seekerid , // 信息窗口标题     
+	    }
+	    var infoWindow = new BMap.InfoWindow("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前:1个信号 <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;经度:"+X+"<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;纬度:"+Y, opts);  // 创建信息窗口对象 
+	    setmouse(start,infoWindow);
+        mp.addOverlay(start);
+        var circle = new BMap.Circle(point,250,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+        mp.addOverlay(circle);
+        var angle=Math.random()*360;
+        var myCompOverlay = new ComplexCustomOverlay(new BMap.Point(X-0.000017*rssi*Math.cos(angle),Y-0.000017*rssi*Math.sin(angle)));
+        mp.addOverlay(myCompOverlay);
+          myCompOverlay.addEventListener("click", function(){
+             pathfly(mac);
+          })   
+          myCompOverlay.addEventListener("mouseover", function(e){
+                document.getElementById("infomac").innerHTML="mac:"+mac;
+                document.getElementById("inforssi").innerHTML="信号强度:"+rssi;
+                document.getElementById("infomacid").innerHTML="seekerID:"+seekerid;
+                document.getElementById("macinfos").style.display="block";
+          }) 
+          myCompOverlay.addEventListener("mouseout", function(e){
+               document.getElementById("macinfos").style.display="none";
+          })  
+	    window.map = mp;
+	    function setmouse(marcks,infoWindow){
+	      marcks.addEventListener("mouseover", function(e){          
+	          openInfo(infoWindow,e);
+	      });
+	      marcks.addEventListener("mouseout", function(e){          
+	          closeInfo(infoWindow,e);
+	      });
+	    }
+	    function openInfo(content,e){
+		var p = e.target;
+		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+		mp.openInfoWindow(content,point); //开启信息窗口
+		window.map=mp;
+	   }
+	   function closeInfo(content,e){
+		var p = e.target;
+		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+		mp.closeInfoWindow(content,point); //关闭信息窗口
+		window.map=mp;
+	   }
+	 }
+	
+    //地图事件设置函数：
+    function setMapEvent(){
+        map.enableDragging();//启用地图拖拽事件，默认启用(可不写)
+        map.enableScrollWheelZoom();//启用地图滚轮放大缩小
+        map.enableDoubleClickZoom();//启用鼠标双击放大，默认启用(可不写)
+        map.enableKeyboard();//启用键盘上下左右键移动地图
+    }
+    
+    //地图控件添加函数：
+    function addMapControl(){
+        //向地图中添加缩放控件
+    var ctrl_nav = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_ZOOM});
+    map.addControl(ctrl_nav);
+        //向地图中添加缩略图控件
+    var ctrl_ove = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:1});
+    map.addControl(ctrl_ove);
+        //向地图中添加比例尺控件
+    var ctrl_sca = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+    map.addControl(ctrl_sca);
+    }
+    
+    initMap();//创建和初始化地图
+</script>
 </html>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.qcq.wifi_monitor.dto.SeekerLocation;
 import org.springframework.stereotype.Service;
 
 import com.qcq.wifi_monitor.entity.Seeker;
@@ -52,5 +53,10 @@ public class SeekerServiceImpl implements SeekerService{
 	public List<Seeker> selectByZoneId(int id) {
 		return sm.selectByZoneId(id);
 	}
-	
+
+	@Override
+	public SeekerLocation getLocationAndRssi(String mac, int seeker_id) {
+		return sm.getLocationAndRssi(mac, seeker_id);
+	}
+
 }
