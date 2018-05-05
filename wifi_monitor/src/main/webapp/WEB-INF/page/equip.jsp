@@ -65,7 +65,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                    nowCells[3].appendChild(oinput);
 	                    if(jsonequip[i].isForbidden==1){
 		                    var Checkbox=document.createElement("button");
-		                    var CheckText=document.createTextNode("选用");
+		                    var CheckText=document.createTextNode("已选用");
 		                    Checkbox.setAttribute("type","button");
 		                    Checkbox.setAttribute("value",jsonequip[i].id);
 		                    Checkbox.setAttribute("class","btn btn-danger");
@@ -77,7 +77,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                        nowCells[3].appendChild(Checkbox);
 	                    }else{
 	                        var Checkbox=document.createElement("button");
-		                    var CheckText=document.createTextNode("禁用");
+		                    var CheckText=document.createTextNode("已禁用");
 		                    Checkbox.setAttribute("type","button");
 		                    Checkbox.setAttribute("value",jsonequip[i].id);
 		                    Checkbox.setAttribute("class","btn btn-success");
@@ -302,7 +302,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
     <table class="table table-bordered" style="margin-left:30px;"> 
-	<caption>设备管理 <a  data-toggle="modal" data-target="#AddequipModal" style="margin-left:1300px;">增加设备</a></caption>
+	<caption><font size="5" weight="bold">设备管理</font> <a  data-toggle="modal" data-target="#AddequipModal" style="margin-left:1300px;"><font size="5" weight="bold">增加设备</font></a></caption>
    <thead>
       <tr class="active">
          <th>序号</th>
@@ -569,7 +569,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			airplay.innerHTML="经度不能为空！";
 			return true;
 		}
-		var Y=document.getElementById("xifi_Y");
+		var Y=document.getElementById("wifi_Y");
         if(Y.value == ''){
 			airplay.innerHTML="纬度不能为空！";
 			return true;
@@ -609,7 +609,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			airplay.innerHTML="经度不能为空！";
 			return true;
 		}
-		var Y=document.getElementById("Addxifi_Y");
+		var Y=document.getElementById("Addwifi_Y");
         if(Y.value == ''){
 			airplay.innerHTML="纬度不能为空！";
 			return true;
@@ -624,7 +624,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			airplay.innerHTML="地图纬度不能为空！";
 			return true;
 		}
-		return false;
     }
 </script>
 </html>

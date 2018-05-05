@@ -86,7 +86,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <a class="my" style="text-decoration:none;" href="index" target="right"><i onclick="closemenu()"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span> 百度地图数据展示 </i></a>
           </li>
           <li>
-              <a class="my" style="text-decoration:none;" href="indoor" target="right"><i onclick="closemenu()"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span> Echart地图实时展示 </i></a>
+              <a class="my" style="text-decoration:none;" href="indoor" target="right"><i onclick="closemenu()"><span class="glyphicon glyphicon-stats" style="font-size: 23px;"></span> 室内地图实时展示 </i></a>
           </li>
       </ul>
 </nav>

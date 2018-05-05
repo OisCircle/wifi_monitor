@@ -133,8 +133,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	   function openPop(id){
 	          document.getElementById("mapId").value=jsonmap[id].id;
 		 	  document.getElementById("mapName").value=jsonmap[id].name;
-		 	  document.getElementById("map_X").value=jsonmap[id].x;
-		 	  document.getElementById("map_Y").value=jsonmap[id].y;
 		 	  document.getElementById("description").value=jsonmap[id].description;
 	   }
 	   function delect(id){
@@ -226,7 +224,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   <body>
      <table class="table table-bordered" style="margin-left:30px;">
-	<caption>地图管理<a  data-toggle="modal" data-target="#AddModal" style="margin-left:1300px;">增加地图</a></caption>
+	<caption><font size="5" weight="bold">地图管理</font><a  data-toggle="modal" data-target="#AddModal" style="margin-left:1300px;"><font size="5" weight="bold">增加地图</font></a></caption>
    <thead>
       <tr class="active">
          <th>地图序号</th>
@@ -322,18 +320,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="col-sm-9">
 					<input class="form-control" id="mapName" name="name" type="text">
 					<input type="hidden" name="id" id="mapId"> 
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">经度_x：<font color="red">*</font></label>
-				<div class="col-sm-9">
-					<input class="form-control" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" id="map_X" name="x" type="text">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">纬度_y：<font color="red">*</font></label>
-				<div class="col-sm-9">
-					<input class="form-control" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" id="map_Y" name="y" type="text">
+					<input  name="x" type="hidden" value="0">
+			        <input  name="y" type="hidden" value="0">
 				</div>
 			</div>	
 			<div class="form-group">
@@ -379,20 +367,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<label class="col-sm-3 control-label">地图名称：<font color="red">*</font></label>
 				<div class="col-sm-9" >
 					<input class="form-control" id="mapname" name="name" type="text">
+					<input  name="x" type="hidden" value="0">
+			        <input  name="y" type="hidden" value="0">
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">经度_x：<font color="red">*</font></label>
-				<div class="col-sm-9">
-					<input class="form-control" id="map_x" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" name="x" type="text">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">纬度_y：<font color="red">*</font></label>
-				<div class="col-sm-9">
-					<input class="form-control" id="map_y" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" name="y" type="text">
-				</div>
-			</div>	
 			<div class="form-group">
 				    <label for="name">地图说明：</label>
 				    <textarea name="description" class="form-control" rows="3"></textarea>

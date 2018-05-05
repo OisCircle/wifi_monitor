@@ -82,6 +82,18 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
 			a:hover{
 			  text-decoration:none;
 			}
+			#nowTimeShow{
+		       position:absolute;
+		       z-index:1000;
+		       left:50px;
+		       top:100px;
+		       width:100px;
+		       height:40px;
+		       background-color:gray;
+		       border-radius:5px;
+		       text-align:center;
+		       opacity:0.8;
+		    }
 			#box{
 			   width:100%;
 			   height:87px;
@@ -145,7 +157,6 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
 			            type:"Post",
 			            data:params,
 			            success:function(resp){
-			                alert("success");
 			                location.reload();
 				            },
 			            error:function(jqXHR,textstatus){
@@ -219,6 +230,38 @@ List<Path> paths=(List<Path>)request.getAttribute("paths");
     </div>
 </nav>
 </div>
+  <div id="nowTimeShow">
+      <h4 id="nowtime" style="margin-top:10%;color:white;"></h4>
+  </div>
+  <script type="text/javascript">
+      function time(){
+	       $.ajax({
+	            url:"/getMinute",
+	            type:"Post",
+	            async:false,
+	            data:{},
+	            success:function(data){
+	                    var nowTime=data;
+	                    var now=document.getElementById("nowtime");
+	                    if(nowTime==5){
+	                          now.innerHTML="最近五分钟";          
+	                    }else if(nowTime==60){
+	                          now.innerHTML="最近一小时";
+	                    }else if(nowTime==1440){
+	                          now.innerHTML="最近一天";
+	                    }else if(nowTime==4320){
+	                          now.innerHTML="最近三天";
+	                    }else if(nowTime==525600){
+	                          now.innerHTML="所有";
+	                    }
+		            },
+	            error:function(jqXHR,textstatus){
+	                alert(textstatus);
+	            }
+	        });
+    }
+    time();
+  </script>
   <div style="width:1330px;height:775px;border:0px solid gray;" id="dituContent"></div>
 
   <div style="float:left;margin-top:10px;">

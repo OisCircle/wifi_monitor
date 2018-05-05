@@ -38,6 +38,18 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 	   background-color:#F8F8F8;
        cursor:pointer;
     }
+    #nowTimeShow{
+       position:absolute;
+       z-index:1000;
+       left:50px;
+       top:100px;
+       width:100px;
+       height:40px;
+       background-color:gray;
+       border-radius:5px;
+       text-align:center;
+       opacity:0.8;
+    }
     .nav{
          font-size:25px;    
 		 margin-top:36px;
@@ -154,7 +166,7 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a onclick="timefly(5)" >最近五分钟</a></li>
+                    <li><a onclick="timefly(5)">最近五分钟</a></li>
                     <li><a onclick="timefly(60)" >最近一小时</a></li>
                     <li><a onclick="timefly(1440)" >最近一天</a></li>
                     <li><a onclick="timefly(4320)" >最近三天</a></li>
@@ -166,6 +178,38 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
     </div>
 </nav>
 </div>
+  <div id="nowTimeShow">
+      <h4 id="nowtime" style="margin-top:10%;color:white;"></h4>
+  </div>
+  <script type="text/javascript">
+      function time(){
+	       $.ajax({
+	            url:"/getMinute",
+	            type:"Post",
+	            async:false,
+	            data:{},
+	            success:function(data){
+	                    var nowTime=data;
+	                    var now=document.getElementById("nowtime");
+	                    if(nowTime==5){
+	                          now.innerHTML="最近五分钟";          
+	                    }else if(nowTime==60){
+	                          now.innerHTML="最近一小时";
+	                    }else if(nowTime==1440){
+	                          now.innerHTML="最近一天";
+	                    }else if(nowTime==4320){
+	                          now.innerHTML="最近三天";
+	                    }else if(nowTime==525600){
+	                          now.innerHTML="所有";
+	                    }
+		            },
+	            error:function(jqXHR,textstatus){
+	                alert(textstatus);
+	            }
+	        });
+    }
+    time();
+  </script>
   <div style="width:1608px;height:775px;border:gray solid 0px;" id="dituContent"></div> 
   </body>
   <script type="text/javascript">

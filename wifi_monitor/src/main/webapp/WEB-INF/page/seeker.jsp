@@ -46,6 +46,18 @@ int seeker_id=(int)request.getAttribute("seeker_id");
        left:50px;
        top:100px;
     }
+    #nowTimeShow{
+       position:absolute;
+       z-index:1000;
+       left:150px;
+       top:100px;
+       width:100px;
+       height:40px;
+       background-color:gray;
+       border-radius:5px;
+       text-align:center;
+       opacity:0.8;
+    }
      #seekersearch{
          position:absolute;
          left:1250px;
@@ -241,6 +253,38 @@ int seeker_id=(int)request.getAttribute("seeker_id");
 			</ul>
 		</div>
 		</div>
+		 <div id="nowTimeShow">
+     		 <h4 id="nowtime" style="margin-top:10%;color:white;"></h4>
+		  </div>
+		  <script type="text/javascript">
+		      function time(){
+			       $.ajax({
+			            url:"/getMinute",
+			            type:"Post",
+			            async:false,
+			            data:{},
+			            success:function(data){
+			                    var nowTime=data;
+			                    var now=document.getElementById("nowtime");
+			                    if(nowTime==5){
+			                          now.innerHTML="最近五分钟";          
+			                    }else if(nowTime==60){
+			                          now.innerHTML="最近一小时";
+			                    }else if(nowTime==1440){
+			                          now.innerHTML="最近一天";
+			                    }else if(nowTime==4320){
+			                          now.innerHTML="最近三天";
+			                    }else if(nowTime==525600){
+			                          now.innerHTML="所有";
+			                    }
+				            },
+			            error:function(jqXHR,textstatus){
+			                alert(textstatus);
+			            }
+			        });
+		    }
+		    time();
+		  </script>
 		<div id="SearchEnd">
 		     <h4 id="searchend" style="margin-left:15px;color:red;"></h4>
 		</div>

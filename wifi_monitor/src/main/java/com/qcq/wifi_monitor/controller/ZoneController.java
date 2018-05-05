@@ -60,7 +60,7 @@ public class ZoneController {
 	@ResponseBody
 	public ModelAndView update(ModelAndView mv, Zone zone, MultipartFile file) {
 		try {
-			if (file.getOriginalFilename() == "" && file.getOriginalFilename()!= null) {
+			if (!file.getOriginalFilename().isEmpty() && file.getOriginalFilename()!= null) {
 				String filePath = ImageContextPathConfiguration.getBasePath();
 				String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
 

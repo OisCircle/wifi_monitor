@@ -71,6 +71,18 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
         background-color:black;
         display:none;
     }
+    #nowTimeShow{
+		       position:absolute;
+		       z-index:1000;
+		       left:50px;
+		       top:100px;
+		       width:100px;
+		       height:40px;
+		       background-color:gray;
+		       border-radius:5px;
+		       text-align:center;
+		       opacity:0.8;
+    }
     .nav{
     	font-size:25px; 
 		margin-top:36px;
@@ -166,7 +178,38 @@ List<List<Info>> listInfos=(List<List<Info>>)request.getAttribute("listInfos");
 		        <h4 id="infomapy" style="margin-left:20%;color:white;"></h4>
 		    </div>
 	  </div>
-      
+       <div id="nowTimeShow">
+	      <h4 id="nowtime" style="margin-top:10%;color:white;"></h4>
+	  </div>
+	  <script type="text/javascript">
+	      function time(){
+		       $.ajax({
+		            url:"/getMinute",
+		            type:"Post",
+		            async:false,
+		            data:{},
+		            success:function(data){
+		                    var nowTime=data;
+		                    var now=document.getElementById("nowtime");
+		                    if(nowTime==5){
+		                          now.innerHTML="最近五分钟";          
+		                    }else if(nowTime==60){
+		                          now.innerHTML="最近一小时";
+		                    }else if(nowTime==1440){
+		                          now.innerHTML="最近一天";
+		                    }else if(nowTime==4320){
+		                          now.innerHTML="最近三天";
+		                    }else if(nowTime==525600){
+		                          now.innerHTML="所有";
+		                    }
+			            },
+		            error:function(jqXHR,textstatus){
+		                alert(textstatus);
+		            }
+		        });
+	    }
+	    time();
+	  </script>
    <div id="EchartMap" >
   	<canvas id="myCanvas" width="1600" height="750">
 	</canvas>
